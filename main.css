@@ -83,42 +83,90 @@ body {
 	font-family:	"Material Symbols Outlined";
 	font-weight:	normal;
 }
-/*###########################################################
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	Главная область
 
-###########################################################*/
-.main {
-	margin: 56px 0px 0px 0px;
-	padding: 8px 8px;	
-	font-family: var(--font-family);
-	font-size: var(--font-size);
-/*	height: 1500px;  Используется в данном примере для включения прокрутки */
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+h1,h2
+{
+	padding: 2px;
+	margin: 0px;
+	font-family:	var(--font-family);
+	font-weight:	400;
+	font-style:		normal;
+	font-size:		20px;
+	line-height:	1;
 }
-/*###########################################################
+h2
+{
+	font-size:		16px;
+}
+/*	Таблицы */
+table.db-table
+{
+	display: 			table;
+	table-layout:		fixed;
+	0width:				100%;
 
-	СООБЩЕНИЕ
+	font-family:		var(--font-family);
+	font-size:			14px;
+	line-height:		1.5;
 	
-###########################################################*/
-dialog.message0 {
-	font-family: var(--font-family);
-	font-size: var(--font-size);
-	background: rgba(255, 255, 255, 0.95);
-	box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
-	border: 2px solid red;
-	border-radius: 5px;
-	width: 25%;
-	padding: 1em;
-	text-align: center;
-	position: absolute;
-	top: 1em;
+	border-collapse:	collapse;
 }
-dialog.message0 div {
-	color: red;
-	line-height: 1.5;
+/*	Название таблицы */
+table.db-table caption
+{
+	font-weight:		bold;
+
+	caption-side:		top;
+	
+	margin:				0;
+	padding:			1rem;
 }
-dialog.message0 button {
-	font-family: var(--font-family);
-	font-size: inherit;
-	margin-top: 2em;
+table.db-table caption,
+table.db-table th,
+table.db-table td
+{
+	text-align:			left;
+}
+table.db-table tr
+{
+	cursor:				pointer;
+}
+/*	выделение строки при наведении курсора */
+table.db-table tr:hover
+{
+	background-color:	hsla(215,80%,90%,0.5);
+}
+/*	содержание ячеек таблиц */
+table.db-table th,
+table.db-table td
+{
+	font-family:		inherit;
+	font-size:			inherit;
+	vertical-align:		text-top;
+	margin:				0;
+	padding:			1rex;
+}
+/*	Заголовки столбцов */
+table.db-table th
+{
+	font-weight:		bold;
+	white-space:		nowrap;
+	
+	padding-top:		1rem;
+	padding-bottom:		1rem;
+	
+	border-bottom:		var(--border-table);
+	
+	background:			hsl(0,0%,90%);
+}
+/*	Текст в ячейке */
+table.db-table td
+{
+	font-weight:		normal;
+	border-bottom:		var(--border-table);
+	color:				#000;
 }
