@@ -26,14 +26,6 @@
 	font-weight: 400;
 	font-display: fallback;
 }
-/*
-@font-face {
-	font-family: "Open Sans";
-	font-style:	normal;
-	src: url("/fonts/OpenSans-Regular.ttf") format("ttf");
-	font-weight: 400;
-}
-*/
 @font-face {
 	font-family: "Ubuntu";
 	font-style:	normal;
