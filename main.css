@@ -23,17 +23,18 @@
 @font-face {
 	font-family: "Material Symbols Outlined";
 	font-style:	normal;
-	src: url("/fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].woff2") format("woff2");
+	src: url("fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].woff2") format("woff2");
 	font-weight: 400;
 	font-display: fallback;
 }
-*/
 @font-face {
 	font-family: "Ubuntu";
 	font-style:	normal;
-	src: url("/fonts/Ubuntu-Regular.ttf") format("ttf");
+//	src: url("/fonts/Ubuntu-Regular.ttf") format("ttf");
+	src: url("https://github.com/google/material-design-icons/blob/master/variablefont/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].woff2") format("wolf2");
 	font-weight: 400;
 }
+*/
 .material-symbols {
 	font-family:	"Material Symbols Outlined";
 	font-weight:	normal;
