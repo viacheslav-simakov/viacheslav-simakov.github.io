@@ -172,5 +172,32 @@ body
 }
 .tab-content > div.part
 {
-	border-top:			solid 2px;
+	border-top:			solid gray 2px;
+}
+.tabular
+{
+	display: 			table;
+	table-layout:		fixed;
+	width:				100%;
+
+	font-family:		var(--font-family);
+	font-size:			inherit;
+
+	border-collapse:	collapse;
+}
+.tabular td
+{
+	vertical-align:		text-top;
+	text-align:			left;
+	font-family:		inherit;
+	font-size:			inherit;
+	padding:			1rex 1rem 0pt 1rem;
+	margin:				0px;
+}
+.tabular td:nth-child(1)
+{  
+	font-weight:		500;
+	width:				20%;
+	text-align:			right;
+	text-wrap:			nowrap;
 }
