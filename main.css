@@ -19,222 +19,158 @@
 	</Directory>
 	
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/*
-@font-face {
-	font-family: "Material Symbols Outlined";
-	font-style:	normal;
-	src: url("fonts/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].woff2") format("woff2");
-	font-weight: 400;
-	font-display: fallback;
-}
-@font-face {
-	font-family: "Ubuntu";
-	font-style:	normal;
-//	src: url("/fonts/Ubuntu-Regular.ttf") format("ttf");
-	src: url("https://github.com/google/material-design-icons/blob/master/variablefont/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].woff2") format("wolf2");
-	font-weight: 400;
-}
-*/
-.material-symbols {
-	font-family:	"Material Symbols Outlined";
-	font-weight:	normal;
-	font-style:		normal;
-	font-size:		48px;  /* Preferred icon size */
-	display:		inline-block;
-	line-height:	1;
-	text-transform:	none;
-	letter-spacing:	normal;
-	word-wrap:		normal;
-	white-space:	nowrap;
-	direction:		ltr;
-	font-variation-settings:
-	'FILL' 0,
-	'wght' 400,
-	'GRAD' 0,
-	'opsz' 20
-}
 /*	CSS-переменные */
-:root {
-	--color-blue: hsl(215,100%,50%);
-	--font-family: "Ubuntu", sans-serif;
-	--font-size: 14px;
+:root
+{
+	--color-blue:							hsl(215,100%,50%);
+	--font-family:							"Ubuntu", sans-serif;
+	--font-size:							18px;
 	--navigation-background-color: 			hsl(0,0%,95%);
 	--navigation-background-color-hover:	hsl(0,0%,90%);
 	--navigation-border-color: 				hsl(0,0%,75%);
-	--navigation-border: 1px solid var(--navigation-border-color);
-	--body-background-color: hsl(0,0%,100%);
+	--navigation-border:					1px solid var(--navigation-border-color);
 }
-html {
+html
+{
 	font-size:		var(--font-size);
 	font-family:	var(--font-family);
-	line-height:	1;
+	line-height:	1.5;
 }
 body
 {
-	margin:				12px;
-	padding:			8px 8px;	
-	font-family:		var(--font-family);
-	font-size:			var(--font-size);
-	background-color:	var(--body-background-color);
-	overflow:			scroll;	/*	overflow: scroll;  Show scrollbars */
+/*	overflow: scroll;  Show scrollbars */
+	overflow: scroll;
+	padding: 0px;
+	0margin: 0px;
+	margin: 0% 15% 0% 15%;
 /*	width: 100%;*/
 }
 .material-symbol
 {
-	font-size:		24px;
+	font-size:		32px;
 	font-family:	"Material Symbols Outlined";
 	font-weight:	normal;
 }
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*###########################################################
 
 	Главная область
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/*
+###########################################################*/
 .main
 {
-	display: 			table;
-	table-layout:		fixed;
-	0width:				100%;
+	margin: 56px 0px 0px 0px;
+	padding: 8px 8px;	
+	font-family: var(--font-family);
+	font-size: var(--font-size);
+/*	height: 1500px;  Используется в данном примере для включения прокрутки */
+}
+#page
+{
+	/*	сетка */
+	display:			grid;
+	grid-gap:			1rex;
+	overflow:			auto;
+	justify-content:	flex-start;
 
+	/*	https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template */
+	grid-template-columns: auto 1fr;
+
+	/*	положение на странице */
+	0position:	fixed;
+	0top:		0px;
+	0overflow:	visible; /* visible | hidden | clip | scroll | auto */
+
+	/*	ширина */
+	width:		auto;
+
+	/*	отступы */
+	padding:	1ex;
+	margin:		0px;
+
+	font-size:			var(--font-size);
 	font-family:		var(--font-family);
-	font-size:			14px;
-	line-height:		1.5;
-	
-	border-collapse:	collapse;
-}
-*/
-#page {
-	/*
-		сетка
-	*/
-	display:				grid;
-	grid-template-areas:	"head head" "nav memo";
-	grid-gap:				1rex;
-	overflow:				auto;
-	justify-content:		flex-start;
-	border: 2px;
-	/*
-		https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template
-	*/
-	grid-template-rows:		50px 1fr;
-	grid-template-columns:	1fr 2fr;
-	width:					auto;/*	ширина */
-	/*
-		отступы
-	*/
-	padding:				1ex;
-	margin:					0px;
-	/*
-		шрифт
-	*/
-	font-size:				var(--font-size);
-	font-family:			var(--font-family);
-	line-height:			1;
-	/*
-		цвета
-	*/
-	color:					#000;
-	background-color:		hsl(0,0%,95%);
-}
-#page > header
-{
-	grid-area:				head;
-	background-color:		#8ca0ff;
-}
-#page > nav
-{
-	grid-area:				nav;
-	background-color: 		ffa08c;
-}
+	line-height:		1;
 
-#page > main
-{
-	grid-area:				memo;
-	background-color:		#ffff64;
+	/*	цвета */
+	color:				#000;
+	background-color:	hsl(0,0%,95%);
 }
-/****************************************************************************/
-h1,h2
-{
-	padding: 2px;
-	margin: 0px;
-	font-family:	var(--font-family);
-	font-weight:	400;
-	font-style:		normal;
-	font-size:		20px;
-	line-height:	1;
-}
-h2
-{
-	font-size:		16px;
-}
-/*
-	Таблицы
-*/
-table.db-table
-{
-	display: 			table;
-	table-layout:		fixed;
-	0width:				100%;
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	font-family:		var(--font-family);
-	font-size:			14px;
-	line-height:		1.5;
-	
-	border-collapse:	collapse;
-}
-/*	Название таблицы */
-table.db-table caption
-{
-	font-weight:		bold;
+	Группа кнопок
 
-	caption-side:		top;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.menu-group
+{
+	grid-column:	1/2;
+
+	display: 		flex;
+	flex-direction: column;
 	
-	margin:				0;
-	padding:			1rem;
+	padding:		0px;
+	border-radius:	0px 1.5ex 1.5ex 0px;
+	0border:		1px solid hsl(0,0%,60%);
 }
-table.db-table caption,
-table.db-table th,
-table.db-table td
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Кнопки с иконками
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.item
 {
-	text-align:			left;
-}
-table.db-table tr
-{
-	cursor:				pointer;
-}
-/*	выделение строки при наведении курсора */
-table.db-table tr:hover
-{
-	background-color:	hsla(215,80%,90%,0.5);
-}
-/*	содержание ячеек таблиц */
-table.db-table th,
-table.db-table td
-{
+	display:			flex;
+	align-items:		center;
+	
 	font-family:		inherit;
 	font-size:			inherit;
-	vertical-align:		text-top;
-	margin:				0;
-	padding:			1rex;
-}
-/*	Заголовки столбцов */
-table.db-table th
-{
-	font-weight:		bold;
-	white-space:		nowrap;
+	line-height:		inherit;
+
+	margin-right:		1rex;
+	padding:			0px 1.5rem;
+	height:				3em;
 	
+	border:				none;
+	border-radius:		0px 1.5rem 1.5rem 0px;
+
+	color: 				#000;	
+	text-decoration:	none;
+	cursor:				pointer;
+}
+/*	значки на кнопках */
+.item > span
+{
+	font-size:		32px;
+	font-family:	"Material Symbols Outlined";
+	font-weight:	normal;
+
+	padding-right:	1rem;
+}
+/*	перемещение курсора мыши */
+.item:hover
+{
+	background-color: hsl(0,0%,90%);
+}
+.tab-content > p, .tab-content > ol
+{
+	font-family:		var(--font-family);
+	font-size:			18px;
+	line-height:		1.5;
+	margin:				0px;
+	padding:			0px;
+}
+.tab-content > li
+{
+	margin-bottom:		1rem;
+	color: red;
+}
+.tab-content > div.part, .tab-content > div.year
+{
+	font-weight:		500;
+	margin-top:			1rem;
+	margin-bottom:		1rex;
 	padding-top:		1rem;
-	padding-bottom:		1rem;
-	
-	border-bottom:		var(--border-table);
-	
-	background:			hsl(0,0%,90%);
 }
-/*	Текст в ячейке */
-table.db-table td
+.tab-content > div.part
 {
-	font-weight:		normal;
-	border-bottom:		var(--border-table);
-	color:				#000;
+	border-top:			solid 2px;
 }

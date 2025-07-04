@@ -4,109 +4,221 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 <title>Вячеслав В. Симаков</title>
 <link href="main.css" rel="stylesheet" type="text/css"/>
+<!--link href="page.css" rel="stylesheet" type="text/css"/-->
+<!-- Google font's -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 <style>
-
+/*	Скрыть вкладки, радиокнопки и кнопки навигации */
+input[type=radio], .tab-content
+{
+	display: none;
+}
+/*	Показать содержимое вкладок */
+#radio-contact:checked ~	#page > #data > #data-contact,
+#radio-education:checked ~	#page > #data > #data-education,
+#radio-graduate:checked ~	#page > #data > #data-graduate,
+#radio-work:checked ~ 		#page > #data > #data-work,
+#radio-article:checked ~ 	#page > #data > #data-article
+{
+	display: block;
+}
+/*	Подсветка выбора пользователя */
+#radio-contact:checked ~	#page > #nav > #label-contact,
+#radio-education:checked ~	#page > #nav > #label-education,
+#radio-graduate:checked ~	#page > #nav > #label-graduate,
+#radio-work:checked ~ 		#page > #nav > #label-work,
+#radio-article:checked ~ 	#page > #nav > #label-article
+{
+	background-color:	hsl(215,75%,90%);
+	font-weight:		500;
+}
 </style>
 </head>
 <body>
-<div id="page">
-	<header>Симаков Вячеслав Владимирович</header>
-	<nav>Краткая характеристика</nav>
-<!--
-	<span class="material-symbols-outlined">&#xE8B6;</span>
-	<span class="material-symbols-outlined">&#xE88A;</span>
-	<span class="material-symbols-outlined">&#xE8B8;</span>
-	<span class="material-symbols-outlined">&#xE87D;</span>
--->
-	<memo>Main</memo>
-</div>
-<div>
-	доктора технических наук,
-	профессора кафедры материаловедения, технологии и управления качеством
-</div>
-<div>
-	ФГБОУ ВПО «Саратовский национальный исследовательский государственный университет
-	имени Н.Г. Чернышевского»
-</div>
+<!-- Радиокнопки меню -->
+	<input type="radio" id="radio-contact"		name="tab-group" checked>
+	<input type="radio" id="radio-education"	name="tab-group">
+	<input type="radio" id="radio-graduate"		name="tab-group">
+	<input type="radio" id="radio-work"			name="tab-group">
+	<input type="radio" id="radio-article"		name="tab-group">
+<div id="page" style=
+"
+	grid-template-rows:		auto 1fr;
+	grid-template-columns:	auto 1fr;
+">
+<!-- .: ЗАГОЛОВОК :. -->
+	<div id="header" class="menu-group" style=
+		"
+			grid-row:		1/2;
+			grid-column:	2/3;
+			flex-direction: row;
+			font-size:		24pt;
+		">
+		<div style=
+			"
+				padding-top:	1rem;
+				padding-bottom:	1rem;
+				font-size:		48px;
+				border-bottom:	solid 2px;
+			">
+			Симаков Вячеслав Владимирович
+		</div>
+	</div>
+<!-- .: ВЫБОР ОПЦИЙ :. -->
+	<div id="nav" class="menu-group" style=
+	"
+			grid-row:		2/3;
+			grid-column:	1/2;
+			width:			17rem;
+	">
+		<!-- Контакты -->
+		<label id="label-contact" for="radio-contact" class="item">
+			<span>near_me</span>Контакты</label>
 
-<h3>Образование</h3>
+		<!-- Образование -->
+		<label id="label-education" for="radio-education" class="item">
+			<span>person</span>Образование</label>
 
-<h3>Ученая степень</h3>
-<table class="db-table">
-<tr>
-	<td rowspan=3>2006</td>
-	<td>Доктор технических наук по специальности 02.00.05 – Электрохимия;</td>
-</tr>
-<tr>
-	<td>
-	Выполнена диссертационная работа на тему «Электрохимические свойства поверхности широкозонных полупроводников и разработка электрохимических преобразователей на их основе»;
-	</td>
-</tr>
-<tr>
-	<td>
-	научный консультант: доктор химических наук, профессор Михайлова А.М.
-	</td>
-</tr>
-<tr>
-	<td rowspan=3>1999</td>
-	<td>Кандидат технических наук по специальности 02.00.05 – Электрохимия;</td>
-</tr>
-<tr>
-	<td>
-	Выполнена диссертационная работа на тему «Теоретические основы расчета конструкционных и эксплуатационных параметров химических газовых сенсоров, изготовленных по микроэлектронной технологии»;
-	</td>
-</tr>
-<tr>
-	<td>
-	научные руководители: доктор химических наук, профессор Михайлова А.М.;
-	доктор технических наук, профессор Кисин В.В.
-	</td>
-</tr>
-</table>
+		<!-- Ученая степень -->
+		<label id="label-graduate" for="radio-graduate" class="item">
+			<span>school</span>Ученая степень</label>
 
+		<!-- Опыт работы -->
+		<label id="label-work" for="radio-work" class="item">
+			<span>cases</span>Опыт работы</label>
+	
+		<!-- Список публикаций -->
+		<label id="label-article" for="radio-article" class="item">
+			<span>article_person</span>Список публикаций</label>
+	</div>
+<!-- .: ИНФОРМАЦИЯ .: -->
+	<div id="data" style="
+			grid-row:		2/3;
+			grid-column:	2/3;
+		">
+		<div id="data-contact" class="tab-content" style="margin-top:1rem;">
+			<p> доктор технических наук,</p>
+			<p>	профессор кафедры материаловедения, технологии и управления качеством,</p>
+			<p>	ФГБОУ ВПО «Саратовский национальный исследовательский государственный университет
+				имени Н.Г. Чернышевского»</p>
+		</div>
+	<!-- Образование -->
+		<div id="data-education" class="tab-content">
+			<div class="part" style="margin-top:0px;border:none;">2003 &ndash; 2006</div>
+			<p>Докторантура с отрывом от производства по специальности «Электрохимия»
+			при Саратовском государственном техническом университете, кафедра химии.</p>
+			<div class="part">1996 &ndash; 1999</div>
+			<p>Очная аспирантура по специальности «Электрохимия»
+			при Саратовском государственном техническом университете, кафедра химии.</p>
+			<div class="part">1990 &ndash; 1995</div>
+			<p>Диплом с отличием Саратовского  государственного университета
+			имени Н.Г.&nbsp;Чернышевского, кафедра физики твердого тела.</p>
+			<p>Специальность «Микроэлектроника и полупроводниковые приборы»,</p>
+			<p>квалификация «инженер-физик».</p>
 
-<h3>Опыт работы</h3>
-
-<h3>Список публикаций:</h3>
-<ol>
+		</div>
+	<!-- Ученая степень -->
+		<div id="data-graduate" class="tab-content">
+			<div class="part" style="margin-top:0px;border:none;">2006</div>
+			<p>Доктор технических наук по специальности 02.00.05 – Электрохимия.</p>
+			<p>Выполнена диссертационная работа на тему
+			«Электрохимические свойства поверхности широкозонных полупроводников
+			и разработка электрохимических преобразователей на их основе».</p>
+			<p>Научный консультант: доктор химических наук, профессор Михайлова А.М.</p>
+			<div class="part">1999</div>
+			<p>Кандидат технических наук по специальности 02.00.05 – Электрохимия.</p>
+			<p>Выполнена диссертационная работа на тему «Теоретические основы расчета конструкционных
+			и эксплуатационных параметров химических газовых сенсоров,
+			изготовленных по микроэлектронной технологии».</p>
+			<p>Научные руководители: доктор химических наук, профессор Михайлова А.М.,</p>
+			<p>доктор технических наук, профессор Кисин В.В.</p>
+		</div>
+	<!-- Опыт работы -->
+		<div id="data-work" class="tab-content">
+			<div class="year" style="margin-top:0px;">с 2008</div>
+			<p>Профессор кафедры материаловедения, технологии и управления качеством
+			Саратовского государственного университета имени Н.Г.&nbsp;Чернышевского</p>
+			<div class="year">09.2011 &ndash; 02.2014</div>
+			<p>Заведующий кафедрой «Химия и основы экологии»
+			Саратовского государственного аграрного университета имени Н.И.&nbsp;Вавилова</p>
+			<div class="year">11.2006 &ndash; 09.2011</div>
+			<p>Профессор кафедры химии ГОУ ВПО «Саратовский государственный технический университет».</p>
+			<div class="year">08.2004 &ndash; 10.2006</div>
+			<p>Доцент кафедры химии ГОУ ВПО «Саратовский государственный технический университет».</p>
+			<div class="year">10.2003 &ndash; 07.2004</div>
+			<p>Научный сотрудник института инструментальной аналитики
+			(Institut fur Instrumentelle Analytik, Forschungszentrum Karlsruhe, Karlsruhe, Germany).</p>
+			<div class="year">09.2000 &ndash; 07.2003</div>
+			<p>Доцент кафедры химии ГОУ ВПО «Саратовский государственный технический университет».</p>
+			<div class="year">06.1997 &ndash; 09.1998</div>
+			<p>Руководитель научно-исследовательских работ проводимых
+			в ГОУ ВПО «Саратовский государственный технический университет».</p>
+			<div class="year">08.1995 &ndash; 12.1999</div>
+			<p>Научный сотрудник научно-исследовательского института механики и физики
+			при Саратовском государственном университете им. Н.Г. Чернышевского.</p>
+		</div>
+	<!-- Список публикаций -->
+		<div id="data-article" class="tab-content">
+<ol style="padding-left:2rem;">
 <li>
-	<a href="http://viacheslav-simakov.github.io/publications/2025/Свидетельство_о_регистрации_ПрЭВМ_eod.pdf">
 	Юпатова М.И., Никитина Н.М., Симаков В.В, Акулова А.И.
 	Электронный ассистент врача-ревматолога по выбору генно-инженерной и таргетной терапии
 	// Государственная регистрация программы для ЭВМ. Номер свидетельства: RU 2025665378,
 	Дата регистрации 17 июня 2025 г. Дата публикации и номер бюллетеня: 17.06.2025 Бюл. № 6.
-	</a>
+	<a href="http://viacheslav-simakov.github.io/publications/2025/Свидетельство_о_регистрации_ПрЭВМ_eod.pdf">
+	<span class="material-symbols-outlined">picture_as_pdf</span></a>
 </li>
 <li>
-	<a href="http://viacheslav-simakov.github.io/publications/2024/23-91 ЭВМ 2023687537.pdf">
 	Клычков Н.А., Симаков В.В., Синёв И.В.
 	Программный комплекс для регистрации технологических параметров процесса физического осаждения покрытий
 	в вакуумной установке
 	// Государственная регистрация программы для ЭВМ. Номер свидетельства: RU 2024617270,
 	Дата регистрации 31.03.2024, Дата публикации 31.03.2024.
-	</a>
+	<a href="http://viacheslav-simakov.github.io/publications/2024/23-91 ЭВМ 2023687537.pdf">
+	<span class="material-symbols-outlined">picture_as_pdf</span></a>
 </li>
 <li>
-	<a href="http://viacheslav-simakov.github.io/publications/2024/24-06 ЭВМ 2024617270">
 	Клычков Н.А., Симаков В.В., Синёв И.В.
 	Программный комплекс для расчета электрических свойств полупроводниковых сенсоров газа
 	на основе поликристаллических пленок в газовых средах различного состава
 	// Государственная регистрация программы для ЭВМ. Номер регистрации 2023687537,
 	Дата регистрации 17.12.2023, Дата публикации 17.12.2023.
-	</a>
+	<a href="http://viacheslav-simakov.github.io/publications/2024/24-06 ЭВМ 2024617270">
+	<span class="material-symbols-outlined">picture_as_pdf</span></a>
 </li>
 <li>
-	<a href="http://viacheslav-simakov.github.io/publications/2021/2754127 - Патент (2021).pdf">
 	Синёв И.В., Тимошенко Д.А., Симаков В.В., Захаревич А.М.
 	Способ переноса нитевидных нанокристаллов на подложку
 	// Патент на изобретение № 2754127 от 27 августа 2021 г.
-	</a>
+	<a href="http://viacheslav-simakov.github.io/publications/2021/2754127 - Патент (2021).pdf">
+	<span class="material-symbols-outlined">picture_as_pdf</span></a>
 </li>
-	
-</ol>
+<li>
+	Симаков В.В., Синёв И.В., Махди Одай Салман Махди
+	Программа моделирования электрической проводимости неоднородно легированного зерна
+	полупроводникового материала 
+	// Свидетельство о государственной регистрации программы для ЭВМ
+	Номер регистрации 2018662253 от 03 октября 2018 г.
+	Заявка N. 2018619441, дата поступления 03 сентября 2018 г.
+</li>
+<li>
+	Симаков В.В., Ворошилов А.С., Кучеренко Н.И., Якушева О.В., Кисин В.В.
+	Способ градуировки сенсора газа
+	// Свидетельство Роспатента N. 2341790, заявка N. 2007123198/28(025262) от 20.06.2007,
+	опубликовано 20.12.2008, бюл. N 35.
+</li>
+<li>
+	Симаков В.В. Способ определения концентрации примеси газа в воздухе
+	/ В.В. Симаков, О.В. Якушева, А.И. Гребенников, В.В. Кисин
+	// Свидетельство Роспатента N. 2279066,
+	заявка N. 2004136630/28 от 16.12.2004, опубликовано 27.06.2006, бюл. N.18.
+</li>
+		</div>
+	</div>
+<!-- .: end of page :. -->
+</div>
 </body>
 </html>

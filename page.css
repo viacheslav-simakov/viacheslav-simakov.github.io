@@ -1,0 +1,279 @@
+/*	CSS-переменные */
+:root
+{
+	/*	шрифт */
+	--font-family:	"Ubuntu", sans-serif;
+	--font-size:	14px;
+	
+	/*	HSL-цвета */
+	--color-blue:					hsl(220,71%,48%);
+	--body-background-color: 		hsl(0,0%,100%);
+}
+/*###########################################################
+
+	ПАНЕЛЬ НАВИГАЦИИ
+
+###########################################################*/
+#page
+{
+	/*	сетка */
+	display:			grid;
+	grid-gap:			1rex;
+	overflow:			auto;
+	justify-content:	flex-start;
+
+	/*	https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template */
+	grid-template-columns: auto 1fr;
+
+	/*	положение на странице */
+	0position:	fixed;
+	0top:		0px;
+	0overflow:	visible; /* visible | hidden | clip | scroll | auto */
+
+	/*	ширина */
+	width:		auto;
+
+	/*	отступы */
+	padding:	1ex;
+	margin:		0px;
+
+	font-size:		var(--font-size);
+	font-family:	var(--font-family);
+	line-height:	1;
+
+	/*	цвета */
+	color: #000;
+	background-color: hsl(0,0%,95%);
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Область просмотра
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#page > #db
+{
+	padding:		0rex;
+	
+	background:		var(--background-color);
+	border-radius:	1.5rex;
+	border:			1px solid hsl(0,0%,60%);
+	
+	overflow:		hidden;
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Группа кнопок
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.menu-group
+{
+	grid-column:	1/2;
+
+	display: 		flex;
+	flex-direction: column;
+	
+	white-space:	nowrap;
+
+	padding:		0px;
+	border-radius:	0px 1.5ex 1.5ex 0px;
+	0border:			1px solid hsl(0,0%,60%);
+}
+.menu-group-row
+{
+	display:		flex;
+	flex-direction:	row;
+	align-items:	center;
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Кнопки с иконками
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.item
+{
+	display:			flex;
+	align-items:		center;
+	
+	font-family:		inherit;
+	font-size:			inherit;
+	line-height:		inherit;
+
+	margin-right:		1rex;
+	padding:			0px 1.5rem;
+	height:				3em;
+	
+	border:				none;
+	border-radius:		0px 1.5rem 1.5rem 0px;
+
+	color: 				#000;	
+	text-decoration:	none;
+	cursor:				pointer;
+}
+/*	значки на кнопках */
+.item > span,
+.button-icon > span,
+.button-new > span,
+.button-selected > span
+{
+	font-size:		24px;
+	font-family:	"Material Symbols Outlined";
+	font-weight:	normal;
+
+	padding-right:	1rem;
+}
+/*	перемещение курсора мыши */
+.item:hover
+{
+	background-color: hsl(0,0%,90%);
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Кнопка
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.button-icon, .button-selected
+{
+	font-family:		inherit;
+	font-size:			inherit;
+	line-height:		inherit;
+
+	display:			flex;
+	flex-direction:		row;
+	align-items:		center;
+	justify-content:	center;
+
+	padding:			0px 1.5rem 0px 1rem;
+	height:				3rem;
+	
+	border-radius:		1.5rem;
+	cursor:				pointer;
+}
+.button-icon:hover
+{
+	background-color:	hsl(0,0%,100%);
+}
+.button-selected
+{
+	color:				hsl(215,90%,45%);
+	cursor:				default;
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Кнопка "Добавить"
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.button-new
+{
+	font-family:		inherit;
+	font-size:			inherit;
+	line-height:		inherit;
+	
+	height:				3rem;
+	border-radius:		1rem;
+	padding-right:		3rem;
+	
+	background-color:	hsl(205,100%,90%);
+	cursor:				pointer;
+}
+.button-new:hover
+{
+	box-shadow:			0px 2px 8px hsla(215,0%,75%);
+	background-color:	hsl(205,100%,90%);
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Кнопка-символ
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.button-symbol
+{
+	font-size:			24px;
+	font-family:		"Material Symbols Outlined";
+	font-weight:		normal;
+
+	margin-left:		1rex;
+	margin-right:		1rex;
+	padding:			1rex;
+	height:				fit-content;
+	
+	border-radius:		100%;
+	cursor:				pointer;
+}
+.button-symbol:hover
+{
+	background-color:	#fff;
+}
+.button-symbol:disabled
+{
+	opacity:			0.25;
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Кнопка "Найти"
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.search-box
+{
+	display:			flex;
+	flex-direction:		row;
+	align-items:		center;
+
+	width:				fit-content;
+}
+.search-box button
+{
+	margin:				4px;
+	width:				2.5rem;
+	height:				2.5rem;
+
+	border:				none;
+	border-radius:		100%;
+	
+	background-color:	transparent;
+	cursor:				pointer;
+}
+.search-box button:hover
+{
+	background-color:	hsl(0,0%,100%);
+}
+.search-box button > span
+{
+	font-size:		24px;
+	font-family:	"Material Symbols Outlined";
+	font-weight:	normal;
+
+	padding-right:	1rem;
+}
+/*	поле ввода текста */
+.search-box input[type=search]
+{
+	font-family:		var(--font-family);
+	font-size:			var(--font-size);
+	line-height:		1;
+	
+	padding:			1rex 1rem;
+	margin:				0px 6px 0px 0px;
+	width:				15rem;
+
+	border-radius:		1.25rem;
+	border:				1px solid hsl(0,0%,60%);
+	background-color:	hsl(0,0%,100%);
+	
+	outline:			none;
+}
+/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	БАЗА ДАННЫХ
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+/*	Скрыть таблицы данных */
+.container-table {
+	display:		none;
+}
+/*	Скрыть меню */
+.container-menu
+{
+	display:		none;
+	flex-direction:	row;
+	align-items:	center;
+}
