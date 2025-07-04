@@ -163,9 +163,14 @@ body
 	width:				100%;
 
 	font-family:		var(--font-family);
-	font-size:			inherit;
+	font-size:			18px;
 
 	border-collapse:	collapse;
+}
+.tabular tr
+{
+	font-family:		inherit;
+	font-size:			inherit;
 }
 .tabular td
 {

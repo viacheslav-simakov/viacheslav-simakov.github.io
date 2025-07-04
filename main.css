@@ -147,6 +147,8 @@ body
 }
 .tab-content > div.part, .tab-content > div.year
 {
+	font-family:		inherit;
+	font-size:			inherit;
 	font-weight:		500;
 	margin-top:			1rem;
 	margin-bottom:		1rex;
@@ -166,6 +168,11 @@ body
 	font-size:			18px;
 
 	border-collapse:	collapse;
+}
+.tabular tr
+{
+	font-family:		inherit;
+	font-size:			inherit;
 }
 .tabular td
 {
