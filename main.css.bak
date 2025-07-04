@@ -163,7 +163,7 @@ body
 	width:				100%;
 
 	font-family:		var(--font-family);
-	font-size:			18px;
+	font-size:			inherit;
 
 	border-collapse:	collapse;
 }
