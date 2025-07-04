@@ -118,7 +118,7 @@ body
 		https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template
 	*/
 	grid-template-rows:		50px 1fr;
-	grid-template-columns:	1fr 2fr;
+	grid-template-columns:	1fr auto;
 	width:					auto;/*	ширина */
 	/*
 		отступы
