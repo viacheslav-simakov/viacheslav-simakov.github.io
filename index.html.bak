@@ -46,6 +46,8 @@ input[type=radio], .tab-content
 	<input type="radio" id="radio-article"		name="tab-group">
 <div id="page" style=
 "
+	grid-template-rows:		auto 1fr;
+	grid-template-columns:	auto 1fr;
 ">
 <!-- .: ЗАГОЛОВОК :. -->
 	<div id="header" class="menu-group" style=
