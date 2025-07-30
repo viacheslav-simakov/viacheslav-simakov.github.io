@@ -68,7 +68,8 @@ body
 	width:		auto;
 
 	/*	отступы */
-	padding:	1ex;
+	0padding:	1ex;
+	padding:	0px;
 	margin:		0px;
 
 	font-size:			var(--font-size);
