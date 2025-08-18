@@ -2,7 +2,7 @@
 <html lang="ru-RU">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-<title>Вячеслав В. Симаков</title>
+<title>Электронный ассистент врача-ревматолога</title>
 <link href="main.css" rel="stylesheet" type="text/css"/>
 <!--link href="page.css" rel="stylesheet" type="text/css"/-->
 <!-- Google font's -->
@@ -275,8 +275,10 @@ input[type=radio], .tab-content
 //	alert("Hello World!");
 //	Получаем данные из initDataUnsafe
 	const initData = tw.initDataUnsafe;
+//	информация о пользователе
+	const user = initData.user;
 
-	tw.showAlert(initData.user.id);
+	tw.showAlert(user.username);
 
 	console.log(initData);
 //	Проверяем, что данные были получены
