@@ -10,10 +10,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-<!--
-	https://core.telegram.org/bots/webapps#initializing-mini-apps
--->
-<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
 <style>
 /*	Скрыть вкладки, радиокнопки и кнопки навигации */
 input[type=radio], .tab-content
@@ -266,44 +262,7 @@ input[type=radio], .tab-content
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <script src="/js/table.js"><!-- работа с таблицами --></script>
 <script>
-	let tw = window.Telegram.WebApp;
-//	alert("Hello World!");
-//	Получаем данные из initDataUnsafe
-	const initData = tw.initDataUnsafe;
-
-	console.log(initData);
-//	Проверяем, что данные были получены
-	if (initData) {
-		console.log("Данные пользователя:", initData);
-		
-		// Доступ к конкретным данным
-		const userId = initData.user?.id;
-		const userName = initData.user?.first_name;
-		const userLanguage = initData.user?.language_code;
-		
-		if (userId) {
-		console.log("ID пользователя:", userId);
-		}
-		if (userName) {
-		console.log("Имя пользователя:", userName);
-		}
-		if (userLanguage) {
-		console.log("Язык пользователя:", userLanguage);
-		}
-/*
-    // Пример использования данных в интерфейсе
-    const welcomeMessage = document.getElementById('welcome-message');
-    if (welcomeMessage && userName) {
-        welcomeMessage.textContent = `Добро пожаловать, ${userName}!`;
-    }
-
-  } else {
-    console.log("Данные initDataUnsafe не были получены.");
-  }
-*/
-	} else {
-		console.log("Telegram WebApp не доступен!");
-	}
+  alert("Hello World!");
 </script>
 </body>
 </html>
