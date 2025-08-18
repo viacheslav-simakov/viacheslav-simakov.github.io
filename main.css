@@ -36,7 +36,7 @@ body
 	overflow: scroll;
 	padding: 0px;
 	0margin: 0px;
-	margin: 0% 15% 0% 15%;
+	0margin: 0% 15% 0% 15%;
 	font-size:		var(--font-size);
 	font-family:	var(--font-family);
 	line-height:	1.5;
