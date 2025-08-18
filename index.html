@@ -266,10 +266,15 @@ input[type=radio], .tab-content
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <script src="/js/table.js"><!-- работа с таблицами --></script>
 <script>
+//	Web-API
 	let tw = window.Telegram.WebApp;
+//	Инициализируем WebApp
+	tw.ready();
 //	alert("Hello World!");
 //	Получаем данные из initDataUnsafe
 	const initData = tw.initDataUnsafe;
+
+	tw.showAlert(initData.user.id);
 
 	console.log(initData);
 //	Проверяем, что данные были получены
