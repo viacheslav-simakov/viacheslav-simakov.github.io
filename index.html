@@ -55,6 +55,28 @@ input[type=radio], .tab-content
 	<div id="header" class="menu-group" style=
 		"
 			grid-row:		1/2;
+			grid-column:	1/2;
+			flex-direction: row;
+			font-size:		24pt;
+		">
+		<div style=
+			"
+				padding-top:	1rem;
+				padding-bottom:	1rem;
+				font-size:		48px;
+				border-bottom:	solid 2px;
+			">
+			<!-- ФОРМА -->
+			<form id="dataForm">
+				<input required="" id="nameInput" placeholder="Ваше имя" type="text">
+				<textarea required="" id="msgInput" placeholder="Ваше сообщение"></textarea>
+				<p><button type="submit">Отправить</button></p>
+			</form>
+		</div>
+	</div>
+	<div id="header" class="menu-group" style=
+		"
+			grid-row:		1/2;
 			grid-column:	2/3;
 			flex-direction: row;
 			font-size:		24pt;
@@ -313,6 +335,30 @@ input[type=radio], .tab-content
 	} else {
 		console.log("Telegram WebApp не доступен!");
 	}
+</script>
+<!-- Отправка сообщения Боту: https://habr.com/ru/companies/amvera/articles/935718/ -->
+<script>
+	const form = document.getElementById("dataForm");
+	//
+	//	Обработчик событий
+	form.addEventListener("submit", (e) =>
+	{
+		e.preventDefault();
+		
+		const name = document.getElementById("nameInput").value.trim();
+		const msg = document.getElementById("msgInput").value.trim();
+		
+	//	if (!name || !msg) return;
+		
+		const payload = {
+			name,
+			message: msg
+		};
+		
+		tw.showAlert(JSON.stringify(payload));
+		
+		tw.sendData(JSON.stringify(payload));
+	});
 </script>
 </body>
 </html>
