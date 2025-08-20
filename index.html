@@ -358,13 +358,13 @@ input[type=radio], .tab-content
 		
 		const res = JSON.stringify(payload);
 		
-		window.Telegram.WebApp.showAlert(res);
+//		window.Telegram.WebApp.showAlert(res);
 		
-		window.Telegram.WebApp.sendData(res);
+		tg.sendData(res);
 		
-		Telegram.WebApp.sendData("example");
+		tg.close();
 		
-		window.Telegram.WebApp.close();
+		tg.console.log(res);
 	});
 </script>
 </body>
