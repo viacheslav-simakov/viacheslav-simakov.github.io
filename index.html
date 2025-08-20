@@ -289,18 +289,18 @@ input[type=radio], .tab-content
 <script src="/js/table.js"><!-- работа с таблицами --></script>
 <script>
 //	Web-API
-	let tw = window.Telegram.WebApp;
+	let tg = window.Telegram.WebApp;
 //	Инициализируем WebApp
-	tw.ready();
+	tg.ready();
 //	во весь экран
-	tw.expand();
+	tg.expand();
 //	alert("Hello World!");
 //	Получаем данные из initDataUnsafe
-	const initData = tw.initDataUnsafe;
+	const initData = tg.initDataUnsafe;
 //	информация о пользователе
 	const user = initData.user;
 
-	tw.showAlert(user.username);
+	tg.showAlert(user.username);
 
 	console.log(initData);
 //	Проверяем, что данные были получены
@@ -356,9 +356,11 @@ input[type=radio], .tab-content
 			message: msg
 		};
 		
-		tw.showAlert(JSON.stringify(payload));
+		const res = JSON.stringify(payload);
 		
-		tw.sendData(JSON.stringify(payload));
+		tg.showAlert(res);
+		
+		tg.sendData(res);
 	});
 </script>
 </body>
