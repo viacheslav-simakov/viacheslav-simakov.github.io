@@ -44,8 +44,100 @@ body
 </style>
 </head>
 <body>
-Привет!
-<!-- Главная кнопка -->
+<!-- :: ЗАБОЛЕВАНИЯ :: -------------------------------------------------->
+<div id="rheumatology" class="tab-content">
+	<table class="db-table compact" style="width: 100%;">
+		<!--caption>Список ревматологических заболеваний</caption-->
+		<thead>
+		<tr>
+			<th>№</th><th></th><th>Диагноз</th><th>Информация</th>
+		</tr>
+		</thead>
+	<tbody>
+	<tr>
+		<td>1</td>
+		<td><input type="checkbox" name="rheumatology#5"  value="5"/></td>
+		<td>Аксиальный спондилоартрит тяжелый</td>
+		<td>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</td>
+	</tr>
+	<tr>
+		<td>2</td>
+		<td><input type="checkbox" name="rheumatology#2"  value="2"/></td>
+		<td>Анкилозирующий спондилит</td>
+		<td> </td>
+	</tr>
+	<tr>
+		<td>3</td>
+		<td><input type="checkbox" name="rheumatology#3"  value="3"/></td>
+		<td>Болезнь Бехчета, интестинальная форма</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>4</td>
+		<td><input type="checkbox" name="rheumatology#12"  value="12"/></td>
+		<td>Болезнь Стилла</td>
+		<td>Активная фаза</td>
+	</tr>
+	<tr>
+		<td>5</td>
+		<td><input type="checkbox" name="rheumatology#8"  value="8"/></td>
+		<td>Гигантоклеточный артериит</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6</td>
+		<td><input type="checkbox" name="rheumatology#9"  value="9"/></td>
+		<td>Гранулематоз с полиангиитом</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>7</td>
+		<td><input type="checkbox" name="rheumatology#10"  value="10"/></td>
+		<td>Микроскопический полиангиит</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8</td>
+		<td><input type="checkbox" name="rheumatology#13"  value="13"/></td>
+		<td>Острый подагрический артрит</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>9</td>
+		<td><input type="checkbox" name="rheumatology#11"  value="11"/></td>
+		<td>Периодическая болезнь</td>
+		<td>Аутовоспалительные синдромы периодической лихорадки:<br>• криопирин-ассоциированный периодический синдром (CAPS) у взрослых и детей в возрасте 2 лет и старше, включая:<br>- семейный холодовой аутовоспалительный синдром (FCAS)/семейная холодовая крапивница (FCU);<br>- синдром Макла-Уэльса (MWS);<br>- младенческое мультисистемное воспалительное заболевание (NOMID)/хронический младенческий неврологический кожно-артикулярный синдром (CINCA);<br>• периодический синдром, ассоциированный с рецепторами к фактору некроза опухоли (TRAPS);<br>• гипер-IgD-синдром/синдром дефицита мевалонат-киназы (HIDS/MKD);<br>• семейная средиземноморская лихорадка (FMF) </td>
+	</tr>
+	<tr>
+		<td>10</td>
+		<td><input type="checkbox" name="rheumatology#6"  value="6"/></td>
+		<td>Псориатический артрит</td>
+		<td> </td>
+	</tr>
+	<tr>
+		<td>11</td>
+		<td><input type="checkbox" name="rheumatology#1"  value="1"/></td>
+		<td>Ревматоидный артрит</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>12</td>
+		<td><input type="checkbox" name="rheumatology#4"  value="4"/></td>
+		<td>Системная красная волчанка</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>13</td>
+		<td><input type="checkbox" name="rheumatology#14"  value="14"/></td>
+		<td>Эозинофильный гранулематоз с полиангиитом</td>
+		<td></td>
+	</tr>
+	</tbody>
+	</table>
+</div>
+<!--
+	Секция JavaScript
+-->
 <script>
 //	Web-API
 	let tg = window.Telegram.WebApp;
