@@ -24,9 +24,7 @@ table.db-table
 table.db-table caption
 {
 	font-weight:		bold;
-
 	caption-side:		top;
-	
 	margin:				0;
 	padding:			1rem;
 }
@@ -38,12 +36,7 @@ table.db-table td
 }
 table.db-table tr
 {
-	cursor:				pointer;
-}
-/*	выделение строки при наведении курсора */
-table.db-table tr:hover
-{
-	background-color:	hsla(215,80%,90%,0.5);
+	0cursor:			pointer;
 }
 /*	содержание ячеек таблиц */
 table.db-table th,
@@ -65,7 +58,6 @@ table.db-table th
 	padding-top:		1rem;
 	padding-bottom:		1rem;
 	
-	0border-top:			var(--border-table);
 	border-bottom:		var(--border-table);
 	
 	background:			hsl(0,0%,90%);
