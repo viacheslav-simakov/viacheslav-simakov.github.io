@@ -150,9 +150,9 @@ body
 //	Главная кнопка
 	tg.MainButton.text = "Готово";
 	tg.MainButton.show();
-	
-	tg.SettingsButton.text = "Опции";
-	tg.SettingsButton.show();
+//	Локальное хранилище
+	tg.showAlert(tg.DeviceStorage.getItem('sam'));
+	tg.DeviceStorage.setItem('sam', 1);
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
