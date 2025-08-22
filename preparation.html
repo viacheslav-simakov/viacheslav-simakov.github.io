@@ -151,7 +151,7 @@ body
 	tg.MainButton.text = "Готово";
 	tg.MainButton.show();
 //	Локальное хранилище
-	console.log(tg.DeviceStorage.getItem('sam'));
+	tg.showAlert(tg.DeviceStorage.getItem('sam').value);
 	tg.DeviceStorage.setItem('sam', 1);
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
