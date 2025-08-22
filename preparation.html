@@ -150,6 +150,36 @@ body
 //	Главная кнопка
 	tg.MainButton.text = "Готово";
 	tg.MainButton.show();
+/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+//
+//	Коллекция всех таблиц с элементами выбора пользователя
+const tbody = document.querySelector("[class='db-table compact'] > tbody");
+//
+//	обработчик событий: https://learn.javascript.ru/event-delegation
+//
+tbody.addEventListener('click', function(event) {
+	//
+	//	чек-бокс?
+	if (event.target.tagName != "INPUT") {
+		//
+		//	родитель строка таблицы?
+		if (event.target.parentNode.tagName == 'TR') {
+			//
+			//	найти чек-бокс
+			let check = event.target.parentNode.querySelector("input[type='checkbox']");
+			//
+			//	изменить состояние
+			check.checked = !check.checked;
+		} else {
+			//
+			alert('Ошибка в поиске чек-бокса');
+		}
+	}
+});
 </script>
 </body>
 </html>
