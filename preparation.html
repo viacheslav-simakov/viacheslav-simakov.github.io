@@ -47,6 +47,15 @@ body
 Привет!
 <!-- Главная кнопка -->
 <script>
+//	Web-API
+	let tg = window.Telegram.WebApp;
+//	Инициализируем WebApp
+	tg.ready();
+//	во весь экран
+	tg.expand();
+//	Получаем информацию о пользователе
+	const user = tg.initDataUnsafe.user;
+//	Главная кнопка
 	tg.MainButton.text = "Готово";
 	tg.MainButton.show();
 </script>
