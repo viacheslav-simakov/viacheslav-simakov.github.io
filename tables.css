@@ -1,0 +1,86 @@
+/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	ТАБЛИЦЫ
+	
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+:root
+{
+	--border-table:		1px solid hsl(0,0%,80%);
+}
+/*	Таблица */
+table.db-table
+{
+	display: 			table;
+	table-layout:		fixed;
+	width:				100%;
+
+	font-family:		var(--font-family);
+	font-size:			14px;
+	line-height:		1.5;
+	
+	border-collapse:	collapse;
+}
+/*	Название таблицы */
+table.db-table caption
+{
+	font-weight:		bold;
+
+	caption-side:		top;
+	
+	margin:				0;
+	padding:			1rem;
+}
+table.db-table caption,
+table.db-table th,
+table.db-table td
+{
+	text-align:			left;
+}
+table.db-table tr
+{
+	cursor:				pointer;
+}
+/*	выделение строки при наведении курсора */
+table.db-table tr:hover
+{
+	background-color:	hsla(215,80%,90%,0.5);
+}
+/*	содержание ячеек таблиц */
+table.db-table th,
+table.db-table td
+{
+	font-family:		inherit;
+	font-size:			inherit;
+	vertical-align:		text-top;
+
+	margin:				0;
+	padding:			1rex;
+}
+/*	Заголовки столбцов */
+table.db-table th
+{
+	font-weight:		bold;
+	white-space:		nowrap;
+	
+	padding-top:		1rem;
+	padding-bottom:		1rem;
+	
+	0border-top:			var(--border-table);
+	border-bottom:		var(--border-table);
+	
+	background:			hsl(0,0%,90%);
+}
+/*	Текст в ячейке */
+table.db-table td
+{
+	font-weight:		normal;
+	border-bottom:		var(--border-table);
+	color:				#000;
+}
+/*	https://stackoverflow.com/questions/15675097/style-the-first-td-column-of-a-table-differently */
+table.db-table td:nth-child(1),
+table.db-table th:nth-child(1)
+{  
+	padding-left:		1rem;
+	border-right:		var(--border-table);
+}
