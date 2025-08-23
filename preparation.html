@@ -138,7 +138,7 @@ body
 
 	<!-- ФОРМА -->
 	<form id="dataForm">
-	
+		<p><input type="checkbox" id="scale" name="myCheck" checked/></p>
 		<p><input id="setButton" type="button" value="Set"/></p>
 		<p><input id="getButton" type="button" value="Get"/></p>
 
@@ -197,6 +197,7 @@ tbody.addEventListener('click', function(event) {
 <script>
 	const setBnt = document.getElementById("setButton");
 	const getBnt = document.getElementById("getButton");
+	const chk = document.getElementById("scale");
 	
 	setBnt.addEventListener('click', function(event) {
 		alert("set");
@@ -212,6 +213,7 @@ tbody.addEventListener('click', function(event) {
 			
 			// Парсим из строки нужный нам объект
 //			val = JSON.parse(result);
+			chk.value = result;
 			alert(JSON.parse(result));
 		});
 	});
