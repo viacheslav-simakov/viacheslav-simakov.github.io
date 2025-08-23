@@ -160,8 +160,8 @@ body
 	tg.MainButton.text = "Готово";
 	tg.MainButton.show();
 //	Локальное хранилище
-	tg.showAlert(tg.DeviceStorage.getItem('sam'));
-	tg.DeviceStorage.setItem('sam', 1);
+//	tg.showAlert(tg.DeviceStorage.getItem('sam'));
+//	tg.DeviceStorage.setItem('sam', 1);
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
@@ -200,9 +200,11 @@ tbody.addEventListener('click', function(event) {
 	
 	setBnt.addEventListener('click', function(event) {
 		alert("set");
+		tg.DeviceStorage.setItem('sam', 1);
 	});
 	getBnt.addEventListener('click', function(event) {
-		alert("Get");
+//		alert("Get");
+		alert(tg.DeviceStorage.getItem('sam'));
 	});
 </script>
 </body>
