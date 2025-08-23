@@ -202,15 +202,20 @@ tbody.addEventListener('click', function(event) {
 		alert("set");
 		tg.DeviceStorage.setItem("sam", "1");
 	});
+//
 //	Читать из хранилища	"Get"
+//	https://anatolykulikov.ru/article/telegram-cloud-storage/
+//
 	getBnt.addEventListener('click', function(event) {
+		let val;
 		tg.DeviceStorage.getItem("sam", (error, result) => {
 			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
 			
 			// Парсим из строки нужный нам объект
-			console.log(result);
-			console.log(JSON.parse(result));
+			val = result;
+//			console.log(JSON.parse(result));
 		});
+		console.log("val = " + val);
 	});
 </script>
 </body>
