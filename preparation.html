@@ -208,8 +208,13 @@ tbody.addEventListener('click', function(event) {
 		alert(val);
 		console.log("val=");
 		console.log(val);
-		console.log(JSON.parse(val));
 		console.log("=");
+		
+		tg.DeviceStorage.getItem("sam", val);
+		alert(val);
+		console.log("val#");
+		console.log(val);
+		console.log("#");
 	});
 </script>
 </body>
