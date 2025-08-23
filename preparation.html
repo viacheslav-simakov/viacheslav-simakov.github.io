@@ -202,22 +202,15 @@ tbody.addEventListener('click', function(event) {
 		alert("set");
 		tg.DeviceStorage.setItem("sam", "1");
 	});
-//	Читать из хранилища	
+//	Читать из хранилища	"Get"
 	getBnt.addEventListener('click', function(event) {
-//		alert("Get");
 		tg.DeviceStorage.getItem("sam", (error, result) => {
 			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
 			
 			// Парсим из строки нужный нам объект
-			alert(JSON.parse(result));
+			console.log(result);
+			console.log(JSON.parse(result));
 		});
-		
-		let val = tg.DeviceStorage.getItem("sam");
-		alert(val);
-		console.log("val=");
-		console.log(val);
-		console.log("=");
-		
 	});
 </script>
 </body>
