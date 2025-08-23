@@ -201,21 +201,21 @@ tbody.addEventListener('click', function(event) {
 	
 	setBnt.addEventListener('click', function(event) {
 		alert("set");
-		tg.DeviceStorage.setItem("sam", "true");
+		tg.DeviceStorage.setItem(chk.name, chk.checked);
 	});
 //
 //	Читать из хранилища	"Get"
 //	https://anatolykulikov.ru/article/telegram-cloud-storage/
 //
 	getBnt.addEventListener('click', function(event) {
-		tg.DeviceStorage.getItem("sam", (error, result) => {
+		tg.DeviceStorage.getItem(chk.name, (error, result) => {
 			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
 			
 			// Парсим из строки нужный нам объект
 //			val = JSON.parse(result);
 			alert(chk.checked);
 			chk.checked = result;
-			alert(JSON.parse(result));
+//			alert(JSON.parse(result));
 		});
 	});
 </script>
