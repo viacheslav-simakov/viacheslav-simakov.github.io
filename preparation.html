@@ -204,12 +204,11 @@ tbody.addEventListener('click', function(event) {
 	});
 	getBnt.addEventListener('click', function(event) {
 //		alert("Get");
-		let x;
-		let val = tg.DeviceStorage.getItem("sam", x);
-		alert(val, x);
+		let val = tg.DeviceStorage.getItem("sam");
+		alert(val);
 		console.log("val=");
 		console.log(val);
-		console.log(x);
+		console.log(JSON.parse(val));
 		console.log("=");
 	});
 </script>
