@@ -204,7 +204,8 @@ tbody.addEventListener('click', function(event) {
 	});
 	getBnt.addEventListener('click', function(event) {
 //		alert("Get");
-		alert(tg.DeviceStorage.getItem("sam"));
+		alert(tg.DeviceStorage.getItem("sam").value);
+		console.log(tg.DeviceStorage.getItem("sam"));
 	});
 </script>
 </body>
