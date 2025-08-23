@@ -201,7 +201,7 @@ tbody.addEventListener('click', function(event) {
 	
 	setBnt.addEventListener('click', function(event) {
 		alert("set");
-		tg.DeviceStorage.setItem(chk.name, chk.checked);
+		tg.DeviceStorage.setItem(chk.name, JSON.stringify(chk.checked));
 	});
 //
 //	Читать из хранилища	"Get"
