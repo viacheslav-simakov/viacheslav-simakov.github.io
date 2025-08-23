@@ -200,14 +200,14 @@ tbody.addEventListener('click', function(event) {
 	
 	setBnt.addEventListener('click', function(event) {
 		alert("set");
-		tg.DeviceStorage.setItem("sam", "1");
+		tg.DeviceStorage.setItem("sam", "Слава");
 	});
 //
 //	Читать из хранилища	"Get"
 //	https://anatolykulikov.ru/article/telegram-cloud-storage/
 //
 	getBnt.addEventListener('click', function(event) {
-		let val;
+		var val = "unknow";
 		tg.DeviceStorage.getItem("sam", (error, result) => {
 			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
 			
