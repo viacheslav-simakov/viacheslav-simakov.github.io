@@ -213,7 +213,8 @@ tbody.addEventListener('click', function(event) {
 			
 			// Парсим из строки нужный нам объект
 //			val = JSON.parse(result);
-			chk.value = result;
+			alert(chk.checked);
+			chk.checked = result;
 			alert(JSON.parse(result));
 		});
 	});
