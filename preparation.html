@@ -135,6 +135,15 @@ body
 	</tbody>
 	</table>
 </div>
+
+	<!-- ФОРМА -->
+	<form id="dataForm">
+	
+		<p><input id="setButton" type="button" value="Set"/></p>
+		<p><input id="getButton" type="button" value="Get"/></p>
+
+	</form>
+
 <!--
 	Секция JavaScript
 -->
@@ -183,6 +192,18 @@ tbody.addEventListener('click', function(event) {
 		}
 	}
 });
+</script>
+<!-- Кнопки -->
+<script>
+	const setBnt = document.getElementById("setButton");
+	const getBnt = document.getElementById("getButton");
+	
+	setBnt.addEventListener('click', function(event) {
+		alert("set");
+	});
+	getBnt.addEventListener('click', function(event) {
+		alert("Get");
+	});
 </script>
 </body>
 </html>
