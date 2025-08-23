@@ -210,11 +210,13 @@ tbody.addEventListener('click', function(event) {
 		console.log(val);
 		console.log("=");
 		
-		tg.DeviceStorage.getItem("sam", val);
-		alert(val);
-		console.log("val#");
-		console.log(val);
-		console.log("#");
+		let {yyy, xxx} = tg.DeviceStorage.getItem("sam");
+		alert(yyy);
+		alert(xxx);
+		console.log("###");
+		console.log(yyy);
+		console.log(xxx);
+		console.log("###");
 	});
 </script>
 </body>
