@@ -150,6 +150,8 @@ body
 <script>
 //	Web-API
 	let tg = window.Telegram.WebApp;
+//	Хранилище данных
+	let ds = tg.DeviceStorage;
 //	Инициализируем WebApp
 	tg.ready();
 //	во весь экран
@@ -201,14 +203,14 @@ tbody.addEventListener('click', function(event) {
 	
 	setBnt.addEventListener('click', function(event) {
 		alert("set");
-		tg.DeviceStorage.setItem(chk.name, JSON.stringify(chk.checked));
+		ds.setItem(chk.name, JSON.stringify(chk.checked));
 	});
 //
 //	Читать из хранилища	"Get"
 //	https://anatolykulikov.ru/article/telegram-cloud-storage/
 //
 	getBnt.addEventListener('click', function(event) {
-		tg.DeviceStorage.getItem(chk.name, (error, result) => {
+		ds.getItem(chk.name, (error, result) => {
 			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
 			if (result !== null) {
 				alert(result);			
