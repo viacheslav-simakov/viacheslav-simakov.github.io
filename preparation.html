@@ -234,9 +234,19 @@ const checkbox = document.getElementById('rheumatology').querySelectorAll('input
 //
 //	цикл по всем флажкам
 for (let i = 0; i < checkbox.length; i++) {
+	//
+	//	Восстановить значения флажков (элементов формы)
+	ds.getItem(checkbox[i].name, (error, result) => {
+		//
+		// Обработка ошибок
+		if (result !== null) {
+			//
+			// Парсим из строки нужный нам объект
+			checkbox[i].checked = JSON.parse(result);
+		}
+	});
 	console.log(checkbox[i].name);
 };
-
 </script>
 </body>
 </html>
