@@ -210,7 +210,8 @@ tbody.addEventListener('click', function(event) {
 		ds.getItem(chk.name, (error, result) => {
 			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
 			if (result !== null) {
-				alert(result);			
+				alert(chk.name);
+				alert(result);
 				// Парсим из строки нужный нам объект
 //				val = JSON.parse(result);
 				alert(chk.checked);
