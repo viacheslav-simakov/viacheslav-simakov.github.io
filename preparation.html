@@ -150,7 +150,7 @@ body
 <script>
 //	Web-API
 	let tg = window.Telegram.WebApp;
-//	Хранилище данных
+//	Локальное хранилище данных
 	let ds = tg.DeviceStorage;
 //	Инициализируем WebApp
 	tg.ready();
@@ -161,9 +161,6 @@ body
 //	Главная кнопка
 	tg.MainButton.text = "Готово";
 	tg.MainButton.show();
-//	Локальное хранилище
-//	tg.showAlert(tg.DeviceStorage.getItem('sam'));
-//	tg.DeviceStorage.setItem('sam', 1);
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
