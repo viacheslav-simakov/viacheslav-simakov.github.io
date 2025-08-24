@@ -210,7 +210,8 @@ tbody.addEventListener('click', function(event) {
 	getBnt.addEventListener('click', function(event) {
 		tg.DeviceStorage.getItem("chk.name000", (error, result) => {
 			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
-			alert(error);			
+			alert(error);
+			alert(result);			
 			// Парсим из строки нужный нам объект
 //			val = JSON.parse(result);
 			alert(chk.checked);
