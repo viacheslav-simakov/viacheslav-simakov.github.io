@@ -199,8 +199,10 @@ tbody.addEventListener('click', function(event) {
 	const chk = document.getElementById("scale");
 	
 	setBnt.addEventListener('click', function(event) {
-		alert("set");
-		ds.setItem(chk.name, JSON.stringify(chk.checked));
+		let key = JSON.stringify(chk.name);
+		let val = JSON.stringify(chk.checked);
+		ds.setItem(key, val);
+		alert(key + '=' + val);
 	});
 //
 //	Читать из хранилища	"Get"
@@ -210,12 +212,14 @@ tbody.addEventListener('click', function(event) {
 		ds.getItem(chk.name, (error, result) => {
 			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
 			if (result !== null) {
+				//	значение
+				let val = JSON.parse(result);
 //				console.log(result);
 				alert(chk.checked);
-				alert(result);
+				alert(val);
 				// Парсим из строки нужный нам объект
 //				val = JSON.parse(result);
-				chk.checked = result;
+				chk.checked = val;
 				alert(chk.checked);
 			}
 //			alert(JSON.parse(result));
