@@ -208,9 +208,9 @@ tbody.addEventListener('click', function(event) {
 //	https://anatolykulikov.ru/article/telegram-cloud-storage/
 //
 	getBnt.addEventListener('click', function(event) {
-		tg.DeviceStorage.getItem(chk.name, (error, result) => {
+		tg.DeviceStorage.getItem("chk.name", (error, result) => {
 			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
-			
+			alert(error);			
 			// Парсим из строки нужный нам объект
 //			val = JSON.parse(result);
 			alert(chk.checked);
@@ -224,8 +224,11 @@ tbody.addEventListener('click', function(event) {
 //
 //	Коллекция всех флажков (checkbox) на странице
 const checkbox = document.getElementById('rheumatology').querySelectorAll('input[type="checkbox"]');
-
-console.log(checkboxes);
+//
+//	цикл по всем флажкам
+for (let i = 0; i < checkbox.length; i++) {
+	console.log(checkbox[i].name);
+};
 
 </script>
 </body>
