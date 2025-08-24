@@ -249,8 +249,8 @@ for (let i = 0; i < checkbox.length; i++) {
 	//
 	//	Сохранить значение флажка
 	checkbox[i].addEventListener('click', function(event) {
-		let key = JSON.stringify(chk.name);
-		let val = JSON.stringify(chk.checked);
+		let key = JSON.stringify(checkbox[i].name);
+		let val = JSON.stringify(checkbox[i].checked);
 		ds.setItem(key, val);
 //		alert(key + '=' + val);
 	});
