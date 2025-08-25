@@ -236,7 +236,7 @@ const checkbox = document.getElementById('rheumatology').querySelectorAll('input
 for (let i = 0; i < checkbox.length; i++) {
 	//
 	//	Восстановить значения флажков (элементов формы)
-	ds.getItem(checkbox[i].name, (error, result) => {
+	ds.getItem(JSON.stringify(checkbox[i].name), (error, result) => {
 		//
 		// Обработка ошибок
 		if (result !== null) {
