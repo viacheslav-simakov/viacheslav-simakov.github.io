@@ -1,0 +1,261 @@
+<html>
+<html lang="ru-RU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<!--meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<title>Электронный ассистент врача-ревматолога</title-->
+<link href="main.css" rel="stylesheet" type="text/css"/>
+<link href="tables.css" rel="stylesheet" type="text/css"/>
+<!-- Google font's -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+<!--
+	https://core.telegram.org/bots/webapps#initializing-mini-apps
+-->
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+<style>
+body
+{
+	display:		flex;
+	color:			var(--tg-theme-text-color);
+	background:		var(--tg-theme-bg-color);
+	align-items:	center;
+	flex-direction:	column;
+	font-size:		12px;
+}
+.hint
+{
+	color: var(--tg-theme-hint-color);
+}
+.link
+{
+	color: var(--tg-theme-link-color);
+}
+.button{
+	background: var(--tg-theme-button-color);
+	color: var(--tg-theme-button-text-color);
+	border: none;
+	font-size: 20px;
+}
+</style>
+</head>
+<body>
+<!-- :: ЗАБОЛЕВАНИЯ :: -------------------------------------------------->
+<div id="rheumatology" class="tab-content">
+	<table class="db-table compact" style="width: 100%;">
+		<!--caption>Список ревматологических заболеваний</caption-->
+		<thead>
+		<tr>
+			<th>№</th><th></th><th>Диагноз</th><th>Информация</th>
+		</tr>
+		</thead>
+	<tbody>
+	<tr>
+		<td>1</td>
+		<td><input type="checkbox" name="rheumatology#5"  value="5"/></td>
+		<td>Аксиальный спондилоартрит тяжелый</td>
+		<td>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</td>
+	</tr>
+	<tr>
+		<td>2</td>
+		<td><input type="checkbox" name="rheumatology#2"  value="2"/></td>
+		<td>Анкилозирующий спондилит</td>
+		<td> </td>
+	</tr>
+	<tr>
+		<td>3</td>
+		<td><input type="checkbox" name="rheumatology#3"  value="3"/></td>
+		<td>Болезнь Бехчета, интестинальная форма</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>4</td>
+		<td><input type="checkbox" name="rheumatology#12"  value="12"/></td>
+		<td>Болезнь Стилла</td>
+		<td>Активная фаза</td>
+	</tr>
+	<tr>
+		<td>5</td>
+		<td><input type="checkbox" name="rheumatology#8"  value="8"/></td>
+		<td>Гигантоклеточный артериит</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6</td>
+		<td><input type="checkbox" name="rheumatology#9"  value="9"/></td>
+		<td>Гранулематоз с полиангиитом</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>7</td>
+		<td><input type="checkbox" name="rheumatology#10"  value="10"/></td>
+		<td>Микроскопический полиангиит</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8</td>
+		<td><input type="checkbox" name="rheumatology#13"  value="13"/></td>
+		<td>Острый подагрический артрит</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>9</td>
+		<td><input type="checkbox" name="rheumatology#11"  value="11"/></td>
+		<td>Периодическая болезнь</td>
+		<td>Аутовоспалительные синдромы периодической лихорадки:<br>• криопирин-ассоциированный периодический синдром (CAPS) у взрослых и детей в возрасте 2 лет и старше, включая:<br>- семейный холодовой аутовоспалительный синдром (FCAS)/семейная холодовая крапивница (FCU);<br>- синдром Макла-Уэльса (MWS);<br>- младенческое мультисистемное воспалительное заболевание (NOMID)/хронический младенческий неврологический кожно-артикулярный синдром (CINCA);<br>• периодический синдром, ассоциированный с рецепторами к фактору некроза опухоли (TRAPS);<br>• гипер-IgD-синдром/синдром дефицита мевалонат-киназы (HIDS/MKD);<br>• семейная средиземноморская лихорадка (FMF) </td>
+	</tr>
+	<tr>
+		<td>10</td>
+		<td><input type="checkbox" name="rheumatology#6"  value="6"/></td>
+		<td>Псориатический артрит</td>
+		<td> </td>
+	</tr>
+	<tr>
+		<td>11</td>
+		<td><input type="checkbox" name="rheumatology#1"  value="1"/></td>
+		<td>Ревматоидный артрит</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>12</td>
+		<td><input type="checkbox" name="rheumatology#4"  value="4"/></td>
+		<td>Системная красная волчанка</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>13</td>
+		<td><input type="checkbox" name="rheumatology#14"  value="14"/></td>
+		<td>Эозинофильный гранулематоз с полиангиитом</td>
+		<td></td>
+	</tr>
+	</tbody>
+	</table>
+</div>
+
+	<!-- ФОРМА -->
+	<form id="dataForm">
+		<p><input type="checkbox" id="scale" name="myCheck" checked/></p>
+		<p><input id="setButton" type="button" value="Set"/></p>
+		<p><input id="getButton" type="button" value="Get"/></p>
+
+	</form>
+
+<!--
+	Секция JavaScript
+-->
+<script>
+//	Web-API
+	let tg = window.Telegram.WebApp;
+//	Локальное хранилище данных
+	let ds = tg.DeviceStorage;
+//	Инициализируем WebApp
+	tg.ready();
+//	во весь экран
+	tg.expand();
+//	Получаем информацию о пользователе
+	const user = tg.initDataUnsafe.user;
+//	Главная кнопка
+	tg.MainButton.text = "Готово";
+	tg.MainButton.show();
+/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+//
+//	Коллекция всех таблиц с элементами выбора пользователя
+const tbody = document.querySelector("[class='db-table compact'] > tbody");
+//
+//	обработчик событий: https://learn.javascript.ru/event-delegation
+//
+tbody.addEventListener('click', function(event) {
+	//
+	//	чек-бокс?
+	if (event.target.tagName != "INPUT") {
+		//
+		//	родитель строка таблицы?
+		if (event.target.parentNode.tagName == 'TR') {
+			//
+			//	найти чек-бокс
+			let check = event.target.parentNode.querySelector("input[type='checkbox']");
+			//
+			//	изменить состояние
+			check.checked = !check.checked;
+		} else {
+			//
+			alert('Ошибка в поиске чек-бокса');
+		}
+	}
+});
+</script>
+<!-- Кнопки -->
+<script>
+	const setBnt = document.getElementById("setButton");
+	const getBnt = document.getElementById("getButton");
+	const chk = document.getElementById("scale");
+	
+	setBnt.addEventListener('click', function(event) {
+		let key = JSON.stringify(chk.name);
+		let val = JSON.stringify(chk.checked);
+		ds.setItem(key, val);
+		alert(key + '=' + val);
+	});
+//
+//	Читать из хранилища	"Get"
+//	https://anatolykulikov.ru/article/telegram-cloud-storage/
+//
+	getBnt.addEventListener('click', function(event) {
+		ds.getItem(chk.name, (error, result) => {
+			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
+			if (result !== null) {
+				//	значение
+				let val = JSON.parse(result);
+//				console.log(result);
+				alert(chk.checked);
+				alert(val);
+				// Парсим из строки нужный нам объект
+//				val = JSON.parse(result);
+				chk.checked = val;
+				alert(chk.checked);
+			}
+//			alert(JSON.parse(result));
+		});
+	});
+</script>
+
+<script>
+//
+//	Коллекция всех флажков (checkbox) на странице
+const checkbox = document.getElementById('rheumatology').querySelectorAll('input[type="checkbox"]');
+//
+//	цикл по всем флажкам
+for (let i = 0; i < checkbox.length; i++) {
+	//
+	//	Восстановить значения флажков (элементов формы)
+	ds.getItem(JSON.stringify(checkbox[i].name), (error, result) => {
+		//
+		// Обработка ошибок
+		if (result !== null) {
+			//
+			// Парсим из строки нужный нам объект
+			checkbox[i].checked = JSON.parse(result);
+			console.log(i + '=' + checkbox[i].name);
+		}
+	});
+	console.log(checkbox[i].name);
+	//
+	//	Сохранить значение флажка
+	checkbox[i].addEventListener('click', function(event) {
+		let key = JSON.stringify(checkbox[i].name);
+		let val = JSON.stringify(checkbox[i].checked);
+		ds.setItem(key, val);
+		alert(key + '=' + val);
+	});
+};
+</script>
+</body>
+</html>
