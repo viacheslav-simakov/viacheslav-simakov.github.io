@@ -36,10 +36,10 @@ body
 	color: var(--tg-theme-link-color);
 }
 .button{
-	background:	var(--tg-theme-button-color);
-	color:		var(--tg-theme-button-text-color);
-	border:		none;
-	font-size:	20px;
+	background: var(--tg-theme-button-color);
+	color: var(--tg-theme-button-text-color);
+	border: none;
+	font-size: 20px;
 }
 </style>
 </head>
@@ -161,9 +161,11 @@ body
 //	Главная кнопка
 	tg.MainButton.text = "Готово";
 	tg.MainButton.show();
-	
-	document.title = "Пример";
-	tg.title = "Пример2";
+//
+//	Кнопка "Назад"
+	tg.BackButton.show();
+//
+	tg.setTitle("Препараты");
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
