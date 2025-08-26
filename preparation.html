@@ -162,7 +162,19 @@ body
 	tg.MainButton.text = "Готово";
 	tg.MainButton.show();
 	
-	tg.header = "Пример2";
+	tg.secondaryButton.mount();
+	if (secondaryButton.setParams.isAvailable()) {
+		secondaryButton.setParams({
+			backgroundColor: '#000000',
+			hasShineEffect: true,
+			isEnabled: true,
+			isLoaderVisible: true,
+			isVisible: true,
+			position: 'top',
+			text: 'My text',
+			textColor: '#ffffff'
+		});
+	}
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
