@@ -244,6 +244,9 @@ tbody.addEventListener('click', function(event) {
 			//
 			//	изменить состояние
 			check.checked = !check.checked;
+			//
+			//	сохранить состояние
+			ds.setItem(JSON.stringify(check.name), JSON.stringify(check.checked));
 		} else {
 			//
 			alert('Ошибка в поиске чек-бокса');
