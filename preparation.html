@@ -159,27 +159,12 @@ body
 //	Получаем информацию о пользователе
 	const user = tg.initDataUnsafe.user;
 //	Главная кнопка
-	tg.MainButton.text = "Готово";
+	tg.MainButton.setText("Вперед");
 	tg.MainButton.show();
-	
-//	tg.secondaryButton.mount();
-	tg.SecondaryButton.setText("Пример");
+//	Вторичная кнопка
+//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
+	tg.SecondaryButton.setText("Назад");
 	tg.SecondaryButton.show();
-
-/*	
-	if (secondaryButton.setParams.isAvailable()) {
-		secondaryButton.setParams({
-			backgroundColor: '#000000',
-			hasShineEffect: true,
-			isEnabled: true,
-			isLoaderVisible: true,
-			isVisible: true,
-			position: 'top',
-			text: 'My text',
-			textColor: '#ffffff'
-		});
-	}
-*/
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
