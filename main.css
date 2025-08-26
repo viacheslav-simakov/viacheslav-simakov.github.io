@@ -33,6 +33,10 @@
 body
 {
 /*	overflow: scroll;  Show scrollbars */
+	background:		var(--tg-theme-bg-color, #ffffff);
+	color:			var(--tg-theme-text-color, #000000);
+	font-family:	-apple-system, BlinkMacSystemFont, "Ubuntu", sans-serif;
+	
 	overflow: scroll;
 	padding: 0px;
 	0margin: 0px;
