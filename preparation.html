@@ -209,13 +209,10 @@ body
 	const user = tg.initDataUnsafe.user;
 //	Главная кнопка
 	tg.MainButton.setText("Вперед").show();
-//	tg.MainButton.show();
 //	Вторичная кнопка
 //	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
-	tg.SecondaryButton.setText("Назад");
-	tg.SecondaryButton.show();
+	tg.SecondaryButton.setText("Назад").show();
 //	Кнопка "Установки"
-	tg.SettingsButton.setText("Страница");
 	tg.SettingsButton.show();
 //	Add an event listener for when the SettingButton is clicked
 	tg.onEvent('settingsButtonClicked', () => {
