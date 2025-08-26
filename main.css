@@ -23,8 +23,8 @@
 :root
 {
 	--color-blue:							hsl(215,100%,50%);
-	--font-family:							"Ubuntu", sans-serif;
-	--font-size:							18px;
+	--font-family:							-apple-system, BlinkMacSystemFont, "Ubuntu", sans-serif;
+	--font-size:							12px;
 	--navigation-background-color: 			hsl(0,0%,95%);
 	--navigation-background-color-hover:	hsl(0,0%,90%);
 	--navigation-border-color: 				hsl(0,0%,75%);

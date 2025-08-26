@@ -67,7 +67,7 @@ table.db-table td
 {
 	font-weight:		normal;
 	border-bottom:		var(--border-table);
-	color:				#000;
+	color:				var(--tg-theme-text-color);
 }
 /*	https://stackoverflow.com/questions/15675097/style-the-first-td-column-of-a-table-differently */
 table.db-table td:nth-child(1),
