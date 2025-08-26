@@ -165,6 +165,14 @@ body
 //	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
 	tg.SecondaryButton.setText("Назад");
 	tg.SecondaryButton.show();
+//	Кнопка "Установки"
+	tg.SettingsButton.show();
+// Add an event listener for when the SettingButton is clicked
+	tg.onEvent('settingsButtonClicked', () => {
+		alert('Setting button clicked!');
+		// You can also send data back to the bot here
+		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
+	});	
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
