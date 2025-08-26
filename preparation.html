@@ -143,12 +143,61 @@ body
 		<p><input id="getButton" type="button" value="Get"/></p>
 
 	</form>
-
+<!-- ОКНО ДИАЛОГА "##--CONTAINER--##" -->
+<dialog id="dialog-##--CONTAINER--##">
+<!-- .: Форма :. -->
+<form autocomplete="off">
+<!-- id строки таблицы -->
+<input type="hidden" name="id">
+<!--:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<!-- Заголовок -->
+<div class="header">
+	<div class="title">
+		<!-- Название окна -->
+		<label name="title"><span>biotech</span>Лабораторные показатели</label>
+		<!-- кнопка "Закрыть окно" -->
+		<label name="close" class="button-close" title="Закрыть окно">close</label>
+	</div>
+</div>
+<!-- Содержание -->
+<div class="grid-form">
+	<!-- Показатель -->
+	<div class="group" style="margin-left: auto;">
+		<label>Показатель</label>
+	</div>
+	<div class="group">
+		<!-- поле ввода -->
+		<input type="text" class="text" name="name" value=""
+			required autofocus placeholder="текст ...">
+		<div><!-- символ проверки --></div>
+	</div>
+	<!-- Информация -->	
+	<div class="info">
+		<label>Информация</label>
+	</div>
+	<div>
+		<textarea name="info" class="info" rows="7" placeholder="текст ..."></textarea>
+	</div>
+	<!-- кнопки "submit" -->
+	<div style="grid-column: 2/3; display: flex; align-items: center;">
+		<!-- Левая кнопка -->
+		<div>
+			<button type="submit" name="submit-left" class="icon default">Left</button>
+		</div>
+		<!-- Правая кнопка -->
+		<div style="margin-left: auto;">
+			<button type="button" name="submit-right" class="icon">Right</button>
+		</div>
+	</div>
+</div>
+<!-- :: конец формы :: -->
+</form>
+</dialog>
 <!--
 	Секция JavaScript
 -->
 <script>
-//	Web-API
+//	Web-API: https://core.telegram.org/bots/webapps#events-available-for-mini-apps
 	let tg = window.Telegram.WebApp;
 //	Локальное хранилище данных
 	let ds = tg.DeviceStorage;
@@ -166,8 +215,9 @@ body
 	tg.SecondaryButton.setText("Назад");
 	tg.SecondaryButton.show();
 //	Кнопка "Установки"
+	tg.SettingsButton.setText("Страница");
 	tg.SettingsButton.show();
-// Add an event listener for when the SettingButton is clicked
+//	Add an event listener for when the SettingButton is clicked
 	tg.onEvent('settingsButtonClicked', () => {
 		alert('Setting button clicked!');
 		// You can also send data back to the bot here
