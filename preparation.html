@@ -66,14 +66,22 @@ body
 .rectangle li div
 {
 	color: red;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	float: left;
-	display: inline-block;
-	width: 10rem;
+	overflow:		hidden;
+	white-space:	nowrap;
+	text-overflow:	ellipsis;
+	float:			left;
+	display:		inline-block;
+	width:			10rem;
 }
-.rectangle li span
+.rectangle li summary
+{
+	color: 			green;
+	overflow:		hidden;
+	white-space:	nowrap;
+	text-overflow:	ellipsis;
+	width:			10rem;
+}
+.rectangle li span0
 {
 	float:			right;
 	display:		inline-flex;
@@ -88,14 +96,24 @@ body
 	<li><div>
 			<input type="checkbox" id="id-rheumatology#5" name="li-rheumatology#5"  value="5"/>
 			<label for="id-rheumatology#5">Аксиальный спондилоартрит тяжелый</label>
+			<details>
+			<summary>Пример
+			</summary>
+				<p>Скандинавская мифология — мифология древних скандинавов, часть древнегерманской мифологии.</p>
+			</details>
 		</div>
-		<span>info</span>		
 	</li>
 	<li>
 		<div>
 			<input type="checkbox" id="id-rheumatology#6" name="li-rheumatology#6"  value="6"/>
 			<label for="id-rheumatology#6">Болезнь Бехчета, интестинальная форма</label>
 		</div>
+	</li>
+	<li>
+	<details>
+		<summary>Покажи-скрой меня длинное-длинное название</summary>
+		<p>Скандинавская мифология — мифология древних скандинавов, часть древнегерманской мифологии.</p>
+	</details>
 	</li>
 </ol>
 
