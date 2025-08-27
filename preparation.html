@@ -40,9 +40,10 @@ div.flex-box
 	column-gap:			5px;
 	margin-bottom:		1rem;
 }
-details {
+details
+{
 	border:			1px solid #aaaaaa;
-	border-radius:	8px;
+	border-radius:	0px 8px 8px 0px;
 	overflow:		hidden;
 	padding:		0.5rem 0.5rem 0;
 }
@@ -52,13 +53,9 @@ summary
 	padding:	0.5rem;
 	margin:		-0.5rem -0.5rem 0px;
 }
-details[open]
+details:open > summary
 {
-	padding: 0.5em;
-}
-details:open > summary {
 	border-bottom:		1px solid #aaaaaa;
-	margin-bottom:		0.5rem;
 	background-color:	#ccccff;
 }
 .item-checkbox
@@ -70,12 +67,12 @@ details:open > summary {
 	font-size:		var(--font-size);
 	color:			black;
 	border:			1px solid black;
-	border-radius:	8px;
+	border-radius:	8px 0px 0px 8px;
 	padding:		0.5rem;
-	margin-right:	1rex;
+	0margin-right:	1rex;
 	display:		inline-block;
-	width:			2rem;
-	text-align:		center;
+	width:			4rex;
+	text-align:		right;
 }
 .item-checkbox:checked ~ .item-label
 {
