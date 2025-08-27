@@ -27,26 +27,12 @@ body
 	flex-direction:	column;
 	font-size:		12px;
 }
-.hint
-{
-	color: var(--tg-theme-hint-color);
-}
-.link
-{
-	color: var(--tg-theme-link-color);
-}
-.button{
-	background:	var(--tg-theme-button-color);
-	color:		var(--tg-theme-button-text-color);
-	border:		none;
-	font-size:	20px;
-}
 .rectangle
 {
 	padding: 		2rem;
 	font-size:		18px;
 	0width:			100%;
-	width:			15rem;
+	width:			25rem;
 }
 .rectangle div2
 {
@@ -63,15 +49,14 @@ body
 	padding:		.4rem .4rem .4rem .8rem;
 	margin:			.5rem 0 .5rem 2.5rem;
 }
-.rectangle li div
+.rectangle li div.reduced
 {
-	color: red;
+	color: 			red;
 	overflow:		hidden;
 	white-space:	nowrap;
 	text-overflow:	ellipsis;
 	float:			left;
-	display:		inline-block;
-	width:			10rem;
+	0width:			50rem;
 }
 .rectangle li summary
 {
@@ -79,41 +64,133 @@ body
 	overflow:		hidden;
 	white-space:	nowrap;
 	text-overflow:	ellipsis;
-	width:			10rem;
+	0width:			10rem;
 }
-.rectangle li span0
+.rectangle li span
 {
 	float:			right;
-	display:		inline-flex;
+	display:		inline-block;
 	font-family:	"Material Symbols Outlined";
     font-style:		normal;
     font-size:		32px; /* Adjust as needed */
+	vertical-align: baseline;
+}
+.spoiler-container
+{
+	font-size: 20px;
+}
+
+ /* Hide the actual checkbox input */
+  .spoiler-checkbox {
+    display: none;
+  }
+
+  /* Style for the spoiler content when hidden */
+  .spoiler-content {
+    display: none; /* Initially hide the content */
+    background-color: #eee;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+  }
+
+  /* Style for the label (the clickable part) */
+  .spoiler-label {
+    cursor: pointer;
+    font-weight: bold;
+    color: blue;
+	overflow:		hidden;
+	white-space:	nowrap;
+	text-overflow:	ellipsis;
+	width: 5rem;
+  }
+
+  /* Show the content when the checkbox is checked */
+  .spoiler-checkbox:checked + .spoiler-label + .spoiler-content {
+    0display: block;
+    display: flex;
+	overflow-wrap: anywhere;
+	color: red;
+	overflow: auto;
+  }
+
+  /* Change label text when checked (optional) */
+  .spoiler-checkbox:checked + .spoiler-label::before {
+    content: '▼ Hide Spoiler';
+  }
+  .spoiler-label::before {
+    content: '► Show Spoiler';
+  }
+/*	flex container */
+.rectangle li div.wrapper {
+	display:			flex;
+	flex-direction:		row;
+	align-items:		center;
+	0grid-template-columns:	1fr 1fr;
+}
+div.wrapper div.symbols
+{
+	font-size:		24px;
+	font-family:	"Material Symbols Outlined";
+	font-weight:	normal;
+	margin:			0px;
+	padding:		0px;
 }
 </style>
 </head>
 <body>
+
+<ol style="width: 10rem;">
+<li>
+<div class="spoiler-container">
+    <input type="checkbox" id="mySpoiler" class="spoiler-checkbox">
+    <label for="mySpoiler" class="spoiler-label"></label>
+    <div class="spoiler-content">
+      This is the hidden spoiler text! It reveals important plot details or sensitive information.
+    </div>
+</div>
+</li>
+<li>
+<div class="spoiler-container">
+    <input type="checkbox" id="mySpoiler2" class="spoiler-checkbox">
+    <label for="mySpoiler2" class="spoiler-label"></label>
+    <div class="spoiler-content">
+      Пример
+    </div>
+</div>
+</li>
+</ol>
+
 <ol class="rectangle">
-	<li><div>
-			<input type="checkbox" id="id-rheumatology#5" name="li-rheumatology#5"  value="5"/>
-			<label for="id-rheumatology#5">Аксиальный спондилоартрит тяжелый</label>
-			<details>
-			<summary>Пример
-			</summary>
-				<p>Скандинавская мифология — мифология древних скандинавов, часть древнегерманской мифологии.</p>
-			</details>
-		</div>
-	</li>
 	<li>
-		<div>
-			<input type="checkbox" id="id-rheumatology#6" name="li-rheumatology#6"  value="6"/>
-			<label for="id-rheumatology#6">Болезнь Бехчета, интестинальная форма</label>
+		<div class="wrapper">
+			<div class="reduced">
+				<input type="checkbox" id="id-rheumatology#6" name="li-rheumatology#6"  value="6"/>
+				<label for="id-rheumatology#6">Болезнь Бехчета, интестинальная форма</label>
+			</div>
+			<div class="symbols" style="margin-left: auto;">info</div>
 		</div>
 	</li>
 	<li>
 	<details>
-		<summary>Покажи-скрой меня длинное-длинное название</summary>
+<!--		<summary>Покажи-скрой меня длинное-длинное название</summary>-->
+		<summary>
+			<input type="checkbox" id="id-rheumatology#X" name="li-rheumatology#X"  value="X"/>
+			<label for="id-rheumatology#X">Аксиальный спондилоартрит тяжелый</label>
+		</summary>
 		<p>Скандинавская мифология — мифология древних скандинавов, часть древнегерманской мифологии.</p>
 	</details>
+	</li>
+	<li>
+		<div class="wrapper">
+			<div>
+			<input type="checkbox" id="id-rheumatology#X" name="li-rheumatology#X"  value="X"/>
+			<label for="id-rheumatology#X">Аксиальный спондилоартрит тяжелый</label>
+			</div>
+			<div>
+				?
+			</div>
+		</div>
 	</li>
 </ol>
 
