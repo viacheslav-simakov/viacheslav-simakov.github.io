@@ -63,23 +63,23 @@ body
 	padding:		.4rem .4rem .4rem .8rem;
 	margin:			.5rem 0 .5rem 2.5rem;
 }
-.rectangle div
+.rectangle li div
 {
 	color: red;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	float: left;
 	display: inline-block;
 	width: 10rem;
 }
-.rectangle label
-{
-	float:			left;
-}
-.rectangle span
+.rectangle li span
 {
 	float:			right;
-	font-weight:	bold;
+	display:		inline-flex;
+	font-family:	"Material Symbols Outlined";
+    font-style:		normal;
+    font-size:		32px; /* Adjust as needed */
 }
 </style>
 </head>
@@ -88,8 +88,8 @@ body
 	<li><div>
 			<input type="checkbox" id="id-rheumatology#5" name="li-rheumatology#5"  value="5"/>
 			<label for="id-rheumatology#5">Аксиальный спондилоартрит тяжелый</label>
-			<span>?</span>
 		</div>
+		<span>info</span>		
 	</li>
 	<li>
 		<div>
