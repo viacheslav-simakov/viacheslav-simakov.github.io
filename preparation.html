@@ -25,11 +25,12 @@
 
  /* Hide the actual checkbox input */
   .spoiler-checkbox {
-    display: none;
+    0display: none;
   }
 
   /* Style for the spoiler content when hidden */
   .spoiler-content {
+	font-size: 12px;
     display: none; /* Initially hide the content */
     background-color: #eee;
     padding: 10px;
@@ -39,13 +40,11 @@
 
   /* Style for the label (the clickable part) */
   .spoiler-label {
-    cursor: pointer;
-    font-weight: bold;
-    color: blue;
+	display:		inline-block;
+	width:			5rem;
 	overflow:		hidden;
 	white-space:	nowrap;
 	text-overflow:	ellipsis;
-	width: 5rem;
   }
 
   /* Show the content when the checkbox is checked */
@@ -55,10 +54,10 @@
 
   /* Change label text when checked (optional) */
   .spoiler-checkbox:checked + .spoiler-label::before {
-    content: '▼ Hide Spoiler';
+    content: '▼';
   }
   .spoiler-label::before {
-    content: '► Show Spoiler';
+    content: '►';
   }
 </style>
 <style>
@@ -76,7 +75,7 @@ body
 	padding: 		2rem;
 	font-size:		18px;
 	0width:			100%;
-	width:			15rem;
+	width:			12rem;
 }
 .rectangle li
 {
@@ -87,11 +86,11 @@ body
 }
 .rectangle li div.reduced
 {
-	color: 			red;
+	color: 			green;
 	overflow:		hidden;
 	white-space:	nowrap;
 	text-overflow:	ellipsis;
-	float:			left;
+	display:		inline-block;
 }
 /*
 	flex container
@@ -117,33 +116,98 @@ div.flex-box div.symbols
 }
 .info-content
 {
-	display: none;
+	0display: none;
 }
 
 /* Show the content when the checkbox is checked */
 .check-list:checked ~ .info-content
 {
-	display: flex;
+	display: block;
+	position: relative;
+}
+.myCheck
+{
+	width:	1rem;
+	height:	1rem;
+	vertical-align: middle;
+	display: inline-block;
+	0font-size: 18px;
+	margin-top: 3px;
+	padding: 0px;
+	0border-radius: 8px;
+}
+details:open > summary
+{
+	background-color: #ccccff;
+}
+details {
+  border: 2px solid #aaaaaa;
+  border-radius: 8px;
+  padding: 0.5em 0.5em 0;
 }
 
+summary {
+  margin: -0.5em -0.5em 0;
+  padding: 0.5em;
+}
+
+details[open] {
+  padding: 0.5em;
+}
+
+details[open] summary {
+  border-bottom: 1px solid #aaaaaa;
+  margin-bottom: 0.5em;
+}
+.inline-container
+{
+            /* Optional: Add some spacing or alignment for the container */
+            display: flex;
+            align-items: stretch; /* Aligns items vertically in the center */
+            gap: 10px; /* Adds space between items */
+}
+details {
+    display: inline-block;
+    vertical-align: top; /* Aligns elements vertically */
+}
 </style>
 </head>
 <body>
 
-<ol style="width: 10rem;">
+<ol style="width: 12rem;">
+	<li>
+	<div class="flex-box" style="gap: 5px; align-items: stretch;">
+	<div style="margin-top: 7px">1</div>
+	<div>
+	<details>
+		<summary>
+			Аксиальный спондилоартрит тяжелый
+		</summary>
+		<p>Скандинавская мифология — мифология древних скандинавов, часть древнегерманской мифологии.</p>
+	</details>
+	</div>
+	<div>
+	<input type="checkbox" class="myCheck"/>
+	</div>
+	</div>
+	</li>
+
+</ol>
+
+<ol style="width: 7rem;">
 <li>
 <div class="spoiler-container">
     <input type="checkbox" id="mySpoiler" class="spoiler-checkbox">
-    <label for="mySpoiler" class="spoiler-label"></label>
+    <label for="mySpoiler" class="spoiler-label">Пример ррррррр</label>
     <div class="spoiler-content">
-      This is the hidden spoiler text! It reveals important plot details or sensitive information.
+    This is the hidden spoiler text! It reveals important plot details or sensitive information.
     </div>
 </div>
 </li>
 <li>
 <div class="spoiler-container">
     <input type="checkbox" id="mySpoiler2" class="spoiler-checkbox">
-    <label for="mySpoiler2" class="spoiler-label"></label>
+    <label for="mySpoiler2" class="spoiler-label">Пример ррррррр2</label>
     <div class="spoiler-content">
       Пример
     </div>
@@ -155,54 +219,56 @@ div.flex-box div.symbols
 	<li>
 		<div class="flex-box">
 			<div class="reduced">
+				<label for="id-rheumatology#6">Болезнь Бехчета, интестинальная форма</label>
 				<input
 					type="checkbox" id="id-rheumatology#6" name="li-rheumatology#6" value="6"
 					class="check-list"
 				/>
-				<label for="id-rheumatology#6">Болезнь Бехчета, интестинальная форма</label>
 			</div>
 			<div class="symbols">info</div>
 		</div>
-		<div class="info-content">
+		<p class="info-content">
 			Скандинавская мифология — мифология древних скандинавов,
 			часть древнегерманской мифологии
-		</div>
+		</p>
 	</li>
 	<li>
+	<div class="flex-box">
 		<div class="reduced">
+			<label for="id-rheumatology#67">Болезнь Бехчета, интестинальная форма</label>
 			<input
 				type="checkbox" id="id-rheumatology#67" name="li-rheumatology#6" value="6"
 				class="check-list"
 			/>
-			<label for="id-rheumatology#67">Болезнь Бехчета, интестинальная форма</label>
-			<div class="info-content">
-				Скандинавская мифология — мифология древних скандинавов,
-				часть древнегерманской мифологии
-			</div>
+		</div>	
+		<div style="color: gray">
+			Скандинавская мифология — мифология древних скандинавов,
+			часть древнегерманской мифологии
 		</div>
+	</div>	
 	</li>
 	<li>
 	<details>
 <!--		<summary>Покажи-скрой меня длинное-длинное название</summary>-->
 		<summary>
-			<input type="checkbox" id="id-rheumatology#X" name="li-rheumatology#X"  value="X"/>
 			<label for="id-rheumatology#X">Аксиальный спондилоартрит тяжелый</label>
+			<input type="checkbox" id="id-rheumatology#X" name="li-rheumatology#X" value="X" class="myCheck"/>
 		</summary>
 		<p>Скандинавская мифология — мифология древних скандинавов, часть древнегерманской мифологии.</p>
 	</details>
 	</li>
 	<li>
-		<div class="wrapper">
-			<div>
-			<input type="checkbox" id="id-rheumatology#X" name="li-rheumatology#X"  value="X"/>
+	<input type="checkbox" id="id-rheumatology#X" name="li-rheumatology#X" value="X" class="myCheck"/>
+	<details>
+		<summary>
 			<label for="id-rheumatology#X">Аксиальный спондилоартрит тяжелый</label>
-			</div>
-			<div>
-				?
-			</div>
-		</div>
+		</summary>
+		<p>Скандинавская мифология — мифология древних скандинавов, часть древнегерманской мифологии.</p>
+	</details>
 	</li>
 </ol>
+
+
 
 <!-- :: ЗАБОЛЕВАНИЯ :: -------------------------------------------------->
 <div id="rheumatology" class="tab-content">
