@@ -34,7 +34,7 @@ div.flex-box
 {
 	display:			flex;
 	flex-direction:		row;
-	align-items:		center;
+	align-items:		stretch;
 	text-align:			left; 
 	justify-content:	start;
 	column-gap:			5px;
@@ -43,21 +43,22 @@ div.flex-box
 details {
 	border:			1px solid #aaaaaa;
 	border-radius:	8px;
-	padding:		0.5em 0.5em 0;
+	overflow:		hidden;
+	padding:		0.5rem 0.5rem 0;
 }
 summary
 {
-	padding: 0.5em;
-	margin: -0.5em -0.5em 0px;
+	padding:	0.5rem;
+	margin:		-0.5rem -0.5rem 0px;
 }
 details[open]
 {
 	padding: 0.5em;
 }
 details:open > summary {
-  border-bottom:	1px solid #aaaaaa;
-  margin-bottom:	0.5em;
-  background-color:	#ccccff;
+	border-bottom:		1px solid #aaaaaa;
+	margin-bottom:		0.5rem;
+	background-color:	#ccccff;
 }
 .item-checkbox
 {
@@ -68,7 +69,7 @@ details:open > summary {
 	color:			black;
 	border:			1px solid black;
 	border-radius:	8px;
-	padding:		4px;
+	padding:		0.5rem;
 	margin-right:	1rex;
 	display:		inline-block;
 	width:			3rem;
@@ -99,7 +100,7 @@ details:open > summary {
 <div class="flex-box">
 	<div>
 		<input type="checkbox" id="my2" class="item-checkbox"/>
-		<label for="my2" class="item-label">101</label>
+		<label for="my2" class="item-label">999</label>
 	</div>
 	<div style="margin-right: auto;">
 		<details>
