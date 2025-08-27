@@ -170,9 +170,42 @@ details {
     display: inline-block;
     vertical-align: top; /* Aligns elements vertically */
 }
+.item-checkbox
+{
+	display: none;
+}
+.item-label
+{
+	color:			red;
+	border:			1.5px solid red;
+	border-radius:	50%;
+	padding:		8px;
+	margin-right:	1rex;
+}
+.item-checkbox:checked ~ .item-label
+{
+	background-color:	red;
+	color:				white;
+}
+
 </style>
 </head>
 <body>
+<div class="flex-box" style="gap: 5px; align-items: center;">
+	<div>
+		<input type="checkbox" id="my2" class="item-checkbox"/>
+		<label for="my2" class="item-label">11</label>
+	</div>
+	<div>
+		<details>
+		<summary>
+			Аксиальный спондилоартрит тяжелый
+		</summary>
+		<p>Скандинавская мифология — мифология древних скандинавов, часть древнегерманской мифологии.</p>
+		</details>
+	</div>
+</div>
+
 
 <ol style="width: 12rem;">
 	<li>
