@@ -18,6 +18,63 @@
 -->
 <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
 <style>
+body
+{
+	display:		flex;
+	color:			var(--tg-theme-text-color);
+	background:		var(--tg-theme-bg-color);
+	align-items:	center;
+	flex-direction:	column;
+	font-size:		12px;
+}
+.rectangle
+{
+	padding: 		2rem;
+	font-size:		18px;
+	0width:			100%;
+	width:			25rem;
+}
+.rectangle div2
+{
+	font-size:		18px;
+	border:			1px solid hsl(0,0%,80%);
+	border-radius:	5px;
+	padding:		.4em .4em .4em .8em;
+	margin:			.5em 0 .5em 2.5em;
+}
+.rectangle li
+{
+	border:			1px solid black;
+	border-radius:	.8rem;
+	padding:		.4rem .4rem .4rem .8rem;
+	margin:			.5rem 0 .5rem 2.5rem;
+}
+.rectangle li div.reduced
+{
+	color: 			red;
+	overflow:		hidden;
+	white-space:	nowrap;
+	text-overflow:	ellipsis;
+	float:			left;
+	0width:			50rem;
+}
+.rectangle li summary
+{
+	color: 			green;
+	overflow:		hidden;
+	white-space:	nowrap;
+	text-overflow:	ellipsis;
+	0width:			10rem;
+}
+.rectangle li span
+{
+	float:			right;
+	display:		inline-block;
+	font-family:	"Material Symbols Outlined";
+    font-style:		normal;
+    font-size:		32px; /* Adjust as needed */
+	vertical-align: baseline;
+}
 .spoiler-container
 {
 	font-size: 20px;
@@ -50,7 +107,11 @@
 
   /* Show the content when the checkbox is checked */
   .spoiler-checkbox:checked + .spoiler-label + .spoiler-content {
-    display: block;
+    0display: block;
+    display: flex;
+	overflow-wrap: anywhere;
+	color: red;
+	overflow: auto;
   }
 
   /* Change label text when checked (optional) */
@@ -60,72 +121,21 @@
   .spoiler-label::before {
     content: '► Show Spoiler';
   }
-</style>
-<style>
-body
-{
-	display:		flex;
-	color:			var(--tg-theme-text-color);
-	background:		var(--tg-theme-bg-color);
-	align-items:	center;
-	flex-direction:	column;
-	font-size:		12px;
-}
-.rectangle
-{
-	padding: 		2rem;
-	font-size:		18px;
-	0width:			100%;
-	width:			15rem;
-}
-.rectangle li
-{
-	border:			2px solid black;
-	border-radius:	.8rem;
-	padding:		.4rem .4rem .4rem .8rem;
-	margin:			.5rem 0 .5rem 2.5rem;
-}
-.rectangle li div.reduced
-{
-	color: 			red;
-	overflow:		hidden;
-	white-space:	nowrap;
-	text-overflow:	ellipsis;
-	float:			left;
-}
-/*
-	flex container
-*/
-div.flex-box {
+/*	flex container */
+.rectangle li div.wrapper {
 	display:			flex;
 	flex-direction:		row;
 	align-items:		center;
 	0grid-template-columns:	1fr 1fr;
 }
-div.flex-box div.symbols
+div.wrapper div.symbols
 {
 	font-size:		24px;
 	font-family:	"Material Symbols Outlined";
 	font-weight:	normal;
 	margin:			0px;
 	padding:		0px;
-	margin-left:	auto;
 }
-.check-list
-{
-	accent-color: red;
-}
-.info-content
-{
-	display: none;
-}
-
-/* Show the content when the checkbox is checked */
-.check-list:checked ~ .info-content
-{
-	display: flex;
-}
-
 </style>
 </head>
 <body>
@@ -151,34 +161,14 @@ div.flex-box div.symbols
 </li>
 </ol>
 
-<ol class="rectangle" id="rheumatology">
+<ol class="rectangle">
 	<li>
-		<div class="flex-box">
+		<div class="wrapper">
 			<div class="reduced">
-				<input
-					type="checkbox" id="id-rheumatology#6" name="li-rheumatology#6" value="6"
-					class="check-list"
-				/>
+				<input type="checkbox" id="id-rheumatology#6" name="li-rheumatology#6"  value="6"/>
 				<label for="id-rheumatology#6">Болезнь Бехчета, интестинальная форма</label>
 			</div>
-			<div class="symbols">info</div>
-		</div>
-		<div class="info-content">
-			Скандинавская мифология — мифология древних скандинавов,
-			часть древнегерманской мифологии
-		</div>
-	</li>
-	<li>
-		<div class="reduced">
-			<input
-				type="checkbox" id="id-rheumatology#67" name="li-rheumatology#6" value="6"
-				class="check-list"
-			/>
-			<label for="id-rheumatology#67">Болезнь Бехчета, интестинальная форма</label>
-			<div class="info-content">
-				Скандинавская мифология — мифология древних скандинавов,
-				часть древнегерманской мифологии
-			</div>
+			<div class="symbols" style="margin-left: auto;">info</div>
 		</div>
 	</li>
 	<li>
@@ -480,44 +470,5 @@ for (let i = 0; i < checkbox.length; i++) {
 	});
 };
 </script>
-
-<script>
-//	let chb = document.getElementById('rheumatology').querySelectorAll('input[type="checkbox"]');
-	let lst = document.querySelector("[class='rectangle']");
-	console.log(lst);
-	lst.addEventListener('click', function(event) {
-	//
-	//	чек-бокс?
-	console.log(event);
-	if (event.target.className == 'symbols') {
-		alert('Ok');
-	}
-/*
-	if (event.target.tagName != "INPUT") {
-		//
-		//	родитель строка таблицы?
-		if (event.target.parentNode.tagName == 'TR') {
-			//
-			//	найти чек-бокс
-			let check = event.target.parentNode.querySelector("input[type='checkbox']");
-			//
-			//	изменить состояние
-			check.checked = !check.checked;
-			//
-			//	сохранить состояние
-			ds.setItem(JSON.stringify(check.name), JSON.stringify(check.checked));
-		} else {
-			//
-			alert('Ошибка в поиске чек-бокса');
-		}
-	}
-*/
-});
-	//	цикл по всем флажкам
-//	for (let i = 0; i < chb.length; i++) {
-		
-//	};
-</script>
-
 </body>
 </html>
