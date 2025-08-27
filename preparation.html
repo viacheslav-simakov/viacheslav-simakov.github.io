@@ -136,39 +136,24 @@ div.flex-box div.symbols
 	padding: 0px;
 	0border-radius: 8px;
 }
-details:open > summary
-{
-	background-color: #ccccff;
-}
 details {
-  border: 2px solid #aaaaaa;
-  border-radius: 8px;
-  padding: 0.5em 0.5em 0;
+	border:			1px solid #aaaaaa;
+	border-radius:	8px;
+	padding:		0.5em 0.5em 0;
 }
-
-summary {
-  margin: -0.5em -0.5em 0;
-  padding: 0.5em;
-}
-
-details[open] {
-  padding: 0.5em;
-}
-
-details[open] summary {
-  border-bottom: 1px solid #aaaaaa;
-  margin-bottom: 0.5em;
-}
-.inline-container
+summary
 {
-            /* Optional: Add some spacing or alignment for the container */
-            display: flex;
-            align-items: stretch; /* Aligns items vertically in the center */
-            gap: 10px; /* Adds space between items */
+	padding: 0.5em;
+	margin: -0.5em -0.5em 0px;
 }
-details {
-    display: inline-block;
-    vertical-align: top; /* Aligns elements vertically */
+details[open]
+{
+	padding: 0.5em;
+}
+details:open > summary {
+  border-bottom:	1px solid #aaaaaa;
+  margin-bottom:	0.5em;
+  background-color:	#ccccff;
 }
 .item-checkbox
 {
@@ -176,15 +161,15 @@ details {
 }
 .item-label
 {
-	color:			red;
-	border:			1.5px solid red;
+	color:			black;
+	border:			1.5px solid black;
 	border-radius:	50%;
 	padding:		8px;
 	margin-right:	1rex;
 }
 .item-checkbox:checked ~ .item-label
 {
-	background-color:	red;
+	background-color:	black;
 	color:				white;
 }
 
