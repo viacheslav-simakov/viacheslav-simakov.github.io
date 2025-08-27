@@ -66,7 +66,7 @@ body
 	display:		flex;
 	color:			var(--tg-theme-text-color);
 	background:		var(--tg-theme-bg-color);
-	align-items:	center;
+	0align-items:	center;
 	flex-direction:	column;
 	font-size:		12px;
 }
@@ -95,11 +95,15 @@ body
 /*
 	flex container
 */
-div.flex-box {
+div.flex-box
+{
 	display:			flex;
 	flex-direction:		row;
 	align-items:		center;
-	0grid-template-columns:	1fr 1fr;
+	text-align:			left; 
+	justify-content:	start;
+	column-gap:			5px;
+	margin-bottom:		1rem;
 }
 div.flex-box div.symbols
 {
@@ -162,10 +166,13 @@ details:open > summary {
 .item-label
 {
 	color:			black;
-	border:			1.5px solid black;
-	border-radius:	50%;
-	padding:		8px;
+	border:			1px solid black;
+	border-radius:	8px;
+	padding:		4px;
 	margin-right:	1rex;
+	display:		inline-block;
+	width:			3rem;
+	text-align:		center;
 }
 .item-checkbox:checked ~ .item-label
 {
@@ -176,17 +183,31 @@ details:open > summary {
 </style>
 </head>
 <body>
-<div class="flex-box" style="gap: 5px; align-items: center;">
+<div class="flex-box">
 	<div>
-		<input type="checkbox" id="my2" class="item-checkbox"/>
-		<label for="my2" class="item-label">11</label>
+		<input type="checkbox" id="my1" class="item-checkbox"/>
+		<label for="my1" class="item-label">11</label>
 	</div>
-	<div>
+	<div style="margin-right: auto;">
 		<details>
 		<summary>
 			Аксиальный спондилоартрит тяжелый
 		</summary>
 		<p>Скандинавская мифология — мифология древних скандинавов, часть древнегерманской мифологии.</p>
+		</details>
+	</div>
+</div>
+<div class="flex-box">
+	<div>
+		<input type="checkbox" id="my2" class="item-checkbox"/>
+		<label for="my2" class="item-label">101</label>
+	</div>
+	<div style="margin-right: auto;">
+		<details>
+		<summary>
+			Аксиальный спондилоартрит тяжелый
+		</summary>
+		<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
 		</details>
 	</div>
 </div>
