@@ -56,7 +56,7 @@ summary
 details:open > summary
 {
 	border-bottom:		1px solid #aaaaaa;
-	background-color:	#ccccff;
+	background-color:	var(--summary-open-bg-color);
 }
 .item-checkbox
 {
@@ -339,41 +339,14 @@ for (let i = 0; i < checkbox.length; i++) {
 </script>
 
 <script>
-//	let chb = document.getElementById('rheumatology').querySelectorAll('input[type="checkbox"]');
-	let lst = document.querySelector("[class='rectangle']");
+	let lst = document.querySelectorAll("[class='item-checkbox']");
 	console.log(lst);
-	lst.addEventListener('click', function(event) {
-	//
-	//	чек-бокс?
-	console.log(event);
-	if (event.target.className == 'symbols') {
-		alert('Ok');
-	}
-/*
-	if (event.target.tagName != "INPUT") {
-		//
-		//	родитель строка таблицы?
-		if (event.target.parentNode.tagName == 'TR') {
-			//
-			//	найти чек-бокс
-			let check = event.target.parentNode.querySelector("input[type='checkbox']");
-			//
-			//	изменить состояние
-			check.checked = !check.checked;
-			//
-			//	сохранить состояние
-			ds.setItem(JSON.stringify(check.name), JSON.stringify(check.checked));
-		} else {
-			//
-			alert('Ошибка в поиске чек-бокса');
-		}
-	}
-*/
-});
 	//	цикл по всем флажкам
-//	for (let i = 0; i < chb.length; i++) {
-		
-//	};
+	for (let i = 0; i < lst.length; i++) {
+		lst[i].addEventListener('click', function(event) {
+			alert(lst[i].id);
+		});
+	};
 </script>
 
 </body>
