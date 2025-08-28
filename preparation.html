@@ -42,7 +42,8 @@ div.flex-box
 }
 details
 {
-	border:			1px solid #aaaaaa;
+	color:			var(--tg-theme-hint-color);
+	border:			1px solid var(--tg-theme-section-separator-color, #aaaaaa);
 	border-radius:	0px 8px 8px 0px;
 	overflow:		hidden;
 	padding:		0.5rem 0.5rem 0;
@@ -116,26 +117,26 @@ details:open > summary
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <script>
-//
-//	Web-API: https://core.telegram.org/bots/webapps#events-available-for-mini-apps
+	//
+	//	Web-API: https://core.telegram.org/bots/webapps#events-available-for-mini-apps
 	let tg = window.Telegram.WebApp;
-//
-//	Локальное хранилище данных
+	//
+	//	Локальное хранилище данных
 	let ds = tg.DeviceStorage;
-//	Инициализируем WebApp
+	//	Инициализируем WebApp
 	tg.ready();
-//	во весь экран
+	//	во весь экран
 	tg.expand();
-//	Получаем информацию о пользователе
+	//	Получаем информацию о пользователе
 	const user = tg.initDataUnsafe.user;
-//	Главная кнопка
+	//	Главная кнопка
 	tg.MainButton.setText("Вперед").show();
-//	Вторичная кнопка
-//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
+	//	Вторичная кнопка
+	//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
 	tg.SecondaryButton.setText("Назад").show();
-//	Кнопка "Установки"
+	//	Кнопка "Установки"
 	tg.SettingsButton.show();
-//	Add an event listener for when the SettingButton is clicked
+	//	Add an event listener for when the SettingButton is clicked
 	tg.onEvent('settingsButtonClicked', () => {
 		alert('Setting button clicked!');
 		// You can also send data back to the bot here
