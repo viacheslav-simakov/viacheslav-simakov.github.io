@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сопутствующие заболевания</title>
+<!--meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<title>Электронный ассистент врача-ревматолога</title-->
+<link href="main.css" rel="stylesheet" type="text/css"/>
+<link href="tables.css" rel="stylesheet" type="text/css"/>
+<!-- Google font's -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+<!--
+	https://core.telegram.org/bots/webapps#initializing-mini-apps
+-->
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+<style>
+body
+{
+	display:		flex;
+	color:			var(--tg-theme-text-color);
+	background:		var(--tg-theme-bg-color);
+	0align-items:	center;
+	flex-direction:	column;
+	font-size:		var(--font-size);
+}
+/*
+	flex container
+*/
+div.flex-box
+{
+	display:			flex;
+	flex-direction:		row;
+	align-items:		stretch;
+	text-align:			left; 
+	justify-content:	start;
+	column-gap:			5px;
+	margin-bottom:		1rem;
+}
+details
+{
+	color:				var(--tg-theme-text-color);
+	border:				1px solid var(--tg-theme-section-separator-color, #aaaaaa);
+	border-radius:		0px 8px 8px 0px;
+	overflow:			hidden;
+	padding:			0.5rem 0.5rem 0;
+}
+summary
+{
+	font-size:			var(--font-size);
+	color:				var(--tg-theme-text-color);
+	margin:				-0.5rem -0.5rem 0px;
+	padding:			0.5rem;
+}
+details:open
+{
+	color:				var(--tg-theme-hint-color);
+}
+details:open > summary
+{
+	color:				var(--tg-theme-text-color);
+	background-color:	var(--tg-theme-secondary-bg-color);
+	border-bottom:		1px solid #aaaaaa;
+}
+.item-checkbox
+{
+	display: none;
+}
+.item-label
+{
+	font-size:			var(--font-size);
+	color:				var(--tg-theme-text-color);
+	border:				1px solid var(--tg-theme-link-color);
+	border-radius:		8px 0px 0px 8px;
+	padding:			0.5rem;
+	0margin-right:		1rex;
+	display:			inline-block;
+	width:				4rex;
+	text-align:			right;
+}
+.item-checkbox:checked ~ .item-label
+{
+	color:				var(--tg-theme-button-text-color);
+	background-color:	var(--tg-theme-button-color);
+}
+div.content
+{
+	margin-right:		auto;
+	width:				100%;
+}
+</style>
+</head>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	ОСНОВНОЕ СОДЕРЖАНИЕ
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<body>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#9" class="item-checkbox"
+			id="comorbidity-label-9"/>
+		<label for="comorbidity-label-9" class="item-label">1</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Активная инфекция</summary>
+			<p> состояние</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#41" class="item-checkbox"
+			id="comorbidity-label-41"/>
+		<label for="comorbidity-label-41" class="item-label">2</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Алкогольный гепатит</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#1" class="item-checkbox"
+			id="comorbidity-label-1"/>
+		<label for="comorbidity-label-1" class="item-label">3</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Вирусный гепатит В</summary>
+			<p>дополнительная информация</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#39" class="item-checkbox"
+			id="comorbidity-label-39"/>
+		<label for="comorbidity-label-39" class="item-label">4</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Вирусный гепатит С</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#42" class="item-checkbox"
+			id="comorbidity-label-42"/>
+		<label for="comorbidity-label-42" class="item-label">5</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>ВИЧ</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#30" class="item-checkbox"
+			id="comorbidity-label-30"/>
+		<label for="comorbidity-label-30" class="item-label">6</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Волчаночное поражение ЦНС тяжелое, активное</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#37" class="item-checkbox"
+			id="comorbidity-label-37"/>
+		<label for="comorbidity-label-37" class="item-label">7</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Волчаночный нефрит тяжелый активный</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#38" class="item-checkbox"
+			id="comorbidity-label-38"/>
+		<label for="comorbidity-label-38" class="item-label">8</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Воспалительные заболевания кишечника</summary>
+			<p>Болезнь Крона, язвенный колит</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#36" class="item-checkbox"
+			id="comorbidity-label-36"/>
+		<label for="comorbidity-label-36" class="item-label">9</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Гранулематоз с полиангиитом</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#35" class="item-checkbox"
+			id="comorbidity-label-35"/>
+		<label for="comorbidity-label-35" class="item-label">10</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Заболевание сердца (тяжелое, неконтролируемое)</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#40" class="item-checkbox"
+			id="comorbidity-label-40"/>
+		<label for="comorbidity-label-40" class="item-label">11</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Злокачественное новообразование в анамнезе с длительностью ремиссии менее 5 лет</summary>
+			<p>за исключением излеченных базальноклеточной карциномы и рака шейки матки in<br>situ - для сенипрутуга</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#22" class="item-checkbox"
+			id="comorbidity-label-22"/>
+		<label for="comorbidity-label-22" class="item-label">12</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Иммунодефицит первичный или вторичный (выраженный)</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#29" class="item-checkbox"
+			id="comorbidity-label-29"/>
+		<label for="comorbidity-label-29" class="item-label">13</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Онкологическое заболевание в активной форме</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#20" class="item-checkbox"
+			id="comorbidity-label-20"/>
+		<label for="comorbidity-label-20" class="item-label">14</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Перфорация ЖКТ</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#4" class="item-checkbox"
+			id="comorbidity-label-4"/>
+		<label for="comorbidity-label-4" class="item-label">15</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Печеночная недостаточность тяжелой степени (класс С по классификации Чайлд-Пью)</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#5" class="item-checkbox"
+			id="comorbidity-label-5"/>
+		<label for="comorbidity-label-5" class="item-label">16</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Почечная недостаточность тяжелой и терминальной степени тяжести (СКФ <30 мл/мин)</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#2" class="item-checkbox"
+			id="comorbidity-label-2"/>
+		<label for="comorbidity-label-2" class="item-label">17</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Сепсис, обусловленный патогенами, отличными от COVID-19</summary>
+			<p>для этанерцепта в т. ч. и риск возникновения сепсиса</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#23" class="item-checkbox"
+			id="comorbidity-label-23"/>
+		<label for="comorbidity-label-23" class="item-label">18</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Сердечная недостаточность тяжелая</summary>
+			<p>(III/IV класс по NYHA)</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#43" class="item-checkbox"
+			id="comorbidity-label-43"/>
+		<label for="comorbidity-label-43" class="item-label">19</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Сифилис</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#3" class="item-checkbox"
+			id="comorbidity-label-3"/>
+		<label for="comorbidity-label-3" class="item-label">20</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>туберкулез</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="comorbidity#27" class="item-checkbox"
+			id="comorbidity-label-27"/>
+		<label for="comorbidity-label-27" class="item-label">21</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Хроническая инфекция</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<script>
+	//
+	//	Web-API: https://core.telegram.org/bots/webapps#events-available-for-mini-apps
+	let tg = window.Telegram.WebApp;
+	//
+	//	Локальное хранилище данных
+	let ds = tg.DeviceStorage;
+	//	Инициализируем WebApp
+	tg.ready();
+	//	во весь экран
+	tg.expand();
+	//	Получаем информацию о пользователе
+	const user = tg.initDataUnsafe.user;
+	//	Главная кнопка
+	tg.MainButton.setText("Вперед").show();
+	//	Вторичная кнопка
+	//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
+	tg.SecondaryButton.setText("Назад").show();
+	//	Кнопка "Установки"
+	tg.SettingsButton.show();
+	//	Add an event listener for when the SettingButton is clicked
+	tg.onEvent('settingsButtonClicked', () => {
+		alert('Setting button clicked!');
+		// You can also send data back to the bot here
+		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
+	});	
+</script>
+<!--
+	Хранилище устройства (DeviceStorage)
+-->
+<script>
+	//
+	//	Коллекция флажков
+	let lst = document.querySelectorAll("[class='item-checkbox']");
+	console.log(lst);
+	//
+	//	Цикл по всем флажкам
+	for (let i = 0; i < lst.length; i++) {
+		//
+		//	Восстановить значение флажка
+		ds.getItem(JSON.stringify(lst[i].name), (error, result) => {
+			//
+			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
+			if (result !== null) {
+				//
+				//	Присвоить значение
+				lst[i].checked = JSON.parse(result);
+			}
+			else {
+				lst[i].checked = false;
+			}
+		});
+		//
+		//	Обработчик событий для каждого флажка
+		lst[i].addEventListener('click', function(event) {
+			//
+			//	Записать в хранилище устройства
+			ds.setItem(
+				JSON.stringify(lst[i].name),
+				JSON.stringify(lst[i].checked));
+			alert(JSON.stringify(lst[i].name) + JSON.stringify(lst[i].checked));
+		});
+	};
+</script>
+</body>
+</html>
