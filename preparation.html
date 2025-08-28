@@ -42,7 +42,7 @@ div.flex-box
 }
 details
 {
-	color:			var(--tg-theme-hint-color);
+	color:			var(--tg-theme-text-color);
 	border:			1px solid var(--tg-theme-section-separator-color, #aaaaaa);
 	border-radius:	0px 8px 8px 0px;
 	overflow:		hidden;
@@ -54,8 +54,13 @@ summary
 	padding:	0.5rem;
 	margin:		-0.5rem -0.5rem 0px;
 }
+details:open
+{
+	color:				var(--tg-theme-hint-color);
+}
 details:open > summary
 {
+	color:				var(--tg-theme-text-color);
 	border-bottom:		1px solid #aaaaaa;
 	background-color:	var(--summary-open-bg-color);
 }
