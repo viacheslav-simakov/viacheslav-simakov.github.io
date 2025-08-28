@@ -84,7 +84,7 @@ details:open > summary
 <body>
 <div class="flex-box">
 	<div>
-		<input type="checkbox" id="my1" class="item-checkbox"/>
+		<input type="checkbox" id="my1" name="rheumatology#8" class="item-checkbox"/>
 		<label for="my1" class="item-label">11</label>
 	</div>
 	<div style="margin-right: auto;">
@@ -98,7 +98,7 @@ details:open > summary
 </div>
 <div class="flex-box">
 	<div>
-		<input type="checkbox" id="my2" class="item-checkbox"/>
+		<input type="checkbox" id="my2" name="rheumatology#9" class="item-checkbox"/>
 		<label for="my2" class="item-label">999</label>
 	</div>
 	<div style="margin-right: auto;">
@@ -110,113 +110,16 @@ details:open > summary
 		</details>
 	</div>
 </div>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-<!-- :: ЗАБОЛЕВАНИЯ :: -------------------------------------------------->
-<div id="rheumatology" class="tab-content">
+	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
 
-	<table class="db-table compact" style="width: 100%;">
-		<!--caption>Список ревматологических заболеваний</caption-->
-		<thead>
-		<tr>
-			<th>№</th><th></th><th>Диагноз</th><th style="width:100%">Информация</th>
-		</tr>
-		</thead>
-	<tbody>
-	<tr>
-		<td>1</td>
-		<td><input type="checkbox" name="rheumatology#5"  value="5"/></td>
-		<td>Аксиальный спондилоартрит тяжелый</td>
-		<td>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</td>
-	</tr>
-	<tr>
-		<td>2</td>
-		<td><input type="checkbox" name="rheumatology#2"  value="2"/></td>
-		<td>Анкилозирующий спондилит</td>
-		<td> </td>
-	</tr>
-	<tr>
-		<td>3</td>
-		<td><input type="checkbox" name="rheumatology#3"  value="3"/></td>
-		<td>Болезнь Бехчета, интестинальная форма</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>4</td>
-		<td><input type="checkbox" name="rheumatology#12"  value="12"/></td>
-		<td>Болезнь Стилла</td>
-		<td>Активная фаза</td>
-	</tr>
-	<tr>
-		<td>5</td>
-		<td><input type="checkbox" name="rheumatology#8"  value="8"/></td>
-		<td>Гигантоклеточный артериит</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>6</td>
-		<td><input type="checkbox" name="rheumatology#9"  value="9"/></td>
-		<td>Гранулематоз с полиангиитом</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>7</td>
-		<td><input type="checkbox" name="rheumatology#10"  value="10"/></td>
-		<td>Микроскопический полиангиит</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>8</td>
-		<td><input type="checkbox" name="rheumatology#13"  value="13"/></td>
-		<td>Острый подагрический артрит</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>9</td>
-		<td><input type="checkbox" name="rheumatology#11"  value="11"/></td>
-		<td>Периодическая болезнь</td>
-		<td>Аутовоспалительные синдромы периодической лихорадки:<br>• криопирин-ассоциированный периодический синдром (CAPS) у взрослых и детей в возрасте 2 лет и старше, включая:<br>- семейный холодовой аутовоспалительный синдром (FCAS)/семейная холодовая крапивница (FCU);<br>- синдром Макла-Уэльса (MWS);<br>- младенческое мультисистемное воспалительное заболевание (NOMID)/хронический младенческий неврологический кожно-артикулярный синдром (CINCA);<br>• периодический синдром, ассоциированный с рецепторами к фактору некроза опухоли (TRAPS);<br>• гипер-IgD-синдром/синдром дефицита мевалонат-киназы (HIDS/MKD);<br>• семейная средиземноморская лихорадка (FMF) </td>
-	</tr>
-	<tr>
-		<td>10</td>
-		<td><input type="checkbox" name="rheumatology#6"  value="6"/></td>
-		<td>Псориатический артрит</td>
-		<td> </td>
-	</tr>
-	<tr>
-		<td>11</td>
-		<td><input type="checkbox" name="rheumatology#1"  value="1"/></td>
-		<td>Ревматоидный артрит</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>12</td>
-		<td><input type="checkbox" name="rheumatology#4"  value="4"/></td>
-		<td>Системная красная волчанка</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>13</td>
-		<td><input type="checkbox" name="rheumatology#14"  value="14"/></td>
-		<td>Эозинофильный гранулематоз с полиангиитом</td>
-		<td></td>
-	</tr>
-	</tbody>
-	</table>
-</div>
-
-	<!-- ФОРМА -->
-	<form id="dataForm">
-		<p><input type="checkbox" id="scale" name="myCheck" checked/></p>
-		<p><input id="setButton" type="button" value="Set"/></p>
-		<p><input id="getButton" type="button" value="Get"/></p>
-
-	</form>
-<!--
-	Секция JavaScript
--->
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <script>
+//
 //	Web-API: https://core.telegram.org/bots/webapps#events-available-for-mini-apps
 	let tg = window.Telegram.WebApp;
+//
 //	Локальное хранилище данных
 	let ds = tg.DeviceStorage;
 //	Инициализируем WebApp
@@ -238,115 +141,25 @@ details:open > summary
 		// You can also send data back to the bot here
 		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
 	});	
-/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
-
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-//
-//	Коллекция всех таблиц с элементами выбора пользователя
-const tbody = document.querySelector("[class='db-table compact'] > tbody");
-//
-//	обработчик событий: https://learn.javascript.ru/event-delegation
-//
-tbody.addEventListener('click', function(event) {
-	//
-	//	чек-бокс?
-	if (event.target.tagName != "INPUT") {
-		//
-		//	родитель строка таблицы?
-		if (event.target.parentNode.tagName == 'TR') {
-			//
-			//	найти чек-бокс
-			let check = event.target.parentNode.querySelector("input[type='checkbox']");
-			//
-			//	изменить состояние
-			check.checked = !check.checked;
-			//
-			//	сохранить состояние
-			ds.setItem(JSON.stringify(check.name), JSON.stringify(check.checked));
-		} else {
-			//
-			alert('Ошибка в поиске чек-бокса');
-		}
-	}
-});
 </script>
-<!-- Кнопки -->
-<script>
-	const setBnt = document.getElementById("setButton");
-	const getBnt = document.getElementById("getButton");
-	const chk = document.getElementById("scale");
-	
-	setBnt.addEventListener('click', function(event) {
-		let key = JSON.stringify(chk.name);
-		let val = JSON.stringify(chk.checked);
-		ds.setItem(key, val);
-		alert(key + '=' + val);
-	});
-//
-//	Читать из хранилища	"Get"
-//	https://anatolykulikov.ru/article/telegram-cloud-storage/
-//
-	getBnt.addEventListener('click', function(event) {
-		ds.getItem(chk.name, (error, result) => {
-			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
-			if (result !== null) {
-				//	значение
-				let val = JSON.parse(result);
-//				console.log(result);
-				alert(chk.checked);
-				alert(val);
-				// Парсим из строки нужный нам объект
-//				val = JSON.parse(result);
-				chk.checked = val;
-				alert(chk.checked);
-			}
-//			alert(JSON.parse(result));
-		});
-	});
-</script>
+<!--
 
+-->
 <script>
 //
-//	Коллекция всех флажков (checkbox) на странице
-const checkbox = document.getElementById('rheumatology').querySelectorAll('input[type="checkbox"]');
-//
-//	цикл по всем флажкам
-for (let i = 0; i < checkbox.length; i++) {
-	//
-	//	Восстановить значения флажков (элементов формы)
-	ds.getItem(JSON.stringify(checkbox[i].name), (error, result) => {
-		//
-		// Обработка ошибок
-		if (result !== null) {
-			//
-			// Парсим из строки нужный нам объект
-			checkbox[i].checked = JSON.parse(result);
-			console.log(i + '=' + checkbox[i].name);
-		}
-	});
-	console.log(checkbox[i].name);
-	//
-	//	Сохранить значение флажка
-	checkbox[i].addEventListener('click', function(event) {
-		let key = JSON.stringify(checkbox[i].name);
-		let val = JSON.stringify(checkbox[i].checked);
-		ds.setItem(key, val);
-		alert(key + '=' + val);
-	});
-};
-</script>
-
-<script>
+//	Коллекция флажков
 	let lst = document.querySelectorAll("[class='item-checkbox']");
 	console.log(lst);
-	//	цикл по всем флажкам
+//
+//	цикл по всем флажкам
 	for (let i = 0; i < lst.length; i++) {
+	//
+	//	Обработчик событий для каждого флажка
 		lst[i].addEventListener('click', function(event) {
 			alert(lst[i].id);
 		});
 	};
+	
 </script>
 
 </body>

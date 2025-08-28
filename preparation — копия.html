@@ -23,29 +23,97 @@ body
 	display:		flex;
 	color:			var(--tg-theme-text-color);
 	background:		var(--tg-theme-bg-color);
-	align-items:	center;
+	0align-items:	center;
 	flex-direction:	column;
-	font-size:		12px;
+	font-size:		var(--font-size);
 }
-.hint
+/*
+	flex container
+*/
+div.flex-box
 {
-	color: var(--tg-theme-hint-color);
+	display:			flex;
+	flex-direction:		row;
+	align-items:		stretch;
+	text-align:			left; 
+	justify-content:	start;
+	column-gap:			5px;
+	margin-bottom:		1rem;
 }
-.link
+details
 {
-	color: var(--tg-theme-link-color);
+	border:			1px solid #aaaaaa;
+	border-radius:	0px 8px 8px 0px;
+	overflow:		hidden;
+	padding:		0.5rem 0.5rem 0;
 }
-.button{
-	background:	var(--tg-theme-button-color);
-	color:		var(--tg-theme-button-text-color);
-	border:		none;
-	font-size:	20px;
+summary
+{
+	font-size:	var(--font-size);
+	padding:	0.5rem;
+	margin:		-0.5rem -0.5rem 0px;
+}
+details:open > summary
+{
+	border-bottom:		1px solid #aaaaaa;
+	background-color:	var(--summary-open-bg-color);
+}
+.item-checkbox
+{
+	display: none;
+}
+.item-label
+{
+	font-size:		var(--font-size);
+	color:			black;
+	border:			1px solid black;
+	border-radius:	8px 0px 0px 8px;
+	padding:		0.5rem;
+	0margin-right:	1rex;
+	display:		inline-block;
+	width:			4rex;
+	text-align:		right;
+}
+.item-checkbox:checked ~ .item-label
+{
+	background-color:	black;
+	color:				white;
 }
 </style>
 </head>
 <body>
+<div class="flex-box">
+	<div>
+		<input type="checkbox" id="my1" name="rheumatology#8" class="item-checkbox"/>
+		<label for="my1" class="item-label">11</label>
+	</div>
+	<div style="margin-right: auto;">
+		<details>
+		<summary>
+			Аксиальный спондилоартрит тяжелый
+		</summary>
+		<p>Скандинавская мифология — мифология древних скандинавов, часть древнегерманской мифологии.</p>
+		</details>
+	</div>
+</div>
+<div class="flex-box">
+	<div>
+		<input type="checkbox" id="my2" name="rheumatology#9" class="item-checkbox"/>
+		<label for="my2" class="item-label">999</label>
+	</div>
+	<div style="margin-right: auto;">
+		<details>
+		<summary>
+			Аксиальный спондилоартрит тяжелый
+		</summary>
+		<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
+		</details>
+	</div>
+</div>
+
 <!-- :: ЗАБОЛЕВАНИЯ :: -------------------------------------------------->
 <div id="rheumatology" class="tab-content">
+
 	<table class="db-table compact" style="width: 100%;">
 		<!--caption>Список ревматологических заболеваний</caption-->
 		<thead>
@@ -143,56 +211,6 @@ body
 		<p><input id="getButton" type="button" value="Get"/></p>
 
 	</form>
-<!-- ОКНО ДИАЛОГА "##--CONTAINER--##" -->
-<dialog id="dialog-##--CONTAINER--##">
-<!-- .: Форма :. -->
-<form autocomplete="off">
-<!-- id строки таблицы -->
-<input type="hidden" name="id">
-<!--:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
-<!-- Заголовок -->
-<div class="header">
-	<div class="title">
-		<!-- Название окна -->
-		<label name="title"><span>biotech</span>Лабораторные показатели</label>
-		<!-- кнопка "Закрыть окно" -->
-		<label name="close" class="button-close" title="Закрыть окно">close</label>
-	</div>
-</div>
-<!-- Содержание -->
-<div class="grid-form">
-	<!-- Показатель -->
-	<div class="group" style="margin-left: auto;">
-		<label>Показатель</label>
-	</div>
-	<div class="group">
-		<!-- поле ввода -->
-		<input type="text" class="text" name="name" value=""
-			required autofocus placeholder="текст ...">
-		<div><!-- символ проверки --></div>
-	</div>
-	<!-- Информация -->	
-	<div class="info">
-		<label>Информация</label>
-	</div>
-	<div>
-		<textarea name="info" class="info" rows="7" placeholder="текст ..."></textarea>
-	</div>
-	<!-- кнопки "submit" -->
-	<div style="grid-column: 2/3; display: flex; align-items: center;">
-		<!-- Левая кнопка -->
-		<div>
-			<button type="submit" name="submit-left" class="icon default">Left</button>
-		</div>
-		<!-- Правая кнопка -->
-		<div style="margin-left: auto;">
-			<button type="button" name="submit-right" class="icon">Right</button>
-		</div>
-	</div>
-</div>
-<!-- :: конец формы :: -->
-</form>
-</dialog>
 <!--
 	Секция JavaScript
 -->
@@ -319,5 +337,18 @@ for (let i = 0; i < checkbox.length; i++) {
 	});
 };
 </script>
+
+<script>
+	let lst = document.querySelectorAll("[class='item-checkbox']");
+	console.log(lst);
+	//	цикл по всем флажкам
+	for (let i = 0; i < lst.length; i++) {
+		lst[i].addEventListener('click', function(event) {
+			alert(lst[i].id);
+		});
+	};
+	
+</script>
+
 </body>
 </html>
