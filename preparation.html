@@ -143,23 +143,41 @@ details:open > summary
 	});	
 </script>
 <!--
-
+	Хранилище устройства (DeviceStorage)
 -->
 <script>
-//
-//	Коллекция флажков
+	//
+	//	Коллекция флажков
 	let lst = document.querySelectorAll("[class='item-checkbox']");
 	console.log(lst);
-//
-//	цикл по всем флажкам
-	for (let i = 0; i < lst.length; i++) {
 	//
-	//	Обработчик событий для каждого флажка
+	//	Цикл по всем флажкам
+	for (let i = 0; i < lst.length; i++) {
+		//
+		//	Восстановить значение флажка
+		ds.getItem(JSON.stringify(lst[i].name), (error, result) => {
+			//
+			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
+			if (result !== null) {
+				//
+				//	Присвоить значение
+				lst[i].checked = JSON.parse(result);
+			}
+			else {
+				lst[i].checked = false;
+			}
+		});
+		//
+		//	Обработчик событий для каждого флажка
 		lst[i].addEventListener('click', function(event) {
-			alert(lst[i].id);
+			//
+			//	Записать в хранилище устройства
+			ds.setItem(
+				JSON.stringify(lst[i].name),
+				JSON.stringify(lst[i].checked));
+			alert(JSON.stringify(lst[i].name) + JSON.stringify(lst[i].checked));
 		});
 	};
-	
 </script>
 
 </body>
