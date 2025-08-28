@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сопутствующие состояния</title>
+<!--meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<title>Электронный ассистент врача-ревматолога</title-->
+<link href="main.css" rel="stylesheet" type="text/css"/>
+<link href="tables.css" rel="stylesheet" type="text/css"/>
+<!-- Google font's -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+<!--
+	https://core.telegram.org/bots/webapps#initializing-mini-apps
+-->
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+<style>
+body
+{
+	display:		flex;
+	color:			var(--tg-theme-text-color);
+	background:		var(--tg-theme-bg-color);
+	0align-items:	center;
+	flex-direction:	column;
+	font-size:		var(--font-size);
+}
+/*
+	flex container
+*/
+div.flex-box
+{
+	display:			flex;
+	flex-direction:		row;
+	align-items:		stretch;
+	text-align:			left; 
+	justify-content:	start;
+	column-gap:			5px;
+	margin-bottom:		1rem;
+}
+details
+{
+	color:				var(--tg-theme-text-color);
+	border:				1px solid var(--tg-theme-section-separator-color, #aaaaaa);
+	border-radius:		0px 8px 8px 0px;
+	overflow:			hidden;
+	padding:			0.5rem 0.5rem 0;
+}
+summary
+{
+	font-size:			var(--font-size);
+	color:				var(--tg-theme-text-color);
+	margin:				-0.5rem -0.5rem 0px;
+	padding:			0.5rem;
+}
+details:open
+{
+	color:				var(--tg-theme-hint-color);
+}
+details:open > summary
+{
+	color:				var(--tg-theme-text-color);
+	background-color:	var(--tg-theme-secondary-bg-color);
+	border-bottom:		1px solid #aaaaaa;
+}
+.item-checkbox
+{
+	display: none;
+}
+.item-label
+{
+	font-size:			var(--font-size);
+	color:				var(--tg-theme-text-color);
+	border:				1px solid var(--tg-theme-link-color);
+	border-radius:		8px 0px 0px 8px;
+	padding:			0.5rem;
+	0margin-right:		1rex;
+	display:			inline-block;
+	width:				4rex;
+	text-align:			right;
+}
+.item-checkbox:checked ~ .item-label
+{
+	color:				var(--tg-theme-button-text-color);
+	background-color:	var(--tg-theme-button-color);
+}
+div.content
+{
+	margin-right:		auto;
+	width:				100%;
+}
+</style>
+</head>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	ОСНОВНОЕ СОДЕРЖАНИЕ
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<body>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#45" class="item-checkbox"
+			id="status-label-45"/>
+		<label for="status-label-45" class="item-label">1</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Активное лечение злокачественногоновообразования в настоящий момент</summary>
+			<p>или лимфопролиферативного заболевания</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#6" class="item-checkbox"
+			id="status-label-6"/>
+		<label for="status-label-6" class="item-label">2</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Беременность, грудное вскармливание</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#34" class="item-checkbox"
+			id="status-label-34"/>
+		<label for="status-label-34" class="item-label">3</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Вакцинация живой вакциной одновременно или менее, чем за 30 дней до введения препарата</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#42" class="item-checkbox"
+			id="status-label-42"/>
+		<label for="status-label-42" class="item-label">4</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Вакцинация инактивированной вакциной в период применения препарата</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#7" class="item-checkbox"
+			id="status-label-7"/>
+		<label for="status-label-7" class="item-label">5</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Возраст до 18 лет</summary>
+			<p>++/--</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#22" class="item-checkbox"
+			id="status-label-22"/>
+		<label for="status-label-22" class="item-label">6</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Гиперчувствительность к белкам мыши</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#35" class="item-checkbox"
+			id="status-label-35"/>
+		<label for="status-label-35" class="item-label">7</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Гиперчувствительность к любому компоненту препарата в анамнезе</summary>
+			<p>запрещено</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#37" class="item-checkbox"
+			id="status-label-37"/>
+		<label for="status-label-37" class="item-label">8</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Гиперчувствительность к производным белка E. coli</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#47" class="item-checkbox"
+			id="status-label-47"/>
+		<label for="status-label-47" class="item-label">9</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Жизнеугрожающие инфузионные реакции при применении моноклональных антител в анамнезе</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#39" class="item-checkbox"
+			id="status-label-39"/>
+		<label for="status-label-39" class="item-label">10</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>наследственная непереносимость галактозы или дефицит лактазы</summary>
+			<p>или синдром глюкозо-галактозной мальабсорбции</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#16" class="item-checkbox"
+			id="status-label-16"/>
+		<label for="status-label-16" class="item-label">11</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Наследственная непереносимость фруктозы</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#46" class="item-checkbox"
+			id="status-label-46"/>
+		<label for="status-label-46" class="item-label">12</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Неинвазивная/инвазивная ИВЛ или ЭКМО в настоящий момент</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#38" class="item-checkbox"
+			id="status-label-38"/>
+		<label for="status-label-38" class="item-label">13</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Совместное приеменение с азатиоприном, препаратами золота и анакинрой</summary>
+			<p>для оренсии</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#41" class="item-checkbox"
+			id="status-label-41"/>
+		<label for="status-label-41" class="item-label">14</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Совместное применение с абатацептом</summary>
+			<p>для инфликсимаба</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#40" class="item-checkbox"
+			id="status-label-40"/>
+		<label for="status-label-40" class="item-label">15</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Совместное применение с анакинрой</summary>
+			<p>для инфликсимаба</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#43" class="item-checkbox"
+			id="status-label-43"/>
+		<label for="status-label-43" class="item-label">16</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Совместный прием с азатиоприном, циклоспорином или такролимусом</summary>
+			<p>для Тофары</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#36" class="item-checkbox"
+			id="status-label-36"/>
+		<label for="status-label-36" class="item-label">17</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Совместный прием с иФНО альфа или другими ГИБП</summary>
+			<p>дополнительно для упадацитиниба: "...и совместно с другими ингибиторами JAK"</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#44" class="item-checkbox"
+			id="status-label-44"/>
+		<label for="status-label-44" class="item-label">18</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Совместный прием с мощными индукторами цитохрома P450 (CYP3А4)</summary>
+			<p>(например, рифампицин)  - для тофацитиниба<br>или у пациентов, которые прекратили прием мощного индуктора изофермента CYP3A4 менее чем за 28 дней или 5 периодов полувыведения до приема первой дозы тофацитиниба.</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="status#8" class="item-checkbox"
+			id="status-label-8"/>
+		<label for="status-label-8" class="item-label">19</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Состояние в течение 1 месяца после лечения иФНО-альфа</summary>
+			<p>или комбинация этих препартов</p>
+		</details>
+	</div>
+</div>
+
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<script>
+	//
+	//	Web-API: https://core.telegram.org/bots/webapps#events-available-for-mini-apps
+	let tg = window.Telegram.WebApp;
+	//
+	//	Локальное хранилище данных
+	let ds = tg.DeviceStorage;
+	//	Инициализируем WebApp
+	tg.ready();
+	//	во весь экран
+	tg.expand();
+	//	Получаем информацию о пользователе
+	const user = tg.initDataUnsafe.user;
+	//	Главная кнопка
+	tg.MainButton.setText("Вперед").show();
+	//	Вторичная кнопка
+	//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
+	tg.SecondaryButton.setText("Назад").show();
+	//	Кнопка "Установки"
+	tg.SettingsButton.show();
+	//	Add an event listener for when the SettingButton is clicked
+	tg.onEvent('settingsButtonClicked', () => {
+		alert('Setting button clicked!');
+		// You can also send data back to the bot here
+		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
+	});	
+</script>
+<!--
+	Хранилище устройства (DeviceStorage)
+-->
+<script>
+	//
+	//	Коллекция флажков
+	let lst = document.querySelectorAll("[class='item-checkbox']");
+	console.log(lst);
+	//
+	//	Цикл по всем флажкам
+	for (let i = 0; i < lst.length; i++) {
+		//
+		//	Восстановить значение флажка
+		ds.getItem(JSON.stringify(lst[i].name), (error, result) => {
+			//
+			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
+			if (result !== null) {
+				//
+				//	Присвоить значение
+				lst[i].checked = JSON.parse(result);
+			}
+			else {
+				lst[i].checked = false;
+			}
+		});
+		//
+		//	Обработчик событий для каждого флажка
+		lst[i].addEventListener('click', function(event) {
+			//
+			//	Записать в хранилище устройства
+			ds.setItem(
+				JSON.stringify(lst[i].name),
+				JSON.stringify(lst[i].checked));
+			alert(JSON.stringify(lst[i].name) + JSON.stringify(lst[i].checked));
+		});
+	};
+</script>
+</body>
+</html>
