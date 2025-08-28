@@ -86,6 +86,21 @@ details:open > summary
 	color:				var(--tg-theme-button-text-color);
 	background-color:	var(--tg-theme-button-color);
 }
+.item-input
+{
+	padding:			0.5rem;
+}
+/*
+	https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/number
+*/
+.probe-number
+{
+	width:				3rem;
+	padding:			0.5rem;
+	border:				1px solid black;
+	border-radius:		0 8px 8px 0;
+	font-size:			calc(var(--font-size) + 4px);
+}
 </style>
 </head>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -109,7 +124,7 @@ details:open > summary
 	</div>
 </div>
 <div class="flex-box">
-	<div>
+	<div class="item-label">
 		999
 	</div>
 	<div style="margin-right:auto; width:100%">
@@ -121,7 +136,7 @@ details:open > summary
 		</details>
 	</div>
 	<div>
-		<input type="number" class="float" name="probe#123"
+		<input type="number" class="probe-number" name="probe#123"
 			value="%s" step="0.1" min="0" max="100"/>
 	</div>
 </div>
