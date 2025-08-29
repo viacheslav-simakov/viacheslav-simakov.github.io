@@ -660,5 +660,22 @@ div.header-fixed
 		});
 	};
 </script>
+<script>
+	tg.showPopup({
+		title: "Заголовок Popup",
+		message: "Это сообщение внутри вашего popup. Выберите одну из кнопок ниже.",
+		buttons: [
+		{
+			id: "close_button",
+			text: "Закрыть"
+		},
+		{
+			id: "action_button",
+			type: "destructive", // Пример: кнопка с красным текстом
+			text: "Выполнить действие"
+		}
+		]
+	});
+</script>
 </body>
 </html>
