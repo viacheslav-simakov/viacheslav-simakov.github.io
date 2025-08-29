@@ -91,6 +91,17 @@ div.content
 	margin-right:		auto;
 	width:				100%;
 }
+div.sticky-header
+{
+	position:			sticky;	/* Закрепить на экране */
+	top:				0px;	/* Отступ от верхнего края */
+	left:				0px;	/* Отступ от правого края */
+	z-index:			1000;	/* Убедиться, что кнопка поверх другого контента */
+	color:				var(--tg-theme-accent-text-color, yellow);
+	background-color:	var(--tg-theme-header-bg-color, green);
+	padding:			4px 8px;
+	margin-bottom:		8px;
+}
 </style>
 </head>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -99,6 +110,7 @@ div.content
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <body>
+<div class="sticky-header">Препараты</div>
 
 <div class="flex-box">
 	<div>
