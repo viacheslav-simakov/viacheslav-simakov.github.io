@@ -91,9 +91,8 @@ div.content
 	margin-right:		auto;
 	width:				100%;
 }
-div.sticky-header
+div.header-fixed
 {
-/*	position:			sticky;	 Закрепить на экране */
 	position:			fixed;
 	top:				0;		/* Отступ от верхнего края */
 	left:				0;		/* Отступ от правого края */
@@ -102,9 +101,8 @@ div.sticky-header
 	z-index:			1000;	/* Убедиться, что кнопка поверх другого контента */
 	color:				var(--tg-theme-accent-text-color, yellow);
 	background-color:	var(--tg-theme-header-bg-color, green);
-	padding:			4px 8px;
-	margin-bottom:		20px;
 	font-size:			calc(var(--font-size) + 4px);
+	padding:			4px 8px;
 }
 </style>
 </head>
@@ -114,9 +112,9 @@ div.sticky-header
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <body>
-<div class="sticky-header">Препараты</div>
-<!--div style="margin-bottom: 28px;">&nbsp;</div-->
-<div style="margin-bottom: 28px;"></div>
+<div class="header-fixed">Препараты</div>
+<div style="margin-bottom: 30px;"><!-- отступ --></div>
+
 <div class="flex-box">
 	<div>
 		<input type="checkbox" name="preparation#10" class="item-checkbox"
