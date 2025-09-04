@@ -628,6 +628,14 @@ div.header-fixed
 	tg.SettingsButton.show();
 	//	Кнопка "Назад"
 	tg.BackButton.show();
+	tg.onEvent('backButtonClicked', () => {
+		alert('Setting button clicked!');
+		//
+		//	Закрыть WebApp
+		tg.close();
+		// You can also send data back to the bot here
+		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
+	});	
 	//	Add an event listener for when the SettingButton is clicked
 	tg.onEvent('settingsButtonClicked', () => {
 		alert('Setting button clicked!');
