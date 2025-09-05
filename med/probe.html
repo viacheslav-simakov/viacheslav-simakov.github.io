@@ -75,13 +75,16 @@ details:open > summary
 {
 	font-size:			var(--font-size);
 	color:				var(--tg-theme-text-color);
-	border:				1px solid var(--tg-theme-link-color);
+	0border:				1px solid var(--tg-theme-link-color);
+	border:				1px solid black;
 	border-radius:		8px 0px 0px 8px;
 	padding:			0.5rem;
 	0margin-right:		1rex;
 	display:			inline-block;
-	width:				4rex;
-	text-align:			right;
+	width:				2rex;
+	height:				2rex;
+	text-align:			center;
+	line-height:		2rex;
 }
 .item-checkbox:checked ~ .item-label
 {
@@ -130,16 +133,15 @@ div.sticky-header
 <div class="sticky-header">Заголовок</div>
 
 <div class="flex-box">
-	<div class="item-label">
-		99
+	<div>
+	<div class="item-label" style="border-radius: 50%;">
+		1
 	</div>
-	<div style="margin-right:auto; width:100%">
+	</div>
+	<div class="content">
 		<details>
 		<summary>
-			<div style="display:flex"><div>Проба</div>
-			<div style="margin-left:auto"
-			>Проба-2</div>
-			</div>
+			Проба-2
 		</summary>
 		<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
 		</details>
@@ -149,6 +151,39 @@ div.sticky-header
 			value="%s" step="0.1" min="0" max="100"/>
 	</div>
 </div>
+<div class="flex-box">
+	<div>
+	<div class="item-label" style="border-radius: 50%;">
+		99
+	</div>
+	</div>
+	<div class="content">
+		<details>
+		<summary>
+			Проба-2
+		</summary>
+		<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
+		</details>
+	</div>
+	<div>
+		<input type="number" class="probe-number" name="probe#123"
+			value="%s" step="0.1" min="0" max="100"/>
+	</div>
+</div>
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="preparation#10" class="item-checkbox"
+			id="preparation-label-10"/>
+		<label for="preparation-label-10" class="item-label">1</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Актемра</summary>
+			<p>Ингибитор ИЛ 6 (Тоцилизумаб)</p>
+		</details>
+	</div>
+</div>
+
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
