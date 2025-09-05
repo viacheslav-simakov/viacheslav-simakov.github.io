@@ -122,6 +122,41 @@ div.sticky-header
 	padding:			4px 8px;
 	margin-bottom:		8px;
 }
+
+
+/* Стили для контейнера выпадающего меню */
+.dropdown {
+  position: relative; /* Для позиционирования подменю */
+  display: inline-block;
+}
+
+/* Стили для самого подменю (изначально скрыто) */
+.dropdown-content {
+  display: none; /* По умолчанию скрыто */
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Стили для ссылок внутри подменю */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Показываем подменю, когда пункт меню получает фокус */
+.main-item:focus + .dropdown-content {
+  display: block;
+}
+
+/* Дополнительно: показ подменю при наведении на него самого */
+.dropdown-content:hover {
+  display: block;
+}
 </style>
 </head>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -131,6 +166,14 @@ div.sticky-header
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <body>
 <div class="sticky-header">Заголовок</div>
+
+<div class="dropdown">
+  <button class="main-item" tabindex="1">Пункт меню</button>
+  <div class="dropdown-content">
+    <a href="#">Подпункт 1</a>
+    <a href="#">Подпункт 2</a>
+  </div>
+</div>
 
 <div class="flex-box">
 	<div>
