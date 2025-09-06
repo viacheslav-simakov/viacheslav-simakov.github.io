@@ -44,17 +44,25 @@ div.flex-box
 }
 .item-checkbox
 {
-	display: none;
+	display:			none;
 }
-div.item-order, summary
+div.item-order
 {
+	display:			block;
+	font-size:			1rem;
 	padding:			0.5rem;
-	width:				1.5rem;
+	width:				2rem;
+	text-align:			right;
 }
 div.item-content
 {
+	display:			block;
 	margin-right:		auto;
 	width:				100%;
+}
+div.item-input
+{
+	padding:			0rem;
 }
 details
 {
@@ -69,6 +77,7 @@ summary
 	font-size:			var(--font-size);
 	color:				var(--tg-theme-text-color);
 	margin:				-0.5rem -0.5rem 0px;
+	padding:			0.5rem;
 }
 details:open
 {
@@ -92,27 +101,26 @@ details:open > summary
 	height:				2rex;
 	text-align:			center;
 	line-height:		2rex;
+	margin-left:		calc(3rem - 2rex);
 }
 .item-checkbox:checked ~ .item-label
 {
 	color:				var(--tg-theme-button-text-color);
 	background-color:	var(--tg-theme-button-color);
 }
-.item-input
-{
-	padding:			0.5rem;
-}
 /*
 	https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/number
 */
-.probe-number
+input[type=number]
 {
+	display:			block;
+	font-size:			calc(var(--font-size) + 4px);
 	width:				3rem;
 	padding:			0.5rem;
 	border:				1px solid black;
 	border-radius:		8px;
-	font-size:			calc(var(--font-size) + 4px);
 }
+
 div.sticky-header
 {
 	position:			sticky;	/* Закрепить на экране */
@@ -210,33 +218,35 @@ div.header-fixed
 		<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
 		</details>
 	</div>
-	<div class="item-data">
-		<input type="number" class="probe-number" name="probe#123"
+	<div class="item-input">
+		<input type="number" name="probe#123"
 			value="%s" step="0.1" min="0" max="100"/>
 	</div>
 </div>
-
 <div class="flex-box">
 	<div class="item-order">
 		99
 	</div>
+
 	<div class="item-content">
 		<details>
-		<summary>
-			Проба-2
-		</summary>
-		<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
+			<summary>Ацеллбия</summary>
+			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
 		</details>
 	</div>
-	<div>
+
+	<div class="item-input">
 		<input type="number" class="probe-number" name="probe#123"
 			value="%s" step="0.1" min="0" max="100"/>
 	</div>
 </div>
 
 <div class="flex-box">
+	<input type="checkbox" name="preparation#76" class="item-checkbox"
+		id="preparation-label-76"/>
+
 	<div class="item-order">
-		7
+		79
 	</div>
 	<div class="item-content">
 		<details>
@@ -244,12 +254,31 @@ div.header-fixed
 			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
 		</details>
 	</div>
-	<div>
-		<input type="checkbox" name="preparation#76" class="item-checkbox"
-			id="preparation-label-76"/>
+	<div class="item-input">
 		<label for="preparation-label-76" class="item-label">x</label>
+		<!--input type="number" class="probe-number" name="probe#123"
+			value="%s" step="0.1" min="0" max="100"/-->
 	</div>
 </div>
+
+<div class="flex-box">
+	<div class="item-order">
+		99
+	</div>
+
+	<div class="item-content">
+		<details>
+			<summary>Ацеллбия</summary>
+			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
+		</details>
+	</div>
+
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#123"
+			value="%s" step="0.1" min="0" max="100"/>
+	</div>
+</div>
+
 
 </div>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
