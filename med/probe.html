@@ -166,7 +166,7 @@ dialog
 	max-width:			100% !important;
 	0width:				fit-content;
 	0width:				100%;
-	0overflow:			hidden; /* обрезка */
+	overflow:			hidden; /* обрезка */
 }
 /*	Фон модального окна */
 dialog::backdrop
@@ -303,49 +303,6 @@ div.tab-content, input[type=radio]
 			<span>pill</span><div>Препараты</div></label>
 	</div>
 </dialog>
-
-<script>
-	const showMenu = document.getElementById("showMenu");
-	const userDialog = document.getElementById("userDialog");
-	const itemMenu = userDialog.querySelectorAll("label");
-	//
-	// "Show the dialog" button opens the <dialog> modally
-	showMenu.addEventListener("click", () => {
-		//
-		//	Показать окно
-		userDialog.showModal();
-	});
-	//
-	//	цикл по всем пунктам меню
-	for (let i = 0; i < itemMenu.length; i++) {
-		//
-		// Добавляем прослушиватель для закрытия при клике
-		itemMenu[i].addEventListener("click", () => {
-			//
-			//	Закрываем диалог
-			userDialog.close();
-			//
-			//	Изменить значок
-			showMenu.querySelector(".icon-title").textContent =
-				itemMenu[i].querySelector("span").textContent;
-			//
-			//	Изменить название
-			showMenu.querySelector(".text-title").textContent =
-				itemMenu[i].querySelector("div").textContent;
-		});
-	}
-	// Добавляем прослушиватель для закрытия при клике вне диалога
-	document.addEventListener('click', function(event) {
-//		alert("Ok");
-		console.log(userDialog.open);
-		// Проверяем, кликнули ли по самому диалогу или его содержимому
-		if (!userDialog.contains(event.target) && userDialog.open) {
-//			userDialog.close(); // Закрываем диалог
-		}
-	});
-</script>
-
-
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	Основное заболевание
@@ -656,5 +613,53 @@ div.tab-content, input[type=radio]
 		});
 	};
 </script>
+
+<script>
+	const showMenu = document.getElementById("showMenu");
+	const userDialog = document.getElementById("userDialog");
+	const itemMenu = userDialog.querySelectorAll("label");
+	//
+	// "Show the dialog" button opens the <dialog> modally
+	showMenu.addEventListener("click", () => {
+		//
+		//	Показать окно
+		userDialog.showModal();
+		//
+		//	Запретить Главную кнопку
+		tg.MainButton.disable();
+	});
+	//
+	//	цикл по всем пунктам меню
+	for (let i = 0; i < itemMenu.length; i++) {
+		//
+		// Добавляем прослушиватель для закрытия при клике
+		itemMenu[i].addEventListener("click", () => {
+			//
+			//	Закрываем диалог
+			userDialog.close();
+			//
+			//	Изменить значок
+			showMenu.querySelector(".icon-title").textContent =
+				itemMenu[i].querySelector("span").textContent;
+			//
+			//	Изменить название
+			showMenu.querySelector(".text-title").textContent =
+				itemMenu[i].querySelector("div").textContent;
+			//
+			//	Разрешить Главную кнопку
+			tg.MainButton.enable();
+		});
+	}
+	// Добавляем прослушиватель для закрытия при клике вне диалога
+	document.addEventListener('click', function(event) {
+//		alert("Ok");
+		console.log(userDialog.open);
+		// Проверяем, кликнули ли по самому диалогу или его содержимому
+		if (!userDialog.contains(event.target) && userDialog.open) {
+//			userDialog.close(); // Закрываем диалог
+		}
+	});
+</script>
+
 </body>
 </html>
