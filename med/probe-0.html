@@ -140,45 +140,6 @@ div.header-fixed
 	padding:			4px 12px;
 	border-bottom:		1px solid var(--tg-theme-accent-text-color, yellow);
 }
-/*	Диалоговое окно */
-dialog
-{
-	font-size:			var(--font-size);
-	border:				1px solid #aaa;
-	
-	margin:				44px auto auto 0px;
-	padding:			1rex;
-	background-color:	hsl(0,0%,95%);
-
-	border-radius:		0px 0px 1rex 1rex;
-	box-shadow:			0 0 25px rgba(0,0,0,0.5);
-
-	width:				fit-content;
-	overflow:			hidden; /* обрезка */
-}
-/*	Фон модального окна */
-dialog::backdrop
-{
-	background-color:	hsl(0,0%,90%);
-	opacity:			0.75;
-}
-.symbols
-{
-	font-size:		24px;
-	font-family:	"Material Symbols Outlined";
-	font-weight:	normal;
-
-	padding-right:	1rem;
-}
-div.menu-item
-{
-	display:			flex;
-	flex-direction:		row;
-	align-items:		center;
-	text-align:			left; 
-	justify-content:	start;
-	column-gap:			2px;
-}
 </style>
 </head>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -187,32 +148,21 @@ div.menu-item
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <body>
-<dialog id="userDialog">
+<dialog id="userDialog" style="
+	margin:				44px auto auto 0px;
+	padding:			1rex;
+	border:				1px solid #aaa;
+	border-radius:		0px 0px 1rex 1rex;
+	box-shadow:			0 0 25px rgba(0,0,0,0.5);
+">
 	<form method="dialog">
-		<div style="menu-item">
-			<div class="symbols">rheumatology</div>
-			<div>Основное заболевание</div>
-		</div>
-		<div style="menu-item">
-			<div class="symbols">person_cancel</div>
-			<div>Сопутствующие заболевания</div>
-		</div>
-		<div style="menu-item">
-			<div class="symbols">person_alert</div>
-			<div>Сопутствующие состояния</div>
-		</div>
-		<div style="menu-item">
-			<div class="symbols">instant_mix</div>
-			<div>Лабораторные показатели</div>
-		</div>
-		<div style="menu-item">
-			<div class="symbols">biotech</div>
-			<div>Лабораторные исследования</div>
-		</div>
-		<div style="menu-item">
-			<div class="symbols">pill</div>
-			<div>Препараты</div>
-		</div>
+		<p>Основное заболевание</p>
+		<p>Сопутствующие заболевания</p>
+		<p>Сопутствующие состояния</p>
+		<p>Лабораторные показатели</p>
+		<p>Наименование исследования</p>
+		<p>Препараты</p>
+
 		<button>OK</button>
 	</form>
 </dialog>
@@ -226,21 +176,11 @@ div.menu-item
 
 <script>
 	const showButton = document.getElementById("showDialog");
-	let userDialog = document.getElementById("userDialog");
+	const userDialog = document.getElementById("userDialog");
 	
 	// "Show the dialog" button opens the <dialog> modally
 	showButton.addEventListener("click", () => {
-		console.log(userDialog.open);
 		userDialog.showModal();
-	});
-	// Добавляем прослушиватель для закрытия при клике вне диалога
-	document.addEventListener('click', function(event) {
-//		alert("Ok");
-		console.log(userDialog.open);
-		// Проверяем, кликнули ли по самому диалогу или его содержимому
-		if (!userDialog.contains(event.target) && userDialog.open) {
-//			userDialog.close(); // Закрываем диалог
-		}
 	});
 </script>
 
