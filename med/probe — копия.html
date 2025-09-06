@@ -20,13 +20,13 @@
 <style>
 body
 {
-	0display:		flex;
-	display:		block;
-	font-size:		var(--font-size);
+	display:		flex;
 	color:			var(--tg-theme-text-color);
 	background:		var(--tg-theme-bg-color);
 	0align-items:	center;
-	0flex-direction:	column;
+	flex-direction:	column;
+	font-size:		var(--font-size);
+	
 	0top:			20px;
 }
 /*
@@ -42,25 +42,11 @@ div.flex-box
 	column-gap:			5px;
 	margin-bottom:		1rem;
 }
-.item-checkbox
-{
-	display: none;
-}
-div.item-order, summary
-{
-	padding:			0.5rem;
-	width:				1.5rem;
-}
-div.item-content
-{
-	margin-right:		auto;
-	width:				100%;
-}
 details
 {
 	color:				var(--tg-theme-text-color);
 	border:				1px solid var(--tg-theme-section-separator-color, #aaaaaa);
-	border-radius:		8px;
+	border-radius:		0px 8px 8px 0px;
 	overflow:			hidden;
 	padding:			0.5rem 0.5rem 0;
 }
@@ -69,6 +55,7 @@ summary
 	font-size:			var(--font-size);
 	color:				var(--tg-theme-text-color);
 	margin:				-0.5rem -0.5rem 0px;
+	padding:			0.5rem;
 }
 details:open
 {
@@ -80,14 +67,20 @@ details:open > summary
 	background-color:	var(--tg-theme-secondary-bg-color);
 	border-bottom:		1px solid #aaaaaa;
 }
+.item-checkbox
+{
+	display: none;
+}
 .item-label
 {
-	display:			block;
 	font-size:			var(--font-size);
 	color:				var(--tg-theme-text-color);
-	border:				1px solid var(--tg-theme-link-color, black);
-	border-radius:		50%;
+	0border:				1px solid var(--tg-theme-link-color);
+	border:				1px solid black;
+	border-radius:		8px 0px 0px 8px;
 	padding:			0.5rem;
+	0margin-right:		1rex;
+	display:			inline-block;
 	width:				2rex;
 	height:				2rex;
 	text-align:			center;
@@ -97,6 +90,11 @@ details:open > summary
 {
 	color:				var(--tg-theme-button-text-color);
 	background-color:	var(--tg-theme-button-color);
+}
+div.content
+{
+	margin-right:		auto;
+	width:				100%;
 }
 .item-input
 {
@@ -123,23 +121,6 @@ div.sticky-header
 	background-color:	var(--tg-theme-header-bg-color, green);
 	padding:			4px 8px;
 	margin-bottom:		8px;
-}
-div.header-fixed
-{
-	0font-size:			calc(var(--font-size) + 20%);
-	font-size:			20px;
-	font-weight:		bold;
-	position:			fixed;
-	top:				0;		/* Отступ от верхнего края */
-	left:				0;		/* Отступ от правого края */
-	width:				100%;
-	height:				36px;
-	line-height:		36px;
-	z-index:			1000;	/* Убедиться, что кнопка поверх другого контента */
-	color:				var(--tg-theme-accent-text-color, yellow);
-	background-color:	var(--tg-theme-header-bg-color, green);
-	padding:			4px 12px;
-	border-bottom:		1px solid var(--tg-theme-accent-text-color, yellow);
 }
 
 
@@ -184,25 +165,23 @@ div.header-fixed
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <body>
-<!-- Меню -->
-<div class="header-fixed">
-	<div class="dropdown">
-	<button class="main-item" tabindex="1">Пункт меню</button>
-	<div class="dropdown-content">
-		<a href="#">Подпункт 1</a>
-		<a href="#">Подпункт 2</a>
-	</div>
-	</div>
-Заголовок
+<div class="sticky-header">Заголовок</div>
+
+<div class="dropdown">
+  <button class="main-item" tabindex="1">Пункт меню</button>
+  <div class="dropdown-content">
+    <a href="#">Подпункт 1</a>
+    <a href="#">Подпункт 2</a>
+  </div>
 </div>
-<!-- Список -->
-<div id="probe-data" style="margin-top:50px;">
 
 <div class="flex-box">
-	<div class="item-order">
+	<div>
+	<div class="item-label" style="border-radius: 50%;">
 		1
 	</div>
-	<div class="item-content">
+	</div>
+	<div class="content">
 		<details>
 		<summary>
 			Проба-2
@@ -210,17 +189,18 @@ div.header-fixed
 		<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
 		</details>
 	</div>
-	<div class="item-data">
+	<div>
 		<input type="number" class="probe-number" name="probe#123"
 			value="%s" step="0.1" min="0" max="100"/>
 	</div>
 </div>
-
 <div class="flex-box">
-	<div class="item-order">
+	<div>
+	<div class="item-label" style="border-radius: 50%;">
 		99
 	</div>
-	<div class="item-content">
+	</div>
+	<div class="content">
 		<details>
 		<summary>
 			Проба-2
@@ -233,25 +213,20 @@ div.header-fixed
 			value="%s" step="0.1" min="0" max="100"/>
 	</div>
 </div>
-
 <div class="flex-box">
-	<div class="item-order">
-		7
+	<div>
+		<input type="checkbox" name="preparation#10" class="item-checkbox"
+			id="preparation-label-10"/>
+		<label for="preparation-label-10" class="item-label">1</label>
 	</div>
-	<div class="item-content">
+	<div class="content">
 		<details>
-			<summary>Ацеллбия</summary>
-			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
+			<summary>Актемра</summary>
+			<p>Ингибитор ИЛ 6 (Тоцилизумаб)</p>
 		</details>
 	</div>
-	<div>
-		<input type="checkbox" name="preparation#76" class="item-checkbox"
-			id="preparation-label-76"/>
-		<label for="preparation-label-76" class="item-label">x</label>
-	</div>
 </div>
 
-</div>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
