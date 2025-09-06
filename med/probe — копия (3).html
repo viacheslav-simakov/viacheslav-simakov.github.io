@@ -144,12 +144,12 @@ div.header-fixed
 dialog
 {
 	font-size:			var(--font-size);
+	border:				1px solid #aaa;
 	
 	margin:				44px auto auto 0px;
-	padding:			4px;
+	padding:			1rex;
 	background-color:	hsl(0,0%,95%);
 
-	border:				1px solid #aaa;
 	border-radius:		0px 0px 1rex 1rex;
 	box-shadow:			0 0 25px rgba(0,0,0,0.5);
 
@@ -162,51 +162,28 @@ dialog::backdrop
 	background-color:	hsl(0,0%,90%);
 	opacity:			0.75;
 }
-div.menu
+.symbols
 {
-	display:			flex;
-	flex-direction:		column;
-	0align-items:		start;
-	text-align:			left; 
-	justify-content:	start;
-	column-gap:			1rex;
+	0display:			inline-block;
+	font-size:			24px;
+	font-family:		"Material Symbols Outlined";
+	font-weight:		normal;
+
+	0padding-right:	1rex;
 }
-div.menu > label
+div.menu-item, button.menu
 {
 	display:			flex;
 	flex-direction:		row;
 	align-items:		center;
+	text-align:			left; 
 	justify-content:	start;
-
+	column-gap:			1rex;
 	padding:			1rex;
-	margin:				4px;
+	
 	border:				1px solid var(--tg-theme-section-separator-color, #aaaaaa);
 	border-radius:		8px;
 }
-div.menu > label > span
-{
-	font-size:			24px;
-	font-family:		"Material Symbols Outlined";
-	font-weight:		normal;
-	padding-right:		1rex;
-}
-</style>
-<style>
-
-/*	Подсветка выбора пользователя */
-#radio-rheumatology:checked ~	#userDialog #label-rheumatology,
-#radio-preparation:checked ~	#userDialog #label-preparation,
-#radio-comorbidity:checked ~ 	#userDialog #label-comorbidity,
-#radio-status:checked ~ 		#userDialog #label-status,
-#radio-deviation:checked ~ 		#userDialog #label-deviation,
-#radio-probe:checked ~ 			#userDialog #label-probe,
-#radio-prescription:checked ~ 	#userDialog #label-prescription
-{
-	background-color:	hsl(215,75%,90%);
-	0font-weight:		bold;
-}
-
-
 </style>
 </head>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -215,50 +192,37 @@ div.menu > label > span
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <body>
-<!--
-	Радиокнопки меню
--->
-	<input type="radio" id="radio-rheumatology"	name="tab-group">
-	<input type="radio" id="radio-preparation"	name="tab-group">
-	<input type="radio" id="radio-comorbidity"	name="tab-group">
-	<input type="radio" id="radio-status"		name="tab-group">
-	<input type="radio" id="radio-deviation"	name="tab-group">
-	<input type="radio" id="radio-probe"		name="tab-group">
-	<input type="radio" id="radio-prescription"	name="tab-group" checked>
-<!--
-	Меню
--->
 <dialog id="userDialog">
-	<!-- :: ВЫБОР ОПЦИЙ :: -------------------------------------------------------->
-	<div class="menu">
-		<!-- Рекомендации -->
-		<label id="label-prescription" for="radio-prescription">
-			<span>prescriptions</span>Рекомендации</label>
-
-		<!-- Заболевания -->
-		<label id="label-rheumatology" for="radio-rheumatology" class="item">
-			<span>rheumatology</span>Основное заболевание</label>
-
-		<!-- Сопутствующие заболевания -->
-		<label id="label-comorbidity" for="radio-comorbidity" class="item">
-			<span>person_cancel</span>Сопутствующие заболевания</label>
-	
-		<!-- Сопутствующие состояния -->
-		<label id="label-status" for="radio-status" class="item">
-			<span>person_alert</span>Сопутствующие состояния</label>
-
-		<!-- Сопутствующие отклонения -->
-		<label id="label-deviation" for="radio-deviation" class="item">
-			<span>instant_mix</span>Лабораторные показатели</label>
-		
-		<!-- Лабораторные показатели -->
-		<label id="label-probe" for="radio-probe" class="item">
-			<span>biotech</span>Лабораторные исследования</label>
-
-		<!-- Препараты -->
-		<label id="label-preparation" for="radio-preparation" class="item">
-			<span>pill</span>Препараты</label>
-	</div>
+	<form method="dialog">
+		<div class="menu-item">
+			<div class="symbols">rheumatology</div>
+			<div>Основное заболевание</div>
+		</div>
+		<div class="menu-item">
+			<div class="symbols">person_cancel</div>
+			<div>Сопутствующие заболевания</div>
+		</div>
+		<div class="menu-item">
+			<div class="symbols">person_alert</div>
+			<div>Сопутствующие состояния</div>
+		</div>
+		<div class="menu-item">
+			<div class="symbols">instant_mix</div>
+			<div>Лабораторные показатели</div>
+		</div>
+		<button class="menu">
+			<div class="menu-item">
+				<div class="symbols">biotech</div>
+				<div>Лабораторные исследования</div>
+			</div>
+		</button>
+		<button class="menu">
+			<div class="menu-item">
+				<div class="symbols">pill</div>
+				<div>Препараты</div>
+			</div>
+		</button>
+	</form>
 </dialog>
 
 <!-- Меню -->
