@@ -164,11 +164,11 @@ dialog::backdrop
 }
 .symbols
 {
-	font-size:		24px;
-	font-family:	"Material Symbols Outlined";
-	font-weight:	normal;
+	font-size:			24px;
+	font-family:		"Material Symbols Outlined";
+	font-weight:		normal;
 
-	padding-right:	1rem;
+	0padding-right:	1rex;
 }
 div.menu-item
 {
@@ -177,7 +177,12 @@ div.menu-item
 	align-items:		center;
 	text-align:			left; 
 	justify-content:	start;
-	column-gap:			2px;
+	column-gap:			1rex;
+	padding:			1rex;
+	
+	margin-bottom:		1rex;
+	border:				1px solid var(--tg-theme-section-separator-color, #aaaaaa);
+	border-radius:		8px;
 }
 </style>
 </head>
@@ -189,27 +194,27 @@ div.menu-item
 <body>
 <dialog id="userDialog">
 	<form method="dialog">
-		<div style="menu-item">
+		<div class="menu-item">
 			<div class="symbols">rheumatology</div>
 			<div>Основное заболевание</div>
 		</div>
-		<div style="menu-item">
+		<div class="menu-item">
 			<div class="symbols">person_cancel</div>
 			<div>Сопутствующие заболевания</div>
 		</div>
-		<div style="menu-item">
+		<div class="menu-item">
 			<div class="symbols">person_alert</div>
 			<div>Сопутствующие состояния</div>
 		</div>
-		<div style="menu-item">
+		<div class="menu-item">
 			<div class="symbols">instant_mix</div>
 			<div>Лабораторные показатели</div>
 		</div>
-		<div style="menu-item">
+		<div class="menu-item">
 			<div class="symbols">biotech</div>
 			<div>Лабораторные исследования</div>
 		</div>
-		<div style="menu-item">
+		<div class="menu-item">
 			<div class="symbols">pill</div>
 			<div>Препараты</div>
 		</div>
