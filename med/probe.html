@@ -581,9 +581,6 @@ div.tab-content, input[type=radio]
 	//
 	//	Web-API: https://core.telegram.org/bots/webapps#events-available-for-mini-apps
 	let tg = window.Telegram.WebApp;
-	//
-	//	Локальное хранилище данных
-	let ds = tg.DeviceStorage;
 	//	Инициализируем WebApp
 	tg.ready();
 	//	во весь экран
@@ -591,10 +588,10 @@ div.tab-content, input[type=radio]
 	//	Получаем информацию о пользователе
 	const user = tg.initDataUnsafe.user;
 	//	Главная кнопка
-	tg.MainButton.setText("Вперед").show();
+	tg.MainButton.setText("Рекомендации").show();
 	//	Вторичная кнопка
 	//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
-	tg.SecondaryButton.setText("Назад").show();
+	//	tg.SecondaryButton.setText("Назад").show();
 	//	Кнопка "Установки"
 	tg.SettingsButton.show();
 	//	Add an event listener for when the SettingButton is clicked
@@ -608,6 +605,9 @@ div.tab-content, input[type=radio]
 	Хранилище устройства (DeviceStorage)
 -->
 <script>
+	//
+	//	Локальное хранилище данных
+	let ds = tg.DeviceStorage;
 	//
 	//	Коллекция флажков
 	let lst = document.querySelectorAll("[class='item-checkbox']");
