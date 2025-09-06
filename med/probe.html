@@ -625,8 +625,8 @@ div.tab-content, input[type=radio]
 		//	Показать окно
 		userDialog.showModal();
 		//
-		//	Запретить Главную кнопку
-		tg.MainButton.disable();
+		//	Скрыть Главную кнопку
+		tg.MainButton.hide();
 	});
 	//
 	//	цикл по всем пунктам меню
@@ -646,8 +646,8 @@ div.tab-content, input[type=radio]
 			showMenu.querySelector(".text-title").textContent =
 				itemMenu[i].querySelector("div").textContent;
 			//
-			//	Разрешить Главную кнопку
-			tg.MainButton.enable();
+			//	Показать Главную кнопку
+			tg.MainButton.show();
 		});
 	}
 	// Добавляем прослушиватель для закрытия при клике вне диалога
