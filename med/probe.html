@@ -119,8 +119,7 @@ input[type=number]
 /*	Заголовок страницы */
 div.header-fixed
 {
-	0font-size:			calc(var(--font-size) + 20%);
-	font-size:			20px;
+	font-size:			1.25rem;
 	font-weight:		bold;
 	position:			fixed;
 	top:				0;		/* Отступ от верхнего края */
@@ -147,7 +146,7 @@ div.header-fixed
 	display:			none; /* По умолчанию скрыто */
 	position:			absolute;
 	background-color:	#f9f9f9;
-	min-width:			160px;
+	0min-width:			160px;
 	border:				1px solid red;
 	border-radius:		8px;
 	0box-shadow:		0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -166,7 +165,7 @@ div.header-fixed
 	display:			inline-block;
 }
 /*	Показываем подменю, когда пункт меню получает фокус */
-.main-item:focus + .dropdown-content
+.main-item:focus ~ .dropdown-content
 {
 	display:			block;
 }
@@ -181,7 +180,7 @@ div.header-fixed
 <!-- Меню -->
 <div class="header-fixed">
 	<div class="dropdown">
-		<button class="main-item" tabindex="1">=</button>
+		<div class="main-item" tabindex="0">=</div>
 		<div class="dropdown-content">
 			<a href="#">Подпункт 1</a>
 			<a href="#">Подпункт 2</a>
