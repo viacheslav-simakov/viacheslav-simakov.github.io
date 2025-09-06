@@ -183,16 +183,16 @@ div.menu > label
 	border:				1px solid var(--tg-theme-section-separator-color, #aaaaaa);
 	border-radius:		8px;
 }
-div.menu > label > span
+div.menu > label > span, .icon-title
 {
-	font-size:			24px;
+	font-size:			1.5rem;
 	font-family:		"Material Symbols Outlined";
 	font-weight:		normal;
 	padding-right:		1rex;
 }
 </style>
-<style>
 
+<style>
 /*	Подсветка выбора пользователя */
 #radio-rheumatology:checked ~	#userDialog #label-rheumatology,
 #radio-preparation:checked ~	#userDialog #label-preparation,
@@ -205,8 +205,6 @@ div.menu > label > span
 	background-color:	hsl(215,75%,90%);
 	0font-weight:		bold;
 }
-
-
 </style>
 </head>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -228,6 +226,13 @@ div.menu > label > span
 <!--
 	Меню
 -->
+<div id="showMenu" class="header-fixed">
+	<div class="icon-title">menu</div>
+	<div>Заголовок</div>
+</div>
+<!--
+	Диалоговое окно
+-->
 <dialog id="userDialog">
 	<!-- :: ВЫБОР ОПЦИЙ :: -------------------------------------------------------->
 	<div class="menu">
@@ -236,47 +241,53 @@ div.menu > label > span
 			<span>prescriptions</span>Рекомендации</label>
 
 		<!-- Заболевания -->
-		<label id="label-rheumatology" for="radio-rheumatology" class="item">
+		<label id="label-rheumatology" for="radio-rheumatology">
 			<span>rheumatology</span>Основное заболевание</label>
 
 		<!-- Сопутствующие заболевания -->
-		<label id="label-comorbidity" for="radio-comorbidity" class="item">
+		<label id="label-comorbidity" for="radio-comorbidity">
 			<span>person_cancel</span>Сопутствующие заболевания</label>
 	
 		<!-- Сопутствующие состояния -->
-		<label id="label-status" for="radio-status" class="item">
+		<label id="label-status" for="radio-status">
 			<span>person_alert</span>Сопутствующие состояния</label>
 
 		<!-- Сопутствующие отклонения -->
-		<label id="label-deviation" for="radio-deviation" class="item">
+		<label id="label-deviation" for="radio-deviation">
 			<span>instant_mix</span>Лабораторные показатели</label>
 		
 		<!-- Лабораторные показатели -->
-		<label id="label-probe" for="radio-probe" class="item">
+		<label id="label-probe" for="radio-probe">
 			<span>biotech</span>Лабораторные исследования</label>
 
 		<!-- Препараты -->
-		<label id="label-preparation" for="radio-preparation" class="item">
+		<label id="label-preparation" for="radio-preparation">
 			<span>pill</span>Препараты</label>
 	</div>
 </dialog>
 
-<!-- Меню -->
-<div class="header-fixed">
-	<div>=</div>
-	<div id="showDialog">Заголовок</div>
-</div>
-
-
 <script>
-	const showButton = document.getElementById("showDialog");
-	let userDialog = document.getElementById("userDialog");
-	
+	const showMenu = document.getElementById("showMenu");
+	const userDialog = document.getElementById("userDialog");
+	const itemMenu = userDialog.querySelectorAll("label");
+	//
 	// "Show the dialog" button opens the <dialog> modally
-	showButton.addEventListener("click", () => {
-		console.log(userDialog.open);
+	showMenu.addEventListener("click", () => {
+		//
+		//	Показать окно
 		userDialog.showModal();
 	});
+	//
+	//	цикл по всем пунктам меню
+	for (let i = 0; i < itemMenu.length; i++) {
+		//
+		// Добавляем прослушиватель для закрытия при клике
+		itemMenu[i].addEventListener("click", () => {
+			//
+			// Закрываем диалог
+			userDialog.close();
+		});
+	}
 	// Добавляем прослушиватель для закрытия при клике вне диалога
 	document.addEventListener('click', function(event) {
 //		alert("Ok");
