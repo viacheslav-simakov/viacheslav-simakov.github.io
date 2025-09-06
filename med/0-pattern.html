@@ -563,7 +563,7 @@ div.tab-content, input[type=radio]
 	tg.MainButton.setText("Рекомендации").show();
 	//	Вторичная кнопка
 	//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
-		tg.SecondaryButton.setText("Очистить").show();
+	//	tg.SecondaryButton.setText("Назад").show();
 	//	Кнопка "Установки"
 	tg.SettingsButton.show();
 	//	Add an event listener for when the SettingButton is clicked
@@ -625,9 +625,8 @@ div.tab-content, input[type=radio]
 		//	Показать окно
 		userDialog.showModal();
 		//
-		//	Скрыть кнопки
+		//	Скрыть Главную кнопку
 		tg.MainButton.hide();
-		tg.SecondaryButton.hide();
 	});
 	//
 	//	цикл по всем пунктам меню
@@ -647,9 +646,8 @@ div.tab-content, input[type=radio]
 			showMenu.querySelector(".text-title").textContent =
 				itemMenu[i].querySelector("div").textContent;
 			//
-			//	Показать кнопки
+			//	Показать Главную кнопку
 			tg.MainButton.show();
-			tg.SecondaryButton.show();
 		});
 	}
 	// Добавляем прослушиватель для закрытия при клике вне диалога
