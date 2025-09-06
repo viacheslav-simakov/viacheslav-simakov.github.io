@@ -190,6 +190,13 @@ div.menu > label > span, .icon-title
 	font-weight:		normal;
 	padding-right:		1rex;
 }
+/*	Текст заголовка */
+div.text-title
+{
+	overflow:			hidden;
+	white-space:		nowrap;
+	text-overflow:		ellipsis;
+}
 </style>
 
 <style>
@@ -228,7 +235,7 @@ div.menu > label > span, .icon-title
 -->
 <div id="showMenu" class="header-fixed">
 	<div class="icon-title">menu</div>
-	<div>Заголовок</div>
+	<div class="text-title">Заголовок</div>
 </div>
 <!--
 	Диалоговое окно
@@ -242,27 +249,27 @@ div.menu > label > span, .icon-title
 
 		<!-- Заболевания -->
 		<label id="label-rheumatology" for="radio-rheumatology">
-			<span>rheumatology</span>Основное заболевание</label>
+			<span>rheumatology</span><div>Основное заболевание</div></label>
 
 		<!-- Сопутствующие заболевания -->
 		<label id="label-comorbidity" for="radio-comorbidity">
-			<span>person_cancel</span>Сопутствующие заболевания</label>
+			<span>person_cancel</span><div>Сопутствующие заболевания</div></label>
 	
 		<!-- Сопутствующие состояния -->
 		<label id="label-status" for="radio-status">
-			<span>person_alert</span>Сопутствующие состояния</label>
+			<span>person_alert</span><div>Сопутствующие состояния</div></label>
 
 		<!-- Сопутствующие отклонения -->
 		<label id="label-deviation" for="radio-deviation">
-			<span>instant_mix</span>Лабораторные показатели</label>
+			<span>instant_mix</span><div>Лабораторные показатели</div></label>
 		
 		<!-- Лабораторные показатели -->
 		<label id="label-probe" for="radio-probe">
-			<span>biotech</span>Лабораторные исследования</label>
+			<span>biotech</span><div>Лабораторные исследования</div></label>
 
 		<!-- Препараты -->
 		<label id="label-preparation" for="radio-preparation">
-			<span>pill</span>Препараты</label>
+			<span>pill</span><div>Препараты</div></label>
 	</div>
 </dialog>
 
@@ -284,8 +291,16 @@ div.menu > label > span, .icon-title
 		// Добавляем прослушиватель для закрытия при клике
 		itemMenu[i].addEventListener("click", () => {
 			//
-			// Закрываем диалог
+			//	Закрываем диалог
 			userDialog.close();
+			//
+			//	Изменить значок
+			showMenu.querySelector(".icon-title").textContent =
+				itemMenu[i].querySelector("span").textContent;
+			//
+			//	Изменить название
+			showMenu.querySelector(".text-title").textContent =
+				itemMenu[i].querySelector("div").textContent;
 		});
 	}
 	// Добавляем прослушиватель для закрытия при клике вне диалога
