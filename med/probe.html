@@ -25,6 +25,11 @@ body
 	color:				var(--tg-theme-text-color);
 	background:			var(--tg-theme-bg-color);
 }
+/*	Данные */
+div.tab-content
+{
+	margin-top:			50px;
+}
 /*
 	flex container
 */
@@ -200,6 +205,11 @@ div.text-title
 </style>
 
 <style>
+/*	Скрыть вкладки, радиокнопки и кнопки навигации */
+div.tab-content, input[type=radio]
+{
+	display: none;
+}
 /*	Подсветка выбора пользователя */
 #radio-rheumatology:checked ~	#userDialog #label-rheumatology,
 #radio-preparation:checked ~	#userDialog #label-preparation,
@@ -210,7 +220,17 @@ div.text-title
 #radio-prescription:checked ~ 	#userDialog #label-prescription
 {
 	background-color:	hsl(215,75%,90%);
-	0font-weight:		bold;
+}
+/*	Показать содержимое вкладок */
+#radio-rheumatology:checked ~	#rheumatology,
+#radio-preparation:checked ~	#preparation,
+#radio-comorbidity:checked ~ 	#comorbidity,
+#radio-status:checked ~ 		#status,
+#radio-deviation:checked ~ 		#deviation,
+#radio-probe:checked ~ 			#probe,
+#radio-prescription:checked ~ 	#report
+{
+	display: block;
 }
 </style>
 </head>
@@ -223,19 +243,19 @@ div.text-title
 <!--
 	Радиокнопки меню
 -->
-	<input type="radio" id="radio-rheumatology"	name="tab-group">
+	<input type="radio" id="radio-rheumatology"	name="tab-group" checked>
 	<input type="radio" id="radio-preparation"	name="tab-group">
 	<input type="radio" id="radio-comorbidity"	name="tab-group">
 	<input type="radio" id="radio-status"		name="tab-group">
 	<input type="radio" id="radio-deviation"	name="tab-group">
 	<input type="radio" id="radio-probe"		name="tab-group">
-	<input type="radio" id="radio-prescription"	name="tab-group" checked>
+	<input type="radio" id="radio-prescription"	name="tab-group">
 <!--
 	Меню
 -->
 <div id="showMenu" class="header-fixed">
-	<div class="icon-title">menu</div>
-	<div class="text-title">Заголовок</div>
+	<div class="icon-title">rheumatology</div>
+	<div class="text-title">Основное заболевание</div>
 </div>
 <!--
 	Диалоговое окно
@@ -243,10 +263,6 @@ div.text-title
 <dialog id="userDialog">
 	<!-- :: ВЫБОР ОПЦИЙ :: -------------------------------------------------------->
 	<div class="menu">
-		<!-- Рекомендации -->
-		<label id="label-prescription" for="radio-prescription">
-			<span>prescriptions</span>Рекомендации</label>
-
 		<!-- Заболевания -->
 		<label id="label-rheumatology" for="radio-rheumatology">
 			<span>rheumatology</span><div>Основное заболевание</div></label>
@@ -315,9 +331,63 @@ div.text-title
 </script>
 
 
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-<!-- Список -->
-<div id="probe-data" style="margin-top:50px;">
+	Основное заболевание
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="rheumatology" class="tab-content">
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="rheumatology#5" class="item-checkbox"
+			id="rheumatology-label-5"/>
+		<label for="rheumatology-label-5" class="item-label">1</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Аксиальный спондилоартрит тяжелый</summary>
+			<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="rheumatology#2" class="item-checkbox"
+			id="rheumatology-label-2"/>
+		<label for="rheumatology-label-2" class="item-label">2</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Анкилозирующий спондилит</summary>
+			<p> </p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="rheumatology#3" class="item-checkbox"
+			id="rheumatology-label-3"/>
+		<label for="rheumatology-label-3" class="item-label">3</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Болезнь Бехчета, интестинальная форма</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+</div>
+
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Препараты
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="probe" class="tab-content">
 
 <div class="flex-box">
 	<div class="item-order">

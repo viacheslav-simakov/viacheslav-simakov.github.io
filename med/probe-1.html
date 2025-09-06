@@ -25,6 +25,11 @@ body
 	color:				var(--tg-theme-text-color);
 	background:			var(--tg-theme-bg-color);
 }
+/*	Данные */
+div.tab-content
+{
+	margin-top:			50px;
+}
 /*
 	flex container
 */
@@ -144,12 +149,12 @@ div.header-fixed
 dialog
 {
 	font-size:			var(--font-size);
-	border:				1px solid #aaa;
 	
 	margin:				44px auto auto 0px;
-	padding:			1rex;
+	padding:			4px;
 	background-color:	hsl(0,0%,95%);
 
+	border:				1px solid #aaa;
 	border-radius:		0px 0px 1rex 1rex;
 	box-shadow:			0 0 25px rgba(0,0,0,0.5);
 
@@ -162,27 +167,70 @@ dialog::backdrop
 	background-color:	hsl(0,0%,90%);
 	opacity:			0.75;
 }
-.symbols
+div.menu
 {
-	0display:			inline-block;
-	font-size:			24px;
-	font-family:		"Material Symbols Outlined";
-	font-weight:		normal;
-
-	0padding-right:	1rex;
+	display:			flex;
+	flex-direction:		column;
+	0align-items:		start;
+	text-align:			left; 
+	justify-content:	start;
+	column-gap:			1rex;
 }
-div.menu-item, button.menu
+div.menu > label
 {
 	display:			flex;
 	flex-direction:		row;
 	align-items:		center;
-	text-align:			left; 
 	justify-content:	start;
-	column-gap:			1rex;
+
 	padding:			1rex;
-	
+	margin:				4px;
 	border:				1px solid var(--tg-theme-section-separator-color, #aaaaaa);
 	border-radius:		8px;
+}
+div.menu > label > span, .icon-title
+{
+	font-size:			1.5rem;
+	font-family:		"Material Symbols Outlined";
+	font-weight:		normal;
+	padding-right:		1rex;
+}
+/*	Текст заголовка */
+div.text-title
+{
+	overflow:			hidden;
+	white-space:		nowrap;
+	text-overflow:		ellipsis;
+}
+</style>
+
+<style>
+/*	Скрыть вкладки, радиокнопки и кнопки навигации */
+div.tab-content, input[type=radio]
+{
+	display: none;
+}
+/*	Подсветка выбора пользователя */
+#radio-rheumatology:checked ~	#userDialog #label-rheumatology,
+#radio-preparation:checked ~	#userDialog #label-preparation,
+#radio-comorbidity:checked ~ 	#userDialog #label-comorbidity,
+#radio-status:checked ~ 		#userDialog #label-status,
+#radio-deviation:checked ~ 		#userDialog #label-deviation,
+#radio-probe:checked ~ 			#userDialog #label-probe,
+#radio-prescription:checked ~ 	#userDialog #label-prescription
+{
+	background-color:	hsl(215,75%,90%);
+}
+/*	Показать содержимое вкладок */
+#radio-rheumatology:checked ~	#rheumatology,
+#radio-preparation:checked ~	#preparation,
+#radio-comorbidity:checked ~ 	#comorbidity,
+#radio-status:checked ~ 		#status,
+#radio-deviation:checked ~ 		#deviation,
+#radio-probe:checked ~ 			#probe,
+#radio-prescription:checked ~ 	#report
+{
+	display: block;
 }
 </style>
 </head>
@@ -192,55 +240,85 @@ div.menu-item, button.menu
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <body>
+<!--
+	Радиокнопки меню
+-->
+	<input type="radio" id="radio-rheumatology"	name="tab-group" checked>
+	<input type="radio" id="radio-preparation"	name="tab-group">
+	<input type="radio" id="radio-comorbidity"	name="tab-group">
+	<input type="radio" id="radio-status"		name="tab-group">
+	<input type="radio" id="radio-deviation"	name="tab-group">
+	<input type="radio" id="radio-probe"		name="tab-group">
+	<input type="radio" id="radio-prescription"	name="tab-group">
+<!--
+	Меню
+-->
+<div id="showMenu" class="header-fixed">
+	<div class="icon-title">rheumatology</div>
+	<div class="text-title">Основное заболевание</div>
+</div>
+<!--
+	Диалоговое окно
+-->
 <dialog id="userDialog">
-	<form method="dialog">
-		<div class="menu-item">
-			<div class="symbols">rheumatology</div>
-			<div>Основное заболевание</div>
-		</div>
-		<div class="menu-item">
-			<div class="symbols">person_cancel</div>
-			<div>Сопутствующие заболевания</div>
-		</div>
-		<div class="menu-item">
-			<div class="symbols">person_alert</div>
-			<div>Сопутствующие состояния</div>
-		</div>
-		<div class="menu-item">
-			<div class="symbols">instant_mix</div>
-			<div>Лабораторные показатели</div>
-		</div>
-		<button class="menu">
-			<div class="menu-item">
-				<div class="symbols">biotech</div>
-				<div>Лабораторные исследования</div>
-			</div>
-		</button>
-		<button class="menu">
-			<div class="menu-item">
-				<div class="symbols">pill</div>
-				<div>Препараты</div>
-			</div>
-		</button>
-	</form>
+	<!-- :: ВЫБОР ОПЦИЙ :: -------------------------------------------------------->
+	<div class="menu">
+		<!-- Заболевания -->
+		<label id="label-rheumatology" for="radio-rheumatology">
+			<span>rheumatology</span><div>Основное заболевание</div></label>
+
+		<!-- Сопутствующие заболевания -->
+		<label id="label-comorbidity" for="radio-comorbidity">
+			<span>person_cancel</span><div>Сопутствующие заболевания</div></label>
+	
+		<!-- Сопутствующие состояния -->
+		<label id="label-status" for="radio-status">
+			<span>person_alert</span><div>Сопутствующие состояния</div></label>
+
+		<!-- Сопутствующие отклонения -->
+		<label id="label-deviation" for="radio-deviation">
+			<span>instant_mix</span><div>Лабораторные показатели</div></label>
+		
+		<!-- Лабораторные показатели -->
+		<label id="label-probe" for="radio-probe">
+			<span>biotech</span><div>Лабораторные исследования</div></label>
+
+		<!-- Препараты -->
+		<label id="label-preparation" for="radio-preparation">
+			<span>pill</span><div>Препараты</div></label>
+	</div>
 </dialog>
 
-<!-- Меню -->
-<div class="header-fixed">
-	<div>=</div>
-	<div id="showDialog">Заголовок</div>
-</div>
-
-
 <script>
-	const showButton = document.getElementById("showDialog");
-	let userDialog = document.getElementById("userDialog");
-	
+	const showMenu = document.getElementById("showMenu");
+	const userDialog = document.getElementById("userDialog");
+	const itemMenu = userDialog.querySelectorAll("label");
+	//
 	// "Show the dialog" button opens the <dialog> modally
-	showButton.addEventListener("click", () => {
-		console.log(userDialog.open);
+	showMenu.addEventListener("click", () => {
+		//
+		//	Показать окно
 		userDialog.showModal();
 	});
+	//
+	//	цикл по всем пунктам меню
+	for (let i = 0; i < itemMenu.length; i++) {
+		//
+		// Добавляем прослушиватель для закрытия при клике
+		itemMenu[i].addEventListener("click", () => {
+			//
+			//	Закрываем диалог
+			userDialog.close();
+			//
+			//	Изменить значок
+			showMenu.querySelector(".icon-title").textContent =
+				itemMenu[i].querySelector("span").textContent;
+			//
+			//	Изменить название
+			showMenu.querySelector(".text-title").textContent =
+				itemMenu[i].querySelector("div").textContent;
+		});
+	}
 	// Добавляем прослушиватель для закрытия при клике вне диалога
 	document.addEventListener('click', function(event) {
 //		alert("Ok");
@@ -253,9 +331,63 @@ div.menu-item, button.menu
 </script>
 
 
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-<!-- Список -->
-<div id="probe-data" style="margin-top:50px;">
+	Основное заболевание
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="rheumatology" class="tab-content">
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="rheumatology#5" class="item-checkbox"
+			id="rheumatology-label-5"/>
+		<label for="rheumatology-label-5" class="item-label">1</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Аксиальный спондилоартрит тяжелый</summary>
+			<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="rheumatology#2" class="item-checkbox"
+			id="rheumatology-label-2"/>
+		<label for="rheumatology-label-2" class="item-label">2</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Анкилозирующий спондилит</summary>
+			<p> </p>
+		</details>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div>
+		<input type="checkbox" name="rheumatology#3" class="item-checkbox"
+			id="rheumatology-label-3"/>
+		<label for="rheumatology-label-3" class="item-label">3</label>
+	</div>
+	<div class="content">
+		<details>
+			<summary>Болезнь Бехчета, интестинальная форма</summary>
+			<p>нет информации</p>
+		</details>
+	</div>
+</div>
+
+</div>
+
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Препараты
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="probe" class="tab-content">
 
 <div class="flex-box">
 	<div class="item-order">
