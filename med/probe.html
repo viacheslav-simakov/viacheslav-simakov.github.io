@@ -152,15 +152,16 @@ dialog
 	font-size:			var(--font-size);
 	
 	margin:				44px auto auto 0px;
-	padding:			4px;
 	background-color:	hsl(0,0%,95%);
 
 	border:				1px solid var(--tg-theme-button-color, #aaa);
 	border-radius:		0px 0px 1rex 1rex;
 	box-shadow:			0 0 25px rgba(0,0,0,0.5);
 
-	width:				fit-content;
-	overflow:			hidden; /* обрезка */
+	max-width:			100% !important;
+	0width:				fit-content;
+	0width:				100%;
+	0overflow:			hidden; /* обрезка */
 }
 /*	Фон модального окна */
 dialog::backdrop
