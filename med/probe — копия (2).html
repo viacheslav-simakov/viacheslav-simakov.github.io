@@ -134,11 +134,47 @@ div.header-fixed
 	width:				100%;
 	height:				36px;
 	0line-height:		36px;
-	0z-index:			1000;	/* Убедиться, что кнопка поверх другого контента */
+	z-index:			1000;	/* Убедиться, что кнопка поверх другого контента */
 	color:				var(--tg-theme-accent-text-color, yellow);
 	background-color:	var(--tg-theme-header-bg-color, green);
 	padding:			4px 12px;
 	border-bottom:		1px solid var(--tg-theme-accent-text-color, yellow);
+}
+
+/*	Стили для контейнера выпадающего меню */
+.dropdown
+{
+	position:			relative; /* Для позиционирования подменю */
+	display:			inline-block;
+}
+/*	Стили для самого подменю (изначально скрыто) */
+.dropdown-content
+{
+	display:			none; /* По умолчанию скрыто */
+	position:			absolute;
+	background-color:	#f9f9f9;
+	0min-width:			160px;
+	border:				1px solid red;
+	border-radius:		8px;
+	0box-shadow:		0px 8px 16px 0px rgba(0,0,0,0.2);
+	z-index:			1;
+}
+/*	Стили для ссылок внутри подменю */
+.dropdown-content a
+{
+	display:			block;
+	color:				black;
+	padding:			12px 16px;
+	text-decoration:	none;
+}
+.main-item
+{
+	display:			inline-block;
+}
+/*	Показываем подменю, когда пункт меню получает фокус */
+.main-item:focus ~ .dropdown-content
+{
+	display:			block;
 }
 </style>
 </head>
@@ -148,34 +184,28 @@ div.header-fixed
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <body>
-<dialog id="userDialog">
-  <p>Greetings, one and all!</p>
-  <form method="dialog">
-    <button>OK</button>
-  </form>
-</dialog>
-
 <!-- Меню -->
 <div class="header-fixed">
-	<div>=</div>
-	<div id="showDialog">Заголовок</div>
+	<div class="dropdown" style="display: flex">
+		<div class="main-item" 0tabindex="0">=</div>
+		<div style="margin-right:auto;width:100%">
+			Заголовок
+		</div>
+			<div class="dropdown-content">
+			<a href="#">Подпункт 1</a>
+			<a href="#">Подпункт 2</a>
+			<input type="checkbox" name="my" class="0item-checkbox" id="radio-preparation"/>
+			<label for="radio-preparation" tabindex="10">Препараты</label>
+			</div>
+	</div>
 </div>
-
-
-<script>
-	const showButton = document.getElementById("showDialog");
-	const userDialog = document.getElementById("userDialog");
-	
-	// "Show the dialog" button opens the <dialog> modally
-	showButton.addEventListener("click", () => {
-		userDialog.showModal();
-	});
-</script>
-
-
-
 <!-- Список -->
 <div id="probe-data" style="margin-top:50px;">
+
+
+
+
+
 
 <div class="flex-box">
 	<div class="item-order">

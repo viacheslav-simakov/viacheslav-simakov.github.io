@@ -20,10 +20,14 @@
 <style>
 body
 {
-	display:			block;
-	font-size:			var(--font-size);
-	color:				var(--tg-theme-text-color);
-	background:			var(--tg-theme-bg-color);
+	display:		flex;
+	color:			var(--tg-theme-text-color);
+	background:		var(--tg-theme-bg-color);
+	0align-items:	center;
+	flex-direction:	column;
+	font-size:		var(--font-size);
+	
+	0top:			20px;
 }
 /*
 	flex container
@@ -38,33 +42,11 @@ div.flex-box
 	column-gap:			5px;
 	margin-bottom:		1rem;
 }
-.item-checkbox
-{
-	display:			none;
-}
-div.item-order
-{
-	display:			block;
-	font-size:			1rem;
-	padding:			0.5rem;
-	width:				2rem;
-	text-align:			right;
-}
-div.item-content
-{
-	display:			block;
-	margin-right:		auto;
-	width:				100%;
-}
-div.item-input
-{
-	padding:			0rem;
-}
 details
 {
 	color:				var(--tg-theme-text-color);
 	border:				1px solid var(--tg-theme-section-separator-color, #aaaaaa);
-	border-radius:		8px;
+	border-radius:		0px 8px 8px 0px;
 	overflow:			hidden;
 	padding:			0.5rem 0.5rem 0;
 }
@@ -85,60 +67,95 @@ details:open > summary
 	background-color:	var(--tg-theme-secondary-bg-color);
 	border-bottom:		1px solid #aaaaaa;
 }
+.item-checkbox
+{
+	display: none;
+}
 .item-label
 {
-	display:			block;
 	font-size:			var(--font-size);
 	color:				var(--tg-theme-text-color);
-	border:				1px solid var(--tg-theme-link-color, black);
-	border-radius:		50%;
+	0border:				1px solid var(--tg-theme-link-color);
+	border:				1px solid black;
+	border-radius:		8px 0px 0px 8px;
 	padding:			0.5rem;
+	0margin-right:		1rex;
+	display:			inline-block;
 	width:				2rex;
 	height:				2rex;
 	text-align:			center;
 	line-height:		2rex;
-	margin-left:		calc(3rem - 2rex);
 }
 .item-checkbox:checked ~ .item-label
 {
 	color:				var(--tg-theme-button-text-color);
 	background-color:	var(--tg-theme-button-color);
 }
+div.content
+{
+	margin-right:		auto;
+	width:				100%;
+}
+.item-input
+{
+	padding:			0.5rem;
+}
 /*
 	https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/number
 */
-input[type=number]
+.probe-number
 {
-	display:			block;
-	font-size:			calc(var(--font-size) + 4px);
 	width:				3rem;
 	padding:			0.5rem;
 	border:				1px solid black;
 	border-radius:		8px;
+	font-size:			calc(var(--font-size) + 4px);
 }
-/*	Заголовок страницы */
-div.header-fixed
+div.sticky-header
 {
-	display:			flex;
-	flex-direction:		row;
-	align-items:		center;
-	text-align:			left; 
-	justify-content:	start;
-	column-gap:			5px;
-	
-	font-size:			1.25rem;
-	font-weight:		bold;
-	position:			fixed;
-	top:				0;		/* Отступ от верхнего края */
-	left:				0;		/* Отступ от правого края */
-	width:				100%;
-	height:				36px;
-	0line-height:		36px;
-	0z-index:			1000;	/* Убедиться, что кнопка поверх другого контента */
+	position:			sticky;	/* Закрепить на экране */
+	top:				0px;	/* Отступ от верхнего края */
+	left:				0px;	/* Отступ от правого края */
+	z-index:			1000;	/* Убедиться, что кнопка поверх другого контента */
 	color:				var(--tg-theme-accent-text-color, yellow);
 	background-color:	var(--tg-theme-header-bg-color, green);
-	padding:			4px 12px;
-	border-bottom:		1px solid var(--tg-theme-accent-text-color, yellow);
+	padding:			4px 8px;
+	margin-bottom:		8px;
+}
+
+
+/* Стили для контейнера выпадающего меню */
+.dropdown {
+  position: relative; /* Для позиционирования подменю */
+  display: inline-block;
+}
+
+/* Стили для самого подменю (изначально скрыто) */
+.dropdown-content {
+  display: none; /* По умолчанию скрыто */
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Стили для ссылок внутри подменю */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Показываем подменю, когда пункт меню получает фокус */
+.main-item:focus + .dropdown-content {
+  display: block;
+}
+
+/* Дополнительно: показ подменю при наведении на него самого */
+.dropdown-content:hover {
+  display: block;
 }
 </style>
 </head>
@@ -148,40 +165,29 @@ div.header-fixed
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <body>
-<dialog id="userDialog">
-  <p>Greetings, one and all!</p>
-  <form method="dialog">
-    <button>OK</button>
-  </form>
-</dialog>
+<div class="sticky-header">Заголовок</div>
 
-<!-- Меню -->
-<div class="header-fixed">
-	<div>=</div>
-	<div id="showDialog">Заголовок</div>
+<div class="dropdown">
+  <button class="main-item" 0tabindex="1">Пункт меню</button>
+  <div class="dropdown-content">
+    <a href="#">Подпункт 1</a>
+    <a href="#">Подпункт 2</a>
+
+	<label for="my1" class="item-label" tabindex="10">labels-1</label>
+	<label for="my2" class="item-label" tabindex="10">labels-2</label>
+  </div>
 </div>
 
-
-<script>
-	const showButton = document.getElementById("showDialog");
-	const userDialog = document.getElementById("userDialog");
+<input type="radio" id="my1" name="rrr"/>
+<input type="radio" id="my2" name="rrr"/>
 	
-	// "Show the dialog" button opens the <dialog> modally
-	showButton.addEventListener("click", () => {
-		userDialog.showModal();
-	});
-</script>
-
-
-
-<!-- Список -->
-<div id="probe-data" style="margin-top:50px;">
-
 <div class="flex-box">
-	<div class="item-order">
+	<div>
+	<div class="item-label" style="border-radius: 50%;">
 		1
 	</div>
-	<div class="item-content">
+	</div>
+	<div class="content">
 		<details>
 		<summary>
 			Проба-2
@@ -189,177 +195,44 @@ div.header-fixed
 		<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
 		</details>
 	</div>
-	<div class="item-input">
-		<input type="number" name="probe#123"
-			value="%s" step="0.1" min="0" max="100"/>
-	</div>
-</div>
-<div class="flex-box">
-	<div class="item-order">
-		99
-	</div>
-
-	<div class="item-content">
-		<details>
-			<summary>Ацеллбия</summary>
-			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
-		</details>
-	</div>
-
-	<div class="item-input">
+	<div>
 		<input type="number" class="probe-number" name="probe#123"
 			value="%s" step="0.1" min="0" max="100"/>
 	</div>
 </div>
-
 <div class="flex-box">
-	<div class="item-order">
+	<div>
+	<div class="item-label" style="border-radius: 50%;">
 		99
 	</div>
-
-	<div class="item-content">
+	</div>
+	<div class="content">
 		<details>
-			<summary>Ацеллбия</summary>
-			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
+		<summary>
+			Проба-2
+		</summary>
+		<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
 		</details>
 	</div>
-
-	<div class="item-input">
+	<div>
 		<input type="number" class="probe-number" name="probe#123"
 			value="%s" step="0.1" min="0" max="100"/>
 	</div>
 </div>
-
 <div class="flex-box">
-	<div class="item-order">
-		99
+	<div>
+		<input type="checkbox" name="preparation#10" class="item-checkbox"
+			id="preparation-label-10"/>
+		<label for="preparation-label-10" class="item-label">1</label>
 	</div>
-
-	<div class="item-content">
+	<div class="content">
 		<details>
-			<summary>Ацеллбия</summary>
-			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
+			<summary>Актемра</summary>
+			<p>Ингибитор ИЛ 6 (Тоцилизумаб)</p>
 		</details>
 	</div>
-
-	<div class="item-input">
-		<input type="number" class="probe-number" name="probe#123"
-			value="%s" step="0.1" min="0" max="100"/>
-	</div>
 </div>
 
-<div class="flex-box">
-	<div class="item-order">
-		99
-	</div>
-
-	<div class="item-content">
-		<details>
-			<summary>Ацеллбия</summary>
-			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
-		</details>
-	</div>
-
-	<div class="item-input">
-		<input type="number" class="probe-number" name="probe#123"
-			value="%s" step="0.1" min="0" max="100"/>
-	</div>
-</div>
-
-<div class="flex-box">
-	<div class="item-order">
-		99
-	</div>
-
-	<div class="item-content">
-		<details>
-			<summary>Ацеллбия</summary>
-			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
-		</details>
-	</div>
-
-	<div class="item-input">
-		<input type="number" class="probe-number" name="probe#123"
-			value="%s" step="0.1" min="0" max="100"/>
-	</div>
-</div>
-
-<div class="flex-box">
-	<div class="item-order">
-		99
-	</div>
-
-	<div class="item-content">
-		<details>
-			<summary>Ацеллбия</summary>
-			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
-		</details>
-	</div>
-
-	<div class="item-input">
-		<input type="number" class="probe-number" name="probe#123"
-			value="%s" step="0.1" min="0" max="100"/>
-	</div>
-</div>
-
-<div class="flex-box">
-	<div class="item-order">
-		99
-	</div>
-
-	<div class="item-content">
-		<details>
-			<summary>Ацеллбия</summary>
-			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
-		</details>
-	</div>
-
-	<div class="item-input">
-		<input type="number" class="probe-number" name="probe#123"
-			value="%s" step="0.1" min="0" max="100"/>
-	</div>
-</div>
-
-<div class="flex-box">
-	<input type="checkbox" name="preparation#76" class="item-checkbox"
-		id="preparation-label-76"/>
-
-	<div class="item-order">
-		79
-	</div>
-	<div class="item-content">
-		<details>
-			<summary>Ацеллбия</summary>
-			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
-		</details>
-	</div>
-	<div class="item-input">
-		<label for="preparation-label-76" class="item-label">x</label>
-		<!--input type="number" class="probe-number" name="probe#123"
-			value="%s" step="0.1" min="0" max="100"/-->
-	</div>
-</div>
-
-<div class="flex-box">
-	<div class="item-order">
-		99
-	</div>
-
-	<div class="item-content">
-		<details>
-			<summary>Ацеллбия</summary>
-			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
-		</details>
-	</div>
-
-	<div class="item-input">
-		<input type="number" class="probe-number" name="probe#123"
-			value="%s" step="0.1" min="0" max="100"/>
-	</div>
-</div>
-
-
-</div>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
