@@ -2251,11 +2251,24 @@ div.tab-content, input[type=radio]
 	tg.expand();
 	//	Получаем информацию о пользователе
 	const user = tg.initDataUnsafe.user;
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
 	//	Главная кнопка
+	//
 	tg.MainButton.setText("Рекомендации").show();
+	//	Add an event listener for when the SettingButton is clicked
+	tg.onEvent('mainButtonClicked', () => {
+		alert('MAIN button clicked!');
+		// You can also send data back to the bot here
+		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
+	});	
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
 	//	Вторичная кнопка
 	//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
 	//	tg.SecondaryButton.setText("Назад").show();
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
 	//	Кнопка "Установки"
 	tg.SettingsButton.show();
 	//	Add an event listener for when the SettingButton is clicked
@@ -2351,6 +2364,24 @@ div.tab-content, input[type=radio]
 //			userDialog.close(); // Закрываем диалог
 		}
 	});
+</script>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Передача данных Telegram Bot
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<script>
+// Assuming 'dataToSend' is an object containing the information to be sent
+const dataToSend = {
+    itemName: "Example Item",
+    quantity: 2,
+    price: 10.50
+};
+// Stringify the data for transmission
+const jsonData = JSON.stringify(dataToSend);
+
+// Send the data to the bot
+tg.sendData(jsonData);
 </script>
 
 </body>
