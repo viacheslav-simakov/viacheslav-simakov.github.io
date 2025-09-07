@@ -2281,7 +2281,7 @@ div.tab-content, input[type=radio]
 			for (let j = 0; j < elem.length; j++) {
 				//
 				//	Пропустить оставшуюся часть тела цикла
-				//if (elem[j].checked === false) continue;
+				if (elem[j].checked === false) continue;
 				//
 				//	Добавить в массив
 				id.push(elem[j].name.split("#")[1]);
