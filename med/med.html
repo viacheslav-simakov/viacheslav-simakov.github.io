@@ -2258,7 +2258,7 @@ div.tab-content, input[type=radio]
 	tg.MainButton.setText("Рекомендации").show();
 	//	Add an event listener for when the SettingButton is clicked
 	tg.onEvent('mainButtonClicked', () => {
-		alert('MAIN button clicked!');
+		// alert('MAIN button clicked!');
 		// You can also send data back to the bot here
 		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
 		
@@ -2326,7 +2326,7 @@ div.tab-content, input[type=radio]
 			ds.setItem(
 				JSON.stringify(lst[i].name),
 				JSON.stringify(lst[i].checked));
-			alert(JSON.stringify(lst[i].name) + JSON.stringify(lst[i].checked));
+			// alert(JSON.stringify(lst[i].name) + JSON.stringify(lst[i].checked));
 		});
 	};
 </script>
