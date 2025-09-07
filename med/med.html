@@ -2260,32 +2260,41 @@ div.tab-content, input[type=radio]
 	tg.MainButton.setText("Рекомендации").show();
 	//	Add an event listener for when the SettingButton is clicked
 	tg.onEvent('mainButtonClicked', () => {
+	<!--
+		Селекторы: https://learn.javascript.ru/css-selectors
+	-->
+		let dataToSend = {};
 		//
-		//	Получаем все элементы формы
-		const elem = document.getElementById("req-form").elements;
+		//	Параметры формы
+		let name = ["rheumatology","preparation","comorbidity","status","manual"];
 		//
-		//	Массив объектов
-		let dataToSend = [];
-		//
-		//	цикл по всем элементам формы
-		for (let i = 0; i < elem.length; i++) {
+		//	цикл по названию параметров
+		for (let i = 0; i < name.length; i++) {
 			//
-			// Игнорируем кнопки отправки, чтобы не включать их в JSON
-			if (elem[i].type !== 'submit' && elem[i].type !== 'button') {
+			//	Элементы формы
+			//		let elem = document.querySelectorAll("input[name^='rheumatology#']");
+			let elem = document.querySelectorAll("input[name^='" + name[i] + "#']");
+			//
+			//	Массив ID значений
+			let id = [];
+			//
+			//	цикл по всем элементам списка
+			for (let j = 0; j < elem.length; j++) {
 				//
-				//	Добавляем объект в массив
-				dataToSend.push(
-				{
-					name:	elem[i].name,
-					value:	elem[i].value
-				});
+				//	Пропустить оставшуюся часть тела цикла
+				//if (elem[j].checked === false) continue;
+				//
+				//	Добавить в массив
+				id.push(elem[j].name.split("#")[1]);
 			}
+			//	Список ID флажков
+			dataToSend[name[i]] = id;
 		}
 		//	Преобразуем массив объектов в строку JSON
 		const jsonString = JSON.stringify(dataToSend);
 		//
 		// Send the data to the bot
-//		tg.sendData(jsonString);
+		tg.sendData(jsonString);
 
 		alert('MAIN button clicked! = ' + dataToSend.length);
 		// You can also send data back to the bot here
