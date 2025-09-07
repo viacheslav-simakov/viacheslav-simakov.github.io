@@ -316,6 +316,7 @@ div.tab-content, input[type=radio]
 	Основное заболевание
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<form id="req-form">
 <div id="rheumatology" class="tab-content">
 
 <div class="flex-box">
@@ -2236,6 +2237,7 @@ div.tab-content, input[type=radio]
 </div>
 
 </div>
+</form>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
@@ -2258,7 +2260,10 @@ div.tab-content, input[type=radio]
 	tg.MainButton.setText("Рекомендации").show();
 	//	Add an event listener for when the SettingButton is clicked
 	tg.onEvent('mainButtonClicked', () => {
-		// alert('MAIN button clicked!');
+		//
+		// Получаем все элементы формы
+		const elem = document.getElementById("req-form").elements;
+		alert('MAIN button clicked! = ' + elem.length);
 		// You can also send data back to the bot here
 		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
 		
@@ -2379,3 +2384,29 @@ div.tab-content, input[type=radio]
 </script>
 </body>
 </html>
+
+<!--
+
+// Получаем ссылку на форму
+const formElement = document.getElementById('myForm');
+const elements = formElement.elements; // Получаем все элементы формы
+
+let formDataArray = [];
+for (let i = 0; i < elements.length; i++) {
+  let element = elements[i];
+  // Игнорируем кнопки отправки, чтобы не включать их в JSON
+  if (element.type !== 'submit' && element.type !== 'button') {
+    formDataArray.push({
+      name: element.name,
+      value: element.value,
+      type: element.type
+    });
+  }
+}
+
+// Преобразуем массив объектов в строку JSON
+const jsonString = JSON.stringify(formDataArray);
+
+console.log(jsonString);
+
+-->
