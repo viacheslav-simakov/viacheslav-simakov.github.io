@@ -105,10 +105,18 @@ details:open > summary
 	line-height:		2rex;
 	margin-left:		calc(3rem - 2rex);
 }
-.item-checkbox:checked ~ .item-label
+/*
+	Выделение выбора флажка
+	https://developer.mozilla.org/ru/docs/Web/CSS/::after
+*/
+.item-checkbox:checked ~ .item-input .item-label
 {
-	color:				var(--tg-theme-button-text-color);
-	background-color:	var(--tg-theme-button-color);
+	color:				var(--tg-theme-button-text-color, yellow);
+	background-color:	var(--tg-theme-button-color, green);
+}
+.item-checkbox:checked ~ .item-input .item-label::after
+{
+	content: "\2714";
 }
 /*
 	https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/number
@@ -201,15 +209,15 @@ div.menu > label
 
 	max-width:				100%;
 }
-div.menu > label > span, .icon-title
+div.menu > label > span, .title-icon
 {
 	font-size:			1.5rem;
 	font-family:		"Material Symbols Outlined";
 	font-weight:		normal;
 	padding-right:		1rex;
 }
-/*	Текст заголовка */
-div.text-title
+/*	Текст заголовка страницы */
+div.title-text
 {
 	overflow:			hidden;
 	white-space:		nowrap;
@@ -269,8 +277,8 @@ div.tab-content, input[type=radio]
 	Меню
 -->
 <div id="showMenu" class="header-fixed">
-	<div class="icon-title">rheumatology</div>
-	<div class="text-title">Основное заболевание</div>
+	<div class="title-icon">rheumatology</div>
+	<div class="title-text">Основное заболевание</div>
 </div>
 <!--
 	Диалоговое окно
@@ -311,184 +319,223 @@ div.tab-content, input[type=radio]
 <div id="rheumatology" class="tab-content">
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#5" class="item-checkbox"
-			id="rheumatology-label-5"/>
-		<label for="rheumatology-label-5" class="item-label">1</label>
+	<input type="checkbox" name="rheumatology#5" class="item-checkbox"
+		id="rheumatology-label-5"/>
+	<div class="item-order">
+		1
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Аксиальный спондилоартрит тяжелый</summary>
 			<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-5" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#2" class="item-checkbox"
-			id="rheumatology-label-2"/>
-		<label for="rheumatology-label-2" class="item-label">2</label>
+	<input type="checkbox" name="rheumatology#2" class="item-checkbox"
+		id="rheumatology-label-2"/>
+	<div class="item-order">
+		2
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Анкилозирующий спондилит</summary>
 			<p> </p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-2" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#3" class="item-checkbox"
-			id="rheumatology-label-3"/>
-		<label for="rheumatology-label-3" class="item-label">3</label>
+	<input type="checkbox" name="rheumatology#3" class="item-checkbox"
+		id="rheumatology-label-3"/>
+	<div class="item-order">
+		3
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Болезнь Бехчета, интестинальная форма</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-3" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#12" class="item-checkbox"
-			id="rheumatology-label-12"/>
-		<label for="rheumatology-label-12" class="item-label">4</label>
+	<input type="checkbox" name="rheumatology#12" class="item-checkbox"
+		id="rheumatology-label-12"/>
+	<div class="item-order">
+		4
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Болезнь Стилла</summary>
 			<p>Активная фаза</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-12" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#8" class="item-checkbox"
-			id="rheumatology-label-8"/>
-		<label for="rheumatology-label-8" class="item-label">5</label>
+	<input type="checkbox" name="rheumatology#8" class="item-checkbox"
+		id="rheumatology-label-8"/>
+	<div class="item-order">
+		5
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Гигантоклеточный артериит</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-8" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#9" class="item-checkbox"
-			id="rheumatology-label-9"/>
-		<label for="rheumatology-label-9" class="item-label">6</label>
+	<input type="checkbox" name="rheumatology#9" class="item-checkbox"
+		id="rheumatology-label-9"/>
+	<div class="item-order">
+		6
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Гранулематоз с полиангиитом</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-9" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#10" class="item-checkbox"
-			id="rheumatology-label-10"/>
-		<label for="rheumatology-label-10" class="item-label">7</label>
+	<input type="checkbox" name="rheumatology#10" class="item-checkbox"
+		id="rheumatology-label-10"/>
+	<div class="item-order">
+		7
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Микроскопический полиангиит</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-10" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#13" class="item-checkbox"
-			id="rheumatology-label-13"/>
-		<label for="rheumatology-label-13" class="item-label">8</label>
+	<input type="checkbox" name="rheumatology#13" class="item-checkbox"
+		id="rheumatology-label-13"/>
+	<div class="item-order">
+		8
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Острый подагрический артрит</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-13" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#11" class="item-checkbox"
-			id="rheumatology-label-11"/>
-		<label for="rheumatology-label-11" class="item-label">9</label>
+	<input type="checkbox" name="rheumatology#11" class="item-checkbox"
+		id="rheumatology-label-11"/>
+	<div class="item-order">
+		9
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Периодическая болезнь</summary>
 			<p>Аутовоспалительные синдромы периодической лихорадки:<br>• криопирин-ассоциированный периодический синдром (CAPS) у взрослых и детей в возрасте 2 лет и старше, включая:<br>- семейный холодовой аутовоспалительный синдром (FCAS)/семейная холодовая крапивница (FCU);<br>- синдром Макла-Уэльса (MWS);<br>- младенческое мультисистемное воспалительное заболевание (NOMID)/хронический младенческий неврологический кожно-артикулярный синдром (CINCA);<br>• периодический синдром, ассоциированный с рецепторами к фактору некроза опухоли (TRAPS);<br>• гипер-IgD-синдром/синдром дефицита мевалонат-киназы (HIDS/MKD);<br>• семейная средиземноморская лихорадка (FMF) </p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-11" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#6" class="item-checkbox"
-			id="rheumatology-label-6"/>
-		<label for="rheumatology-label-6" class="item-label">10</label>
+	<input type="checkbox" name="rheumatology#6" class="item-checkbox"
+		id="rheumatology-label-6"/>
+	<div class="item-order">
+		10
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Псориатический артрит</summary>
 			<p> </p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-6" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#1" class="item-checkbox"
-			id="rheumatology-label-1"/>
-		<label for="rheumatology-label-1" class="item-label">11</label>
+	<input type="checkbox" name="rheumatology#1" class="item-checkbox"
+		id="rheumatology-label-1"/>
+	<div class="item-order">
+		11
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Ревматоидный артрит</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-1" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#4" class="item-checkbox"
-			id="rheumatology-label-4"/>
-		<label for="rheumatology-label-4" class="item-label">12</label>
+	<input type="checkbox" name="rheumatology#4" class="item-checkbox"
+		id="rheumatology-label-4"/>
+	<div class="item-order">
+		12
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Системная красная волчанка</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-4" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="rheumatology#14" class="item-checkbox"
-			id="rheumatology-label-14"/>
-		<label for="rheumatology-label-14" class="item-label">13</label>
+	<input type="checkbox" name="rheumatology#14" class="item-checkbox"
+		id="rheumatology-label-14"/>
+	<div class="item-order">
+		13
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Эозинофильный гранулематоз с полиангиитом</summary>
 			<p>нет информации</p>
 		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-14" class="item-label"></label>
 	</div>
 </div>
 
@@ -501,296 +548,359 @@ div.tab-content, input[type=radio]
 <div id="comorbidity" class="tab-content">
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#9" class="item-checkbox"
-			id="comorbidity-label-9"/>
-		<label for="comorbidity-label-9" class="item-label">1</label>
+	<input type="checkbox" name="comorbidity#9" class="item-checkbox"
+		id="comorbidity-label-9"/>
+	<div class="item-order">
+		1
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Активная инфекция</summary>
 			<p> состояние</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-9" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#41" class="item-checkbox"
-			id="comorbidity-label-41"/>
-		<label for="comorbidity-label-41" class="item-label">2</label>
+	<input type="checkbox" name="comorbidity#41" class="item-checkbox"
+		id="comorbidity-label-41"/>
+	<div class="item-order">
+		2
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Алкогольный гепатит</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-41" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#1" class="item-checkbox"
-			id="comorbidity-label-1"/>
-		<label for="comorbidity-label-1" class="item-label">3</label>
+	<input type="checkbox" name="comorbidity#1" class="item-checkbox"
+		id="comorbidity-label-1"/>
+	<div class="item-order">
+		3
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Вирусный гепатит В</summary>
 			<p>дополнительная информация</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-1" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#39" class="item-checkbox"
-			id="comorbidity-label-39"/>
-		<label for="comorbidity-label-39" class="item-label">4</label>
+	<input type="checkbox" name="comorbidity#39" class="item-checkbox"
+		id="comorbidity-label-39"/>
+	<div class="item-order">
+		4
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Вирусный гепатит С</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-39" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#42" class="item-checkbox"
-			id="comorbidity-label-42"/>
-		<label for="comorbidity-label-42" class="item-label">5</label>
+	<input type="checkbox" name="comorbidity#42" class="item-checkbox"
+		id="comorbidity-label-42"/>
+	<div class="item-order">
+		5
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>ВИЧ</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-42" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#30" class="item-checkbox"
-			id="comorbidity-label-30"/>
-		<label for="comorbidity-label-30" class="item-label">6</label>
+	<input type="checkbox" name="comorbidity#30" class="item-checkbox"
+		id="comorbidity-label-30"/>
+	<div class="item-order">
+		6
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Волчаночное поражение ЦНС тяжелое, активное</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-30" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#37" class="item-checkbox"
-			id="comorbidity-label-37"/>
-		<label for="comorbidity-label-37" class="item-label">7</label>
+	<input type="checkbox" name="comorbidity#37" class="item-checkbox"
+		id="comorbidity-label-37"/>
+	<div class="item-order">
+		7
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Волчаночный нефрит тяжелый активный</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-37" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#38" class="item-checkbox"
-			id="comorbidity-label-38"/>
-		<label for="comorbidity-label-38" class="item-label">8</label>
+	<input type="checkbox" name="comorbidity#38" class="item-checkbox"
+		id="comorbidity-label-38"/>
+	<div class="item-order">
+		8
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Воспалительные заболевания кишечника</summary>
 			<p>Болезнь Крона, язвенный колит</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-38" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#36" class="item-checkbox"
-			id="comorbidity-label-36"/>
-		<label for="comorbidity-label-36" class="item-label">9</label>
+	<input type="checkbox" name="comorbidity#36" class="item-checkbox"
+		id="comorbidity-label-36"/>
+	<div class="item-order">
+		9
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Гранулематоз с полиангиитом</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-36" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#35" class="item-checkbox"
-			id="comorbidity-label-35"/>
-		<label for="comorbidity-label-35" class="item-label">10</label>
+	<input type="checkbox" name="comorbidity#35" class="item-checkbox"
+		id="comorbidity-label-35"/>
+	<div class="item-order">
+		10
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Заболевание сердца (тяжелое, неконтролируемое)</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-35" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#40" class="item-checkbox"
-			id="comorbidity-label-40"/>
-		<label for="comorbidity-label-40" class="item-label">11</label>
+	<input type="checkbox" name="comorbidity#40" class="item-checkbox"
+		id="comorbidity-label-40"/>
+	<div class="item-order">
+		11
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Злокачественное новообразование в анамнезе с длительностью ремиссии менее 5 лет</summary>
 			<p>за исключением излеченных базальноклеточной карциномы и рака шейки матки in<br>situ - для сенипрутуга</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-40" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#22" class="item-checkbox"
-			id="comorbidity-label-22"/>
-		<label for="comorbidity-label-22" class="item-label">12</label>
+	<input type="checkbox" name="comorbidity#22" class="item-checkbox"
+		id="comorbidity-label-22"/>
+	<div class="item-order">
+		12
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Иммунодефицит первичный или вторичный (выраженный)</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-22" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#29" class="item-checkbox"
-			id="comorbidity-label-29"/>
-		<label for="comorbidity-label-29" class="item-label">13</label>
+	<input type="checkbox" name="comorbidity#29" class="item-checkbox"
+		id="comorbidity-label-29"/>
+	<div class="item-order">
+		13
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Онкологическое заболевание в активной форме</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-29" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#20" class="item-checkbox"
-			id="comorbidity-label-20"/>
-		<label for="comorbidity-label-20" class="item-label">14</label>
+	<input type="checkbox" name="comorbidity#20" class="item-checkbox"
+		id="comorbidity-label-20"/>
+	<div class="item-order">
+		14
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Перфорация ЖКТ</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-20" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#4" class="item-checkbox"
-			id="comorbidity-label-4"/>
-		<label for="comorbidity-label-4" class="item-label">15</label>
+	<input type="checkbox" name="comorbidity#4" class="item-checkbox"
+		id="comorbidity-label-4"/>
+	<div class="item-order">
+		15
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Печеночная недостаточность тяжелой степени (класс С по классификации Чайлд-Пью)</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-4" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#5" class="item-checkbox"
-			id="comorbidity-label-5"/>
-		<label for="comorbidity-label-5" class="item-label">16</label>
+	<input type="checkbox" name="comorbidity#5" class="item-checkbox"
+		id="comorbidity-label-5"/>
+	<div class="item-order">
+		16
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Почечная недостаточность тяжелой и терминальной степени тяжести (СКФ <30 мл/мин)</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-5" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#2" class="item-checkbox"
-			id="comorbidity-label-2"/>
-		<label for="comorbidity-label-2" class="item-label">17</label>
+	<input type="checkbox" name="comorbidity#2" class="item-checkbox"
+		id="comorbidity-label-2"/>
+	<div class="item-order">
+		17
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Сепсис, обусловленный патогенами, отличными от COVID-19</summary>
 			<p>для этанерцепта в т. ч. и риск возникновения сепсиса</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-2" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#23" class="item-checkbox"
-			id="comorbidity-label-23"/>
-		<label for="comorbidity-label-23" class="item-label">18</label>
+	<input type="checkbox" name="comorbidity#23" class="item-checkbox"
+		id="comorbidity-label-23"/>
+	<div class="item-order">
+		18
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Сердечная недостаточность тяжелая</summary>
 			<p>(III/IV класс по NYHA)</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-23" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#43" class="item-checkbox"
-			id="comorbidity-label-43"/>
-		<label for="comorbidity-label-43" class="item-label">19</label>
+	<input type="checkbox" name="comorbidity#43" class="item-checkbox"
+		id="comorbidity-label-43"/>
+	<div class="item-order">
+		19
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Сифилис</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-43" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#3" class="item-checkbox"
-			id="comorbidity-label-3"/>
-		<label for="comorbidity-label-3" class="item-label">20</label>
+	<input type="checkbox" name="comorbidity#3" class="item-checkbox"
+		id="comorbidity-label-3"/>
+	<div class="item-order">
+		20
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>туберкулез</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-3" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="comorbidity#27" class="item-checkbox"
-			id="comorbidity-label-27"/>
-		<label for="comorbidity-label-27" class="item-label">21</label>
+	<input type="checkbox" name="comorbidity#27" class="item-checkbox"
+		id="comorbidity-label-27"/>
+	<div class="item-order">
+		21
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Хроническая инфекция</summary>
 			<p>нет информации</p>
 		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-27" class="item-label"></label>
 	</div>
 </div>
 
@@ -803,268 +913,325 @@ div.tab-content, input[type=radio]
 <div id="status" class="tab-content">
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#45" class="item-checkbox"
-			id="status-label-45"/>
-		<label for="status-label-45" class="item-label">1</label>
+	<input type="checkbox" name="status#45" class="item-checkbox"
+		id="status-label-45"/>
+	<div class="item-order">
+		1
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Активное лечение злокачественногоновообразования в настоящий момент</summary>
 			<p>или лимфопролиферативного заболевания</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-45" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#6" class="item-checkbox"
-			id="status-label-6"/>
-		<label for="status-label-6" class="item-label">2</label>
+	<input type="checkbox" name="status#6" class="item-checkbox"
+		id="status-label-6"/>
+	<div class="item-order">
+		2
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Беременность, грудное вскармливание</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-6" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#34" class="item-checkbox"
-			id="status-label-34"/>
-		<label for="status-label-34" class="item-label">3</label>
+	<input type="checkbox" name="status#34" class="item-checkbox"
+		id="status-label-34"/>
+	<div class="item-order">
+		3
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Вакцинация живой вакциной одновременно или менее, чем за 30 дней до введения препарата</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-34" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#42" class="item-checkbox"
-			id="status-label-42"/>
-		<label for="status-label-42" class="item-label">4</label>
+	<input type="checkbox" name="status#42" class="item-checkbox"
+		id="status-label-42"/>
+	<div class="item-order">
+		4
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Вакцинация инактивированной вакциной в период применения препарата</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-42" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#7" class="item-checkbox"
-			id="status-label-7"/>
-		<label for="status-label-7" class="item-label">5</label>
+	<input type="checkbox" name="status#7" class="item-checkbox"
+		id="status-label-7"/>
+	<div class="item-order">
+		5
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Возраст до 18 лет</summary>
 			<p>++/--</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-7" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#22" class="item-checkbox"
-			id="status-label-22"/>
-		<label for="status-label-22" class="item-label">6</label>
+	<input type="checkbox" name="status#22" class="item-checkbox"
+		id="status-label-22"/>
+	<div class="item-order">
+		6
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Гиперчувствительность к белкам мыши</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-22" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#35" class="item-checkbox"
-			id="status-label-35"/>
-		<label for="status-label-35" class="item-label">7</label>
+	<input type="checkbox" name="status#35" class="item-checkbox"
+		id="status-label-35"/>
+	<div class="item-order">
+		7
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Гиперчувствительность к любому компоненту препарата в анамнезе</summary>
 			<p>запрещено</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-35" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#37" class="item-checkbox"
-			id="status-label-37"/>
-		<label for="status-label-37" class="item-label">8</label>
+	<input type="checkbox" name="status#37" class="item-checkbox"
+		id="status-label-37"/>
+	<div class="item-order">
+		8
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Гиперчувствительность к производным белка E. coli</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-37" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#47" class="item-checkbox"
-			id="status-label-47"/>
-		<label for="status-label-47" class="item-label">9</label>
+	<input type="checkbox" name="status#47" class="item-checkbox"
+		id="status-label-47"/>
+	<div class="item-order">
+		9
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Жизнеугрожающие инфузионные реакции при применении моноклональных антител в анамнезе</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-47" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#39" class="item-checkbox"
-			id="status-label-39"/>
-		<label for="status-label-39" class="item-label">10</label>
+	<input type="checkbox" name="status#39" class="item-checkbox"
+		id="status-label-39"/>
+	<div class="item-order">
+		10
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>наследственная непереносимость галактозы или дефицит лактазы</summary>
 			<p>или синдром глюкозо-галактозной мальабсорбции</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-39" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#16" class="item-checkbox"
-			id="status-label-16"/>
-		<label for="status-label-16" class="item-label">11</label>
+	<input type="checkbox" name="status#16" class="item-checkbox"
+		id="status-label-16"/>
+	<div class="item-order">
+		11
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Наследственная непереносимость фруктозы</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-16" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#46" class="item-checkbox"
-			id="status-label-46"/>
-		<label for="status-label-46" class="item-label">12</label>
+	<input type="checkbox" name="status#46" class="item-checkbox"
+		id="status-label-46"/>
+	<div class="item-order">
+		12
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Неинвазивная/инвазивная ИВЛ или ЭКМО в настоящий момент</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-46" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#38" class="item-checkbox"
-			id="status-label-38"/>
-		<label for="status-label-38" class="item-label">13</label>
+	<input type="checkbox" name="status#38" class="item-checkbox"
+		id="status-label-38"/>
+	<div class="item-order">
+		13
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Совместное приеменение с азатиоприном, препаратами золота и анакинрой</summary>
 			<p>для оренсии</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-38" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#41" class="item-checkbox"
-			id="status-label-41"/>
-		<label for="status-label-41" class="item-label">14</label>
+	<input type="checkbox" name="status#41" class="item-checkbox"
+		id="status-label-41"/>
+	<div class="item-order">
+		14
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Совместное применение с абатацептом</summary>
 			<p>для инфликсимаба</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-41" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#40" class="item-checkbox"
-			id="status-label-40"/>
-		<label for="status-label-40" class="item-label">15</label>
+	<input type="checkbox" name="status#40" class="item-checkbox"
+		id="status-label-40"/>
+	<div class="item-order">
+		15
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Совместное применение с анакинрой</summary>
 			<p>для инфликсимаба</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-40" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#43" class="item-checkbox"
-			id="status-label-43"/>
-		<label for="status-label-43" class="item-label">16</label>
+	<input type="checkbox" name="status#43" class="item-checkbox"
+		id="status-label-43"/>
+	<div class="item-order">
+		16
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Совместный прием с азатиоприном, циклоспорином или такролимусом</summary>
 			<p>для Тофары</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-43" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#36" class="item-checkbox"
-			id="status-label-36"/>
-		<label for="status-label-36" class="item-label">17</label>
+	<input type="checkbox" name="status#36" class="item-checkbox"
+		id="status-label-36"/>
+	<div class="item-order">
+		17
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Совместный прием с иФНО альфа или другими ГИБП</summary>
 			<p>дополнительно для упадацитиниба: "...и совместно с другими ингибиторами JAK"</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-36" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#44" class="item-checkbox"
-			id="status-label-44"/>
-		<label for="status-label-44" class="item-label">18</label>
+	<input type="checkbox" name="status#44" class="item-checkbox"
+		id="status-label-44"/>
+	<div class="item-order">
+		18
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Совместный прием с мощными индукторами цитохрома P450 (CYP3А4)</summary>
 			<p>(например, рифампицин)  - для тофацитиниба<br>или у пациентов, которые прекратили прием мощного индуктора изофермента CYP3A4 менее чем за 28 дней или 5 периодов полувыведения до приема первой дозы тофацитиниба.</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="status-label-44" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="status#8" class="item-checkbox"
-			id="status-label-8"/>
-		<label for="status-label-8" class="item-label">19</label>
+	<input type="checkbox" name="status#8" class="item-checkbox"
+		id="status-label-8"/>
+	<div class="item-order">
+		19
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Состояние в течение 1 месяца после лечения иФНО-альфа</summary>
 			<p>или комбинация этих препартов</p>
 		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-8" class="item-label"></label>
 	</div>
 </div>
 
@@ -1077,198 +1244,240 @@ div.tab-content, input[type=radio]
 <div id="deviation" class="tab-content">
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#1" class="item-checkbox"
-			id="manual-label-1"/>
-		<label for="manual-label-1" class="item-label">1</label>
+	<input type="checkbox" name="manual#1" class="item-checkbox"
+		id="manual-label-1"/>
+	<div class="item-order">
+		1
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>АЛТ > 100</summary>
 			<p>это первый пример</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-1" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#9" class="item-checkbox"
-			id="manual-label-9"/>
-		<label for="manual-label-9" class="item-label">2</label>
+	<input type="checkbox" name="manual#9" class="item-checkbox"
+		id="manual-label-9"/>
+	<div class="item-order">
+		2
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>АЛТ > 120 Ед/л</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-9" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#4" class="item-checkbox"
-			id="manual-label-4"/>
-		<label for="manual-label-4" class="item-label">3</label>
+	<input type="checkbox" name="manual#4" class="item-checkbox"
+		id="manual-label-4"/>
+	<div class="item-order">
+		3
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>АЛТ > 200 Ед/л</summary>
 			<p> </p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-4" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#8" class="item-checkbox"
-			id="manual-label-8"/>
-		<label for="manual-label-8" class="item-label">4</label>
+	<input type="checkbox" name="manual#8" class="item-checkbox"
+		id="manual-label-8"/>
+	<div class="item-order">
+		4
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>АСТ > 120 Ед/л</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-8" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#3" class="item-checkbox"
-			id="manual-label-3"/>
-		<label for="manual-label-3" class="item-label">5</label>
+	<input type="checkbox" name="manual#3" class="item-checkbox"
+		id="manual-label-3"/>
+	<div class="item-order">
+		5
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>АСТ > 200 Ед/л</summary>
 			<p> </p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-3" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#15" class="item-checkbox"
-			id="manual-label-15"/>
-		<label for="manual-label-15" class="item-label">6</label>
+	<input type="checkbox" name="manual#15" class="item-checkbox"
+		id="manual-label-15"/>
+	<div class="item-order">
+		6
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Гемоглобин < 80 г/л</summary>
 			<p>для всего, кроме Тофары</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-15" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#17" class="item-checkbox"
-			id="manual-label-17"/>
-		<label for="manual-label-17" class="item-label">7</label>
+	<input type="checkbox" name="manual#17" class="item-checkbox"
+		id="manual-label-17"/>
+	<div class="item-order">
+		7
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Гемолглобин <90 мг/л </summary>
 			<p>только для Тофары</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-17" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#16" class="item-checkbox"
-			id="manual-label-16"/>
-		<label for="manual-label-16" class="item-label">8</label>
+	<input type="checkbox" name="manual#16" class="item-checkbox"
+		id="manual-label-16"/>
+	<div class="item-order">
+		8
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Клиренс креатинина <40 мл/мин</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-16" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#14" class="item-checkbox"
-			id="manual-label-14"/>
-		<label for="manual-label-14" class="item-label">9</label>
+	<input type="checkbox" name="manual#14" class="item-checkbox"
+		id="manual-label-14"/>
+	<div class="item-order">
+		9
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Лимфоциты (АЧЛ) <0,5 * 10^9/л</summary>
 			<p>абсолютное число</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-14" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#10" class="item-checkbox"
-			id="manual-label-10"/>
-		<label for="manual-label-10" class="item-label">10</label>
+	<input type="checkbox" name="manual#10" class="item-checkbox"
+		id="manual-label-10"/>
+	<div class="item-order">
+		10
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Нейтрофилы (АЧН) < 1 * 10^9/л</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-10" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#13" class="item-checkbox"
-			id="manual-label-13"/>
-		<label for="manual-label-13" class="item-label">11</label>
+	<input type="checkbox" name="manual#13" class="item-checkbox"
+		id="manual-label-13"/>
+	<div class="item-order">
+		11
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Нейтрофилы (АЧН) < 1,5 * 10^9/л - для Анакинры</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-13" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#11" class="item-checkbox"
-			id="manual-label-11"/>
-		<label for="manual-label-11" class="item-label">12</label>
+	<input type="checkbox" name="manual#11" class="item-checkbox"
+		id="manual-label-11"/>
+	<div class="item-order">
+		12
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Нейтрофилы (АЧН) < 2 * 10^9/л</summary>
 			<p>нет информации</p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-11" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#6" class="item-checkbox"
-			id="manual-label-6"/>
-		<label for="manual-label-6" class="item-label">13</label>
+	<input type="checkbox" name="manual#6" class="item-checkbox"
+		id="manual-label-6"/>
+	<div class="item-order">
+		13
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Число тромбоцитов < 100 * 10^9/л</summary>
 			<p> </p>
 		</details>
 	</div>
+	<div class="item-input">
+		<label for="manual-label-6" class="item-label"></label>
+	</div>
 </div>
 
 <div class="flex-box">
-	<div>
-		<input type="checkbox" name="manual#12" class="item-checkbox"
-			id="manual-label-12"/>
-		<label for="manual-label-12" class="item-label">14</label>
+	<input type="checkbox" name="manual#12" class="item-checkbox"
+		id="manual-label-12"/>
+	<div class="item-order">
+		14
 	</div>
-	<div class="content">
+	<div class="item-content">
 		<details>
 			<summary>Число тромбоцитов < 150 * 10^9/л</summary>
 			<p>нет информации</p>
 		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-12" class="item-label"></label>
 	</div>
 </div>
 
@@ -1461,7 +1670,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-10" class="item-label">x</label>
+		<label for="preparation-label-10" class="item-label"></label>
 	</div>
 </div>
 
@@ -1478,7 +1687,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-75" class="item-label">x</label>
+		<label for="preparation-label-75" class="item-label"></label>
 	</div>
 </div>
 
@@ -1495,7 +1704,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-76" class="item-label">x</label>
+		<label for="preparation-label-76" class="item-label"></label>
 	</div>
 </div>
 
@@ -1512,7 +1721,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-77" class="item-label">x</label>
+		<label for="preparation-label-77" class="item-label"></label>
 	</div>
 </div>
 
@@ -1529,7 +1738,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-78" class="item-label">x</label>
+		<label for="preparation-label-78" class="item-label"></label>
 	</div>
 </div>
 
@@ -1546,7 +1755,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-79" class="item-label">x</label>
+		<label for="preparation-label-79" class="item-label"></label>
 	</div>
 </div>
 
@@ -1563,7 +1772,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-5" class="item-label">x</label>
+		<label for="preparation-label-5" class="item-label"></label>
 	</div>
 </div>
 
@@ -1580,7 +1789,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-11" class="item-label">x</label>
+		<label for="preparation-label-11" class="item-label"></label>
 	</div>
 </div>
 
@@ -1597,7 +1806,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-82" class="item-label">x</label>
+		<label for="preparation-label-82" class="item-label"></label>
 	</div>
 </div>
 
@@ -1614,7 +1823,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-83" class="item-label">x</label>
+		<label for="preparation-label-83" class="item-label"></label>
 	</div>
 </div>
 
@@ -1631,7 +1840,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-84" class="item-label">x</label>
+		<label for="preparation-label-84" class="item-label"></label>
 	</div>
 </div>
 
@@ -1648,7 +1857,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-85" class="item-label">x</label>
+		<label for="preparation-label-85" class="item-label"></label>
 	</div>
 </div>
 
@@ -1665,7 +1874,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-9" class="item-label">x</label>
+		<label for="preparation-label-9" class="item-label"></label>
 	</div>
 </div>
 
@@ -1682,7 +1891,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-86" class="item-label">x</label>
+		<label for="preparation-label-86" class="item-label"></label>
 	</div>
 </div>
 
@@ -1699,7 +1908,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-87" class="item-label">x</label>
+		<label for="preparation-label-87" class="item-label"></label>
 	</div>
 </div>
 
@@ -1716,7 +1925,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-88" class="item-label">x</label>
+		<label for="preparation-label-88" class="item-label"></label>
 	</div>
 </div>
 
@@ -1733,7 +1942,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-89" class="item-label">x</label>
+		<label for="preparation-label-89" class="item-label"></label>
 	</div>
 </div>
 
@@ -1750,7 +1959,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-81" class="item-label">x</label>
+		<label for="preparation-label-81" class="item-label"></label>
 	</div>
 </div>
 
@@ -1767,7 +1976,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-90" class="item-label">x</label>
+		<label for="preparation-label-90" class="item-label"></label>
 	</div>
 </div>
 
@@ -1784,7 +1993,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-92" class="item-label">x</label>
+		<label for="preparation-label-92" class="item-label"></label>
 	</div>
 </div>
 
@@ -1801,7 +2010,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-93" class="item-label">x</label>
+		<label for="preparation-label-93" class="item-label"></label>
 	</div>
 </div>
 
@@ -1818,7 +2027,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-94" class="item-label">x</label>
+		<label for="preparation-label-94" class="item-label"></label>
 	</div>
 </div>
 
@@ -1835,7 +2044,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-95" class="item-label">x</label>
+		<label for="preparation-label-95" class="item-label"></label>
 	</div>
 </div>
 
@@ -1852,7 +2061,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-96" class="item-label">x</label>
+		<label for="preparation-label-96" class="item-label"></label>
 	</div>
 </div>
 
@@ -1869,7 +2078,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-97" class="item-label">x</label>
+		<label for="preparation-label-97" class="item-label"></label>
 	</div>
 </div>
 
@@ -1886,7 +2095,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-98" class="item-label">x</label>
+		<label for="preparation-label-98" class="item-label"></label>
 	</div>
 </div>
 
@@ -1903,7 +2112,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-99" class="item-label">x</label>
+		<label for="preparation-label-99" class="item-label"></label>
 	</div>
 </div>
 
@@ -1920,7 +2129,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-100" class="item-label">x</label>
+		<label for="preparation-label-100" class="item-label"></label>
 	</div>
 </div>
 
@@ -1937,7 +2146,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-101" class="item-label">x</label>
+		<label for="preparation-label-101" class="item-label"></label>
 	</div>
 </div>
 
@@ -1954,7 +2163,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-102" class="item-label">x</label>
+		<label for="preparation-label-102" class="item-label"></label>
 	</div>
 </div>
 
@@ -1971,7 +2180,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-103" class="item-label">x</label>
+		<label for="preparation-label-103" class="item-label"></label>
 	</div>
 </div>
 
@@ -1988,7 +2197,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-104" class="item-label">x</label>
+		<label for="preparation-label-104" class="item-label"></label>
 	</div>
 </div>
 
@@ -2005,7 +2214,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-105" class="item-label">x</label>
+		<label for="preparation-label-105" class="item-label"></label>
 	</div>
 </div>
 
@@ -2022,7 +2231,7 @@ div.tab-content, input[type=radio]
 		</details>
 	</div>
 	<div class="item-input">
-		<label for="preparation-label-106" class="item-label">x</label>
+		<label for="preparation-label-106" class="item-label"></label>
 	</div>
 </div>
 
@@ -2122,11 +2331,11 @@ div.tab-content, input[type=radio]
 			userDialog.close();
 			//
 			//	Изменить значок
-			showMenu.querySelector(".icon-title").textContent =
+			showMenu.querySelector(".title-icon").textContent =
 				itemMenu[i].querySelector("span").textContent;
 			//
 			//	Изменить название
-			showMenu.querySelector(".text-title").textContent =
+			showMenu.querySelector(".title-text").textContent =
 				itemMenu[i].querySelector("div").textContent;
 			//
 			//	Показать Главную кнопку
