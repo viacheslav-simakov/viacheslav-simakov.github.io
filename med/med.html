@@ -2260,9 +2260,8 @@ div.tab-content, input[type=radio]
 	tg.MainButton.setText("Рекомендации").show();
 	//	Add an event listener for when the SettingButton is clicked
 	tg.onEvent('mainButtonClicked', () => {
-	<!--
-		Селекторы: https://learn.javascript.ru/css-selectors
-	-->
+		//
+		//	Данные для отправки в Telegram Bot
 		let dataToSend = {};
 		//
 		//	Параметры формы
@@ -2271,8 +2270,8 @@ div.tab-content, input[type=radio]
 		//	цикл по названию параметров
 		for (let i = 0; i < name.length; i++) {
 			//
-			//	Элементы формы
-			//		let elem = document.querySelectorAll("input[name^='rheumatology#']");
+			//	Селекторы: https://learn.javascript.ru/css-selectors
+			//	let elem = document.querySelectorAll("input[name^='rheumatology#']");
 			let elem = document.querySelectorAll("input[name^='" + name[i] + "#']");
 			//
 			//	Массив ID значений
