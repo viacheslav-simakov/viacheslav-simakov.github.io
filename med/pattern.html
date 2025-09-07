@@ -2261,6 +2261,18 @@ div.tab-content, input[type=radio]
 		alert('MAIN button clicked!');
 		// You can also send data back to the bot here
 		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
+		return;
+		// Assuming 'dataToSend' is an object containing the information to be sent
+		const dataToSend = {
+			itemName: "Example Item",
+			quantity: 2,
+			price: 10.50
+		};
+		// Stringify the data for transmission
+		const jsonData = JSON.stringify(dataToSend);
+		
+		// Send the data to the bot
+		tg.sendData(jsonData);		
 	});	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//
@@ -2365,24 +2377,5 @@ div.tab-content, input[type=radio]
 		}
 	});
 </script>
-<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-	Передача данных Telegram Bot
-
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
-<script>
-// Assuming 'dataToSend' is an object containing the information to be sent
-const dataToSend = {
-    itemName: "Example Item",
-    quantity: 2,
-    price: 10.50
-};
-// Stringify the data for transmission
-const jsonData = JSON.stringify(dataToSend);
-
-// Send the data to the bot
-tg.sendData(jsonData);
-</script>
-
 </body>
 </html>
