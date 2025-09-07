@@ -2261,23 +2261,35 @@ div.tab-content, input[type=radio]
 	//	Add an event listener for when the SettingButton is clicked
 	tg.onEvent('mainButtonClicked', () => {
 		//
-		// Получаем все элементы формы
+		//	Получаем все элементы формы
 		const elem = document.getElementById("req-form").elements;
-		alert('MAIN button clicked! = ' + elem.length);
+		//
+		//	Массив объектов
+		let dataToSend = [];
+		//
+		//	цикл по всем элементам формы
+		for (let i = 0; i < elem.length; i++) {
+			//
+			// Игнорируем кнопки отправки, чтобы не включать их в JSON
+			if (elem[i].type !== 'submit' && elem[i].type !== 'button') {
+				//
+				//	Добавляем объект в массив
+				dataToSend.push(
+				{
+					name:	elem[i].name,
+					value:	elem[i].value
+				});
+			}
+		}
+		//	Преобразуем массив объектов в строку JSON
+		const jsonString = JSON.stringify(dataToSend);
+		//
+		// Send the data to the bot
+		tg.sendData(jsonString);		
+
+		alert('MAIN button clicked! = ' + dataToSend.length);
 		// You can also send data back to the bot here
 		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
-		
-		// Assuming 'dataToSend' is an object containing the information to be sent
-		const dataToSend = {
-			itemName: "Example Item",
-			quantity: 2,
-			price: 10.50
-		};
-		// Stringify the data for transmission
-		const jsonData = JSON.stringify(dataToSend);
-		
-		// Send the data to the bot
-		tg.sendData(jsonData);		
 	});	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//
