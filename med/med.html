@@ -2289,13 +2289,37 @@ div.tab-content, input[type=radio]
 			//	Список ID флажков
 			dataToSend[name[i]] = id;
 		}
+		//	Селекторы: https://learn.javascript.ru/css-selectors
+		//	let elem = document.querySelectorAll("input[name^='rheumatology#']");
+		let elem = document.querySelectorAll("input[name^='probe#']");
+		//
+		//	Массив ID значений
+		let probe = [];
+		//
+		//	цикл по всем элементам списка
+		for (let j = 0; j < elem.length; j++) {
+			//
+			//	Пропустить оставшуюся часть тела цикла
+			if (elem[j].value == "") continue;
+			//
+			//	Добавить в массив
+			probe.push(
+			{
+				id:		elem[j].name.split("#")[1],
+				val		elem[j].value
+			}
+			);
+		}
+		//	Список объектов
+		dataToSend["probe"] = probe;
+
 		//	Преобразуем массив объектов в строку JSON
 		const jsonString = JSON.stringify(dataToSend);
+		
+		alert('MAIN button clicked! = ' + jsonString.length);
 		//
 		// Send the data to the bot
 		tg.sendData(jsonString);
-
-		alert('MAIN button clicked! = ' + dataToSend.length);
 		// You can also send data back to the bot here
 		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
 	});	
