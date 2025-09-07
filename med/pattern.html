@@ -2261,7 +2261,7 @@ div.tab-content, input[type=radio]
 		alert('MAIN button clicked!');
 		// You can also send data back to the bot here
 		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
-		return;
+		
 		// Assuming 'dataToSend' is an object containing the information to be sent
 		const dataToSend = {
 			itemName: "Example Item",
@@ -2272,7 +2272,7 @@ div.tab-content, input[type=radio]
 		const jsonData = JSON.stringify(dataToSend);
 		
 		// Send the data to the bot
-		//tg.sendData(jsonData);		
+		tg.sendData(jsonData);		
 	});	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//
