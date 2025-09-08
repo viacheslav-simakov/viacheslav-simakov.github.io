@@ -361,14 +361,14 @@ div.tab-content, input[type=radio]
 ##--PREPARATION--##
 </div>
 </form>
-<!--##########################################################################
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-	Telegram Web API
-	https://core.telegram.org/bots/webapps#events-available-for-mini-apps
+	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
 
-###########################################################################-->
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <script>
-	//	Web-API
+	//
+	//	Web-API: https://core.telegram.org/bots/webapps#events-available-for-mini-apps
 	let tg = window.Telegram.WebApp;
 	//	Инициализируем WebApp
 	tg.ready();
@@ -393,9 +393,8 @@ div.tab-content, input[type=radio]
 		//	цикл по названию параметров
 		for (let i = 0; i < name.length; i++) {
 			//
-			//	let elem = document.querySelectorAll("input[name^='rheumatology#']");
 			//	Селекторы: https://learn.javascript.ru/css-selectors
-			//
+			//	let elem = document.querySelectorAll("input[name^='rheumatology#']");
 			let elem = document.querySelectorAll("input[name^='" + name[i] + "#']");
 			//
 			//	Массив ID значений
@@ -413,8 +412,8 @@ div.tab-content, input[type=radio]
 			//	Список ID флажков
 			dataToSend[name[i]] = id;
 		}
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//	Селекторы: https://learn.javascript.ru/css-selectors
+		//	let elem = document.querySelectorAll("input[name^='rheumatology#']");
 		let elem = document.querySelectorAll("input[name^='probe#']");
 		//
 		//	Массив ID значений
@@ -436,15 +435,14 @@ div.tab-content, input[type=radio]
 		}
 		//	Список объектов
 		dataToSend["probe"] = probe;
-		//
+
 		//	Преобразуем массив объектов в строку JSON
 		const jsonString = JSON.stringify(dataToSend);
 		
-		alert("Main button clicked!\nКоличество символов: " + jsonString.length);
+		alert('MAIN button clicked! = ' + jsonString.length);
 		//
 		// Send the data to the bot
-//		tg.sendData(jsonString);
-		//
+		tg.sendData(jsonString);
 		// You can also send data back to the bot here
 		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
 	});	
@@ -464,17 +462,15 @@ div.tab-content, input[type=radio]
 		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
 	});	
 </script>
-<!--##########################################################################
-
+<!--
 	Хранилище устройства (DeviceStorage)
-	https://core.telegram.org/bots/webapps#devicestorage
-
-###########################################################################-->
+-->
 <script>
+	//
 	//	Локальное хранилище данных
 	let ds = tg.DeviceStorage;
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//	Коллекция флажков (checkbox)
+	//
+	//	Коллекция флажков
 	let lst = document.querySelectorAll("[class='item-checkbox']");
 	console.log(lst);
 	//
@@ -505,45 +501,8 @@ div.tab-content, input[type=radio]
 			// alert(JSON.stringify(lst[i].name) + JSON.stringify(lst[i].checked));
 		});
 	};
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//	Коллекция строк полей ввода (input)
-	//	https://learn.javascript.ru/css-selectors
-	let probe = document.querySelectorAll("input[name^='probe#']");
-	console.log(probe);
-	//
-	//	Цикл по всем флажкам
-	for (let i = 0; i < probe.length; i++) {
-		//
-		//	Восстановить значение поля ввода
-		ds.getItem(JSON.stringify(probe[i].name), (error, result) => {
-			//
-			//	нет записи в хранилище?
-			if (result !== null) {
-				//
-				//	Присвоить значение
-				probe[i].value = JSON.parse(result);
-			}
-			else {
-				probe[i].value = "";
-			}
-		});
-		//
-		//	Обработчик событий для каждого поля ввода
-		probe[i].addEventListener('click', function(event) {
-			//
-			//	Записать в хранилище устройства
-			ds.setItem(
-				JSON.stringify(probe[i].name),
-				JSON.stringify(probe[i].value));
-		});
-	};
 </script>
-<!--##########################################################################
 
-	Окно диалога (меню выбора вкладки)
-	https://developer.mozilla.org/ru/docs/Web/HTML/Reference/Elements/dialog
-
-###########################################################################-->
 <script>
 	const showMenu = document.getElementById("showMenu");
 	const userDialog = document.getElementById("userDialog");
