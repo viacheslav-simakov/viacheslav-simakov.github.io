@@ -331,8 +331,6 @@ $hash->{'--probe--'} = $data;
 		'med.txt', $hash,
 		'D:\GIT-HUB\viacheslav-simakov.github.io\med');
 #		'C:\Git-Hub\viacheslav-simakov.github.io\med');
-	
-	print STDERR "\n\n\tCreate HTML-file 'med.html'\n\n\n";
 exit;
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 =pod
@@ -379,5 +377,9 @@ sub make_pattern
 	#
 	#	Закрыть файл
 	close($fh);
+	#
+	#
+	print STDERR "\n\n\tCreate HTML-file '$html_file'\n\n\n";
+
 }
 __DATA__
