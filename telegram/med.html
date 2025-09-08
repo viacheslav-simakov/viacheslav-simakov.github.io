@@ -2248,11 +2248,13 @@ div.tab-content, input[type=radio]
 	//	Web-API
 	let tg = window.Telegram.WebApp;
 	//	Инициализируем WebApp
-	tg.ready();
+		tg.ready();
 	//	во весь экран
-	tg.expand();
+		tg.expand();
 	//	Получаем информацию о пользователе
 	const user = tg.initDataUnsafe.user;
+	//	Наименования секций (разделов) HTML-страницы
+	const section = ["rheumatology","preparation","comorbidity","status","manual"];
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//
 	//	Главная кнопка
@@ -2264,18 +2266,14 @@ div.tab-content, input[type=radio]
 		//	Данные для отправки в Telegram Bot
 		let dataToSend = {};
 		//
-		//	Параметры формы
-		let name = ["rheumatology","preparation","comorbidity","status","manual"];
-		//
-		//	цикл по названию параметров
-		for (let i = 0; i < name.length; i++) {
+		//	Цикл по названию секций, содержащих флажки (checkbox)
+		for (let i = 0; i < section.length; i++) {
 			//
-			//	let elem = document.querySelectorAll("input[name^='rheumatology#']");
 			//	Селекторы: https://learn.javascript.ru/css-selectors
 			//
-			let elem = document.querySelectorAll("input[name^='" + name[i] + "#']");
+			let elem = document.querySelectorAll("input[name^='" + section[i] + "#']");
 			//
-			//	Массив ID значений
+			//	Массив ID значений флажков (checkbox)
 			let id = [];
 			//
 			//	цикл по всем элементам списка
@@ -2288,14 +2286,14 @@ div.tab-content, input[type=radio]
 				id.push(elem[j].name.split("#")[1]);
 			}
 			//	Список ID флажков
-			dataToSend[name[i]] = id;
+			dataToSend[section[i]] = id;
 		}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//	Коллекция полей ввода (input)
 		//	Селекторы: https://learn.javascript.ru/css-selectors
 		let elem = document.querySelectorAll("input[name^='probe#']");
 		//
-		//	Массив объектов
+		//	Массив объектов (полей ввода)
 		let probe = [];
 		//
 		//	цикл по всем элементам списка
@@ -2351,18 +2349,13 @@ div.tab-content, input[type=radio]
 	//	Локальное хранилище данных
 	let ds = tg.DeviceStorage;
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//	Список названий секций
-	let section = ["rheumatology","preparation","comorbidity","status","manual"];
-	//
-	//	цикл по названиям секций
+	//	Цикл по названию секций, содержащих checkbox
 	for (let i = 0; i < section.length; i++) {
 		//
-		//	Коллекция флажков в секции
-		//	https://learn.javascript.ru/css-selectors
+		//	Коллекция флажков в секции:	https://learn.javascript.ru/css-selectors
 		let elem = document.querySelectorAll("input[name^='" + section[i] + "#']");
-		console.log(elem);
 		//
-		//	цикл по всем флажкам из секции
+		//	Цикл по всем флажкам (checkbox) из секции
 		for (let j = 0; j < elem.length; j++) {
 			//
 			//	Восстановить значение флажка
@@ -2393,7 +2386,6 @@ div.tab-content, input[type=radio]
 	//	Коллекция строк полей ввода (input)
 	//	https://learn.javascript.ru/css-selectors
 	let probe = document.querySelectorAll("input[name^='probe#']");
-	console.log(probe);
 	//
 	//	Цикл по всем полям ввода
 	for (let j = 0; j < probe.length; j++) {
