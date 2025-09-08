@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Препараты</title>
+<!--meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<title>Электронный ассистент врача-ревматолога</title-->
+<link href="main.css" rel="stylesheet" type="text/css"/>
+<link href="tables.css" rel="stylesheet" type="text/css"/>
+<!-- Google font's -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+<!--
+	https://core.telegram.org/bots/webapps#initializing-mini-apps
+-->
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+<style>
+body
+{
+	display:			block;
+	font-family:		-apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+	font-size:			var(--font-size);
+	color:				var(--tg-theme-text-color);
+	background:			var(--tg-theme-bg-color);
+}
+/*	Данные */
+div.tab-content
+{
+	margin-top:			50px;
+}
+/*
+	flex container
+*/
+div.flex-box
+{
+	display:			flex;
+	flex-direction:		row;
+	align-items:		stretch;
+	text-align:			left; 
+	justify-content:	start;
+	column-gap:			5px;
+	margin-bottom:		1rem;
+}
+.item-checkbox
+{
+	display:			none;
+}
+div.item-order
+{
+	display:			block;
+	font-size:			1rem;
+	padding:			0.5rem;
+	width:				2rem;
+	text-align:			right;
+}
+div.item-content
+{
+	display:			block;
+	margin-right:		auto;
+	width:				100%;
+}
+div.item-input
+{
+	padding:			0rem;
+}
+details
+{
+	color:				var(--tg-theme-text-color);
+	border:				1px solid var(--tg-theme-section-separator-color, #aaaaaa);
+	border-radius:		8px;
+	overflow:			hidden;
+	padding:			0.5rem 0.5rem 0;
+}
+summary
+{
+	font-size:			var(--font-size);
+	color:				var(--tg-theme-text-color);
+	margin:				-0.5rem -0.5rem 0px;
+	padding:			0.5rem;
+}
+details:open
+{
+	color:				var(--tg-theme-hint-color);
+}
+details:open > summary
+{
+	color:				var(--tg-theme-text-color);
+	background-color:	var(--tg-theme-secondary-bg-color);
+	border-bottom:		1px solid #aaaaaa;
+}
+.item-label
+{
+	display:			block;
+	font-size:			var(--font-size);
+	color:				var(--tg-theme-text-color);
+	border:				1px solid var(--tg-theme-link-color, black);
+	border-radius:		50%;
+	padding:			0.5rem;
+	width:				2rex;
+	height:				2rex;
+	text-align:			center;
+	line-height:		2rex;
+	margin-left:		calc(3rem - 2rex);
+}
+/*
+	Выделение выбора флажка
+	https://developer.mozilla.org/ru/docs/Web/CSS/::after
+*/
+.item-checkbox:checked ~ .item-input .item-label
+{
+	color:				var(--tg-theme-button-text-color, yellow);
+	background-color:	var(--tg-theme-button-color, green);
+}
+.item-checkbox:checked ~ .item-input .item-label::after
+{
+	content: "\2714";
+}
+/*
+	https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/number
+*/
+input[type=number]
+{
+	display:			block;
+	font-size:			calc(var(--font-size) + 4px);
+	width:				3rem;
+	padding:			0.5rem;
+	border:				1px solid black;
+	border-radius:		8px;
+}
+/*	Заголовок страницы */
+div.header-fixed
+{
+	display:			flex;
+	flex-direction:		row;
+	align-items:		center;
+	text-align:			left; 
+	justify-content:	start;
+	column-gap:			5px;
+	
+	0font-size:			1.25rem;
+	font-weight:		bold;
+	position:			fixed;
+	top:				0;		/* Отступ от верхнего края */
+	left:				0;		/* Отступ от правого края */
+	width:				100%;
+	height:				36px;
+	0line-height:		36px;
+	0z-index:			1000;	/* Убедиться, что кнопка поверх другого контента */
+	color:				var(--tg-theme-button-text-color, yellow);
+	background-color:	var(--tg-theme-button-color, green);
+	padding:			4px 12px;
+	cursor: 			pointer;
+}
+/*	Диалоговое окно */
+dialog
+{
+	font-size:			var(--font-size);
+	
+	margin:				44px auto auto 0px;
+	padding:			0px;	
+	background-color:	hsl(0,0%,95%);
+
+	0border:				none !important;
+	border:				none;
+	border-right:		1px solid var(--tg-theme-button-color, red);
+	border-bottom:		1px solid var(--tg-theme-button-color, red);
+	outline:			none;
+	border-bottom-right-radius:		1rex;
+	box-shadow:			0 0 25px rgba(0,0,0,0.5);
+
+	max-width:			100% !important;
+	0width:				fit-content;
+	0width:				100%;
+	overflow:			hidden; /* обрезка */
+}
+/*	Фон модального окна */
+dialog::backdrop
+{
+	background-color:	hsl(0,0%,90%);
+	opacity:			0.75;
+}
+div.menu
+{
+	display:			flex;
+	flex-direction:		column;
+	0align-items:		start;
+	text-align:			left; 
+	justify-content:	start;
+	column-gap:			1rex;
+	
+	margin:				0px;
+	padding:			0px;
+}
+div.menu > label
+{
+	display:			flex;
+	flex-direction:		row;
+	align-items:		center;
+	justify-content:	start;
+
+	padding:			1rex;
+	0margin:			4px 0px 4px 0px;
+	margin:				0px;
+	border-top:			1px solid var(--tg-theme-section-separator-color, #aaaaaa);
+	0border-radius:		8px;
+
+	max-width:				100%;
+}
+div.menu > label > span, .title-icon
+{
+	font-size:			1.5rem;
+	font-family:		"Material Symbols Outlined";
+	font-weight:		normal;
+	padding-right:		1rex;
+}
+/*	Текст заголовка страницы */
+div.title-text
+{
+	overflow:			hidden;
+	white-space:		nowrap;
+	text-overflow:		ellipsis;
+}
+</style>
+
+<style>
+/*	Скрыть вкладки, радиокнопки и кнопки навигации */
+div.tab-content, input[type=radio]
+{
+	display: none;
+}
+/*	Подсветка выбора пользователя */
+#radio-rheumatology:checked ~	#userDialog #label-rheumatology,
+#radio-preparation:checked ~	#userDialog #label-preparation,
+#radio-comorbidity:checked ~ 	#userDialog #label-comorbidity,
+#radio-status:checked ~ 		#userDialog #label-status,
+#radio-deviation:checked ~ 		#userDialog #label-deviation,
+#radio-probe:checked ~ 			#userDialog #label-probe,
+#radio-prescription:checked ~ 	#userDialog #label-prescription
+{
+	0background-color:	hsl(215,75%,90%);
+	color:				var(--tg-theme-button-text-color, yellow);
+	background-color:	var(--tg-theme-button-color, green);
+}
+/*	Показать содержимое вкладок */
+#radio-rheumatology:checked ~	#req-form #rheumatology,
+#radio-preparation:checked ~	#req-form #preparation,
+#radio-comorbidity:checked ~ 	#req-form #comorbidity,
+#radio-status:checked ~ 		#req-form #status,
+#radio-deviation:checked ~ 		#req-form #deviation,
+#radio-probe:checked ~ 			#req-form #probe,
+#radio-prescription:checked ~ 	#req-form #report
+{
+	display: block;
+}
+</style>
+</head>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	ОСНОВНОЕ СОДЕРЖАНИЕ
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<body>
+<!--
+	Радиокнопки меню
+-->
+	<input type="radio" id="radio-rheumatology"	name="tab-group" checked>
+	<input type="radio" id="radio-preparation"	name="tab-group">
+	<input type="radio" id="radio-comorbidity"	name="tab-group">
+	<input type="radio" id="radio-status"		name="tab-group">
+	<input type="radio" id="radio-deviation"	name="tab-group">
+	<input type="radio" id="radio-probe"		name="tab-group">
+	<input type="radio" id="radio-prescription"	name="tab-group">
+<!--
+	Меню
+-->
+<div id="showMenu" class="header-fixed">
+	<div class="title-icon">rheumatology</div>
+	<div class="title-text">Основное заболевание</div>
+</div>
+<!--
+	Диалоговое окно
+-->
+<dialog id="userDialog">
+	<!-- :: ВЫБОР ОПЦИЙ :: -------------------------------------------------------->
+	<div class="menu">
+		<!-- Заболевания -->
+		<label id="label-rheumatology" for="radio-rheumatology">
+			<span>rheumatology</span><div>Основное заболевание</div></label>
+
+		<!-- Сопутствующие заболевания -->
+		<label id="label-comorbidity" for="radio-comorbidity">
+			<span>person_cancel</span><div>Сопутствующие заболевания</div></label>
+	
+		<!-- Сопутствующие состояния -->
+		<label id="label-status" for="radio-status">
+			<span>person_alert</span><div>Сопутствующие состояния</div></label>
+
+		<!-- Сопутствующие отклонения -->
+		<label id="label-deviation" for="radio-deviation">
+			<span>instant_mix</span><div>Лабораторные показатели</div></label>
+		
+		<!-- Лабораторные показатели -->
+		<label id="label-probe" for="radio-probe">
+			<span>biotech</span><div>Лабораторные исследования</div></label>
+
+		<!-- Препараты -->
+		<label id="label-preparation" for="radio-preparation">
+			<span>pill</span><div>Препараты</div></label>
+	</div>
+</dialog>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Основное заболевание
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<form id="req-form">
+<div id="rheumatology" class="tab-content">
+##--RHEUMATOLOGY--##
+</div>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Сопутствующие заболевания
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="comorbidity" class="tab-content">
+##--COMORBIDITY--##
+</div>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Сопутствующие состояния
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="status" class="tab-content">
+##--STATUS--##
+</div>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Лабораторные показатели (выбор из списка)
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="deviation" class="tab-content">
+##--PROBE-MANUAL--##
+</div>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Лабораторные исследования
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="probe" class="tab-content">
+##--PROBE--##
+</div>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Препараты
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="preparation" class="tab-content">
+##--PREPARATION--##
+</div>
+</form>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<script>
+	//
+	//	Web-API: https://core.telegram.org/bots/webapps#events-available-for-mini-apps
+	let tg = window.Telegram.WebApp;
+	//	Инициализируем WebApp
+	tg.ready();
+	//	во весь экран
+	tg.expand();
+	//	Получаем информацию о пользователе
+	const user = tg.initDataUnsafe.user;
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
+	//	Главная кнопка
+	//
+	tg.MainButton.setText("Рекомендации").show();
+	//	Add an event listener for when the SettingButton is clicked
+	tg.onEvent('mainButtonClicked', () => {
+		//
+		//	Получаем все элементы формы
+		const elem = document.getElementById("req-form").elements;
+		//
+		//	Массив объектов
+		let dataToSend = [];
+		//
+		//	цикл по всем элементам формы
+		for (let i = 0; i < elem.length; i++) {
+			//
+			// Игнорируем кнопки отправки, чтобы не включать их в JSON
+			if (elem[i].type !== 'submit' && elem[i].type !== 'button') {
+				//
+				//	Добавляем объект в массив
+				dataToSend.push(
+				{
+					name:	elem[i].name,
+					value:	elem[i].value
+				});
+			}
+		}
+		//	Преобразуем массив объектов в строку JSON
+		const jsonString = JSON.stringify(dataToSend);
+		//
+		// Send the data to the bot
+		tg.sendData(jsonString);		
+
+		alert('MAIN button clicked! = ' + dataToSend.length);
+		// You can also send data back to the bot here
+		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
+	});	
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
+	//	Вторичная кнопка
+	//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
+	//	tg.SecondaryButton.setText("Назад").show();
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
+	//	Кнопка "Установки"
+	tg.SettingsButton.show();
+	//	Add an event listener for when the SettingButton is clicked
+	tg.onEvent('settingsButtonClicked', () => {
+		alert('Setting button clicked!');
+		// You can also send data back to the bot here
+		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
+	});	
+</script>
+<!--
+	Хранилище устройства (DeviceStorage)
+-->
+<script>
+	//
+	//	Локальное хранилище данных
+	let ds = tg.DeviceStorage;
+	//
+	//	Коллекция флажков
+	let lst = document.querySelectorAll("[class='item-checkbox']");
+	console.log(lst);
+	//
+	//	Цикл по всем флажкам
+	for (let i = 0; i < lst.length; i++) {
+		//
+		//	Восстановить значение флажка
+		ds.getItem(JSON.stringify(lst[i].name), (error, result) => {
+			//
+			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
+			if (result !== null) {
+				//
+				//	Присвоить значение
+				lst[i].checked = JSON.parse(result);
+			}
+			else {
+				lst[i].checked = false;
+			}
+		});
+		//
+		//	Обработчик событий для каждого флажка
+		lst[i].addEventListener('click', function(event) {
+			//
+			//	Записать в хранилище устройства
+			ds.setItem(
+				JSON.stringify(lst[i].name),
+				JSON.stringify(lst[i].checked));
+			// alert(JSON.stringify(lst[i].name) + JSON.stringify(lst[i].checked));
+		});
+	};
+</script>
+
+<script>
+	const showMenu = document.getElementById("showMenu");
+	const userDialog = document.getElementById("userDialog");
+	const itemMenu = userDialog.querySelectorAll("label");
+	//
+	// "Show the dialog" button opens the <dialog> modally
+	showMenu.addEventListener("click", () => {
+		//
+		//	Показать окно
+		userDialog.showModal();
+		//
+		//	Скрыть Главную кнопку
+		tg.MainButton.hide();
+	});
+	//
+	//	цикл по всем пунктам меню
+	for (let i = 0; i < itemMenu.length; i++) {
+		//
+		// Добавляем прослушиватель для закрытия при клике
+		itemMenu[i].addEventListener("click", () => {
+			//
+			//	Закрываем диалог
+			userDialog.close();
+			//
+			//	Изменить значок
+			showMenu.querySelector(".title-icon").textContent =
+				itemMenu[i].querySelector("span").textContent;
+			//
+			//	Изменить название
+			showMenu.querySelector(".title-text").textContent =
+				itemMenu[i].querySelector("div").textContent;
+			//
+			//	Показать Главную кнопку
+			tg.MainButton.show();
+		});
+	}
+	// Добавляем прослушиватель для закрытия при клике вне диалога
+	document.addEventListener('click', function(event) {
+//		alert("Ok");
+		console.log(userDialog.open);
+		// Проверяем, кликнули ли по самому диалогу или его содержимому
+		if (!userDialog.contains(event.target) && userDialog.open) {
+//			userDialog.close(); // Закрываем диалог
+		}
+	});
+</script>
+</body>
+</html>
+
+<!--
+
+// Получаем ссылку на форму
+const formElement = document.getElementById('myForm');
+const elements = formElement.elements; // Получаем все элементы формы
+
+let formDataArray = [];
+for (let i = 0; i < elements.length; i++) {
+  let element = elements[i];
+  // Игнорируем кнопки отправки, чтобы не включать их в JSON
+  if (element.type !== 'submit' && element.type !== 'button') {
+    formDataArray.push({
+      name: element.name,
+      value: element.value,
+      type: element.type
+    });
+  }
+}
+
+// Преобразуем массив объектов в строку JSON
+const jsonString = JSON.stringify(formDataArray);
+
+console.log(jsonString);
+
+-->

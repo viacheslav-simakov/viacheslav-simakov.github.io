@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Заболевания</title>
+<!--meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<title>Электронный ассистент врача-ревматолога</title-->
+<link href="main.css" rel="stylesheet" type="text/css"/>
+<link href="tables.css" rel="stylesheet" type="text/css"/>
+<!-- Google font's -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+<!--
+	https://core.telegram.org/bots/webapps#initializing-mini-apps
+-->
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+<style>
+body
+{
+	display:		flex;
+	color:			var(--tg-theme-text-color);
+	background:		var(--tg-theme-bg-color);
+	0align-items:	center;
+	flex-direction:	column;
+	font-size:		var(--font-size);
+}
+/*
+	flex container
+*/
+div.flex-box
+{
+	display:			flex;
+	flex-direction:		row;
+	align-items:		stretch;
+	text-align:			left; 
+	justify-content:	start;
+	column-gap:			5px;
+	margin-bottom:		1rem;
+}
+details
+{
+	color:				var(--tg-theme-text-color);
+	border:				1px solid var(--tg-theme-section-separator-color, #aaaaaa);
+	border-radius:		0px 8px 8px 0px;
+	overflow:			hidden;
+	padding:			0.5rem 0.5rem 0;
+}
+summary
+{
+	font-size:			var(--font-size);
+	color:				var(--tg-theme-text-color);
+	margin:				-0.5rem -0.5rem 0px;
+	padding:			0.5rem;
+}
+details:open
+{
+	color:				var(--tg-theme-hint-color);
+}
+details:open > summary
+{
+	color:				var(--tg-theme-text-color);
+	background-color:	var(--tg-theme-secondary-bg-color);
+	border-bottom:		1px solid #aaaaaa;
+}
+.item-checkbox
+{
+	display: none;
+}
+.item-label
+{
+	font-size:			var(--font-size);
+	color:				var(--tg-theme-text-color);
+	border:				1px solid var(--tg-theme-link-color);
+	border-radius:		8px 0px 0px 8px;
+	padding:			0.5rem;
+	0margin-right:		1rex;
+	display:			inline-block;
+	width:				4rex;
+	text-align:			right;
+}
+.item-checkbox:checked ~ .item-label
+{
+	color:				var(--tg-theme-button-text-color);
+	background-color:	var(--tg-theme-button-color);
+}
+div.content
+{
+	margin-right:		auto;
+	width:				100%;
+}
+div.sticky-header
+{
+	position:			sticky;	/* Закрепить на экране */
+	top:				0px;	/* Отступ от верхнего края */
+	left:				0px;	/* Отступ от правого края */
+	z-index:			1000;	/* Убедиться, что кнопка поверх другого контента */
+	color:				var(--tg-theme-accent-text-color, yellow);
+	background-color:	var(--tg-theme-header-bg-color, green);
+	padding:			4px 8px;
+	margin-bottom:		8px;
+}
+</style>
+</head>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	ОСНОВНОЕ СОДЕРЖАНИЕ
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<body>
+<div class="sticky-header">Заголовок</div>
+##--DATA--##
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	JavaScript https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-src
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<script>
+	//
+	//	Web-API: https://core.telegram.org/bots/webapps#events-available-for-mini-apps
+	let tg = window.Telegram.WebApp;
+	//
+	//	Локальное хранилище данных
+	let ds = tg.DeviceStorage;
+	//	Инициализируем WebApp
+	tg.ready();
+	//	во весь экран
+	tg.expand();
+	//	Получаем информацию о пользователе
+	const user = tg.initDataUnsafe.user;
+	//	Главная кнопка
+	tg.MainButton.setText("Вперед").show();
+	//	Вторичная кнопка
+	//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
+	tg.SecondaryButton.setText("Назад").show();
+	//	Кнопка "Установки"
+	tg.SettingsButton.show();
+	//	Add an event listener for when the SettingButton is clicked
+	tg.onEvent('settingsButtonClicked', () => {
+		alert('Setting button clicked!');
+		// You can also send data back to the bot here
+		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
+	});	
+</script>
+<!--
+	Хранилище устройства (DeviceStorage)
+-->
+<script>
+	//
+	//	Коллекция флажков
+	let lst = document.querySelectorAll("[class='item-checkbox']");
+	console.log(lst);
+	//
+	//	Цикл по всем флажкам
+	for (let i = 0; i < lst.length; i++) {
+		//
+		//	Восстановить значение флажка
+		ds.getItem(JSON.stringify(lst[i].name), (error, result) => {
+			//
+			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
+			if (result !== null) {
+				//
+				//	Присвоить значение
+				lst[i].checked = JSON.parse(result);
+			}
+			else {
+				lst[i].checked = false;
+			}
+		});
+		//
+		//	Обработчик событий для каждого флажка
+		lst[i].addEventListener('click', function(event) {
+			//
+			//	Записать в хранилище устройства
+			ds.setItem(
+				JSON.stringify(lst[i].name),
+				JSON.stringify(lst[i].checked));
+			alert(JSON.stringify(lst[i].name) + JSON.stringify(lst[i].checked));
+		});
+	};
+</script>
+</body>
+</html>
