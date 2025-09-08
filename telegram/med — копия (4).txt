@@ -474,27 +474,25 @@ div.tab-content, input[type=radio]
 	//	Локальное хранилище данных
 	let ds = tg.DeviceStorage;
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//	Список названий секций
+	//	Список секций
 	let section = ["rheumatology","preparation","comorbidity","status","manual"];
 	//
-	//	цикл по названиям секций
+	//	цикл по названию секций
 	for (let i = 0; i < section.length; i++) {
-		//
-		//	Коллекция флажков в секции
+		//	Коллекция флажков
 		//	https://learn.javascript.ru/css-selectors
 		let elem = document.querySelectorAll("input[name^='" + section[i] + "#']");
-		console.log(elem);
 		//
-		//	цикл по всем флажкам из секции
+		//	цикл по всем элементам списка
 		for (let j = 0; j < elem.length; j++) {
 			//
 			//	Восстановить значение флажка
 			ds.getItem(JSON.stringify(elem[j].name), (error, result) => {
 				//
-				//	Нет информации в хранилище?
+				// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
 				if (result !== null) {
 					//
-					//	Присвоить значение флажку
+					//	Присвоить значение
 					elem[j].checked = JSON.parse(result);
 				}
 				else {
@@ -512,36 +510,68 @@ div.tab-content, input[type=radio]
 			});
 		}
 	};
+
+	
+	let lst = document.querySelectorAll("[class='item-checkbox']");
+	console.log(lst);
+	//
+	//	Цикл по всем флажкам
+	for (let i = 0; i < lst.length; i++) {
+		//
+		//	Восстановить значение флажка
+		ds.getItem(JSON.stringify(lst[i].name), (error, result) => {
+			//
+			// TODO: Тут честно себе пообещаем, что после релиза сделаем обработку ошибок
+			if (result !== null) {
+				//
+				//	Присвоить значение
+				lst[i].checked = JSON.parse(result);
+			}
+			else {
+				lst[i].checked = false;
+			}
+		});
+		//
+		//	Обработчик событий для каждого флажка
+		lst[i].addEventListener('click', function(event) {
+			//
+			//	Записать в хранилище устройства
+			ds.setItem(
+				JSON.stringify(lst[i].name),
+				JSON.stringify(lst[i].checked));
+			// alert(JSON.stringify(lst[i].name) + JSON.stringify(lst[i].checked));
+		});
+	};
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//	Коллекция строк полей ввода (input)
 	//	https://learn.javascript.ru/css-selectors
 	let probe = document.querySelectorAll("input[name^='probe#']");
 	console.log(probe);
 	//
-	//	Цикл по всем полям ввода
-	for (let j = 0; j < probe.length; j++) {
+	//	Цикл по всем флажкам
+	for (let i = 0; i < probe.length; i++) {
 		//
 		//	Восстановить значение поля ввода
-		ds.getItem(JSON.stringify(probe[j].name), (error, result) => {
+		ds.getItem(JSON.stringify(probe[i].name), (error, result) => {
 			//
 			//	нет записи в хранилище?
 			if (result !== null) {
 				//
 				//	Присвоить значение
-				probe[j].value = JSON.parse(result);
+				probe[i].value = JSON.parse(result);
 			}
 			else {
-				probe[j].value = "";
+				probe[i].value = "";
 			}
 		});
 		//
 		//	Обработчик событий для каждого поля ввода
-		probe[j].addEventListener('change', function(event) {
+		probe[i].addEventListener('change', function(event) {
 			//
 			//	Записать в хранилище устройства
 			ds.setItem(
-				JSON.stringify(probe[j].name),
-				JSON.stringify(probe[j].value));
+				JSON.stringify(probe[i].name),
+				JSON.stringify(probe[i].value));
 		});
 	};
 </script>
