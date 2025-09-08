@@ -327,7 +327,9 @@ $hash->{'--probe--'} = $data;
 #
 #	Создать HTML-файл
 #
-	make_pattern('med.txt', $hash, 'C:\Git-Hub\viacheslav-simakov.github.io\med');
+	make_pattern(
+		'med.txt', $hash,
+		'C:\Git-Hub\viacheslav-simakov.github.io\med');
 	
 	print STDERR "\n\n\tCreate HTML-file 'med.html'\n\n\n";
 exit;
