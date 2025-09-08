@@ -414,10 +414,11 @@ div.tab-content, input[type=radio]
 			dataToSend[name[i]] = id;
 		}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//	Коллекция полей ввода (input)
 		//	Селекторы: https://learn.javascript.ru/css-selectors
 		let elem = document.querySelectorAll("input[name^='probe#']");
 		//
-		//	Массив ID значений
+		//	Массив объектов
 		let probe = [];
 		//
 		//	цикл по всем элементам списка
@@ -431,8 +432,7 @@ div.tab-content, input[type=radio]
 			{
 				id:		elem[j].name.split("#")[1],
 				val:	elem[j].value
-			}
-			);
+			});
 		}
 		//	Список объектов
 		dataToSend["probe"] = probe;
@@ -447,7 +447,7 @@ div.tab-content, input[type=radio]
 		//
 		// You can also send data back to the bot here
 		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
-	});	
+	});
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//
 	//	Вторичная кнопка

@@ -28,8 +28,8 @@ my	$query = {};
 #	SQLite:	https://www.techonthenet.com/sqlite/index.php
 use DBI;
 #	файл базы данных
-#	my	$db_file = 'C:/Apache24/sql/med.db';
-my	$db_file = 'D:/GIT-HUB/apache/sql/med.db';
+my	$db_file = 'C:/Apache24/sql/med.db';
+#	my	$db_file = 'D:/GIT-HUB/apache/sql/med.db';
 #	открыть базу данных
 my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
 		or die $DBI::errstr;
@@ -329,8 +329,7 @@ $hash->{'--probe--'} = $data;
 #
 	make_pattern('med.txt', $hash);
 	
-	print STDERR $dbh, ("\n" x 2);
-
+	print STDERR "\n\n\tCreate HTML-file 'med.html'\n\n\n";
 exit;
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 =pod
