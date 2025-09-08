@@ -378,8 +378,7 @@ sub make_pattern
 	#	Закрыть файл
 	close($fh);
 	#
-	#
+	#	Вывод на экран
 	print STDERR "\n\n\tCreate HTML-file '$html_file'\n\n\n";
-
 }
 __DATA__
