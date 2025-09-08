@@ -75,6 +75,9 @@ while (1) {
         #
 		#	Ñîîáùåíèå
         my	$message = $update->{message} or next;
+        #
+		#	ID ÷àòà
+        next unless $message->{chat}->{id};
 		#
 		#	Òåêñò ñîîáùåíèÿ
         my	$msg_text = $message->{text} or undef;
@@ -95,15 +98,17 @@ while (1) {
         }
         else
 		{
+=pod
             $api->sendMessage(
 			{
                 chat_id => $message->{chat}->{id},
 				parse_mode => 'Markdown',
                 text => decode('windows-1251', sprintf(
 					"Ïğèâåò *%s*!\nß áîò \"İëåêòğîííûé àññèñòåíò âğà÷à-ğåâìàòîëîãà\".\nÈñïîëüçóéòå /start äëÿ íà÷àëà ğàáîòû.",
-					encode('windows-1251', $message->{from}->{first_name}))
+					encode('windows-1251', ($message->{from}->{first_name} || 'unknow')))
 				),
             });
+=cut
         }
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     }
@@ -217,7 +222,7 @@ sub web_app_data
 	
 	print STDERR Dumper($data);
 
-	return;
+#	return;
 	
     $api->sendMessage(
 	{
