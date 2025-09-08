@@ -52,7 +52,7 @@ print STDERR "Telegram Bot \@tele_rheumatology_bot ... started\n\n";
 while (1) {
 	sleep(1);
 	my @time = localtime;
-	printf STDERR "%3\$02d:%2\$02d:%1\$02d\n", @time[0 ... 2];
+#	printf STDERR "%3\$02d:%2\$02d:%1\$02d\n", @time[0 ... 2];
 	#
     #	Получаем обновления
 	#
