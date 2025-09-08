@@ -327,7 +327,7 @@ $hash->{'--probe--'} = $data;
 #
 #	Создать HTML-файл
 #
-	make_pattern('med.txt', $hash);
+	make_pattern('med.txt', $hash, 'C:\Git-Hub\viacheslav-simakov.github.io\med');
 	
 	print STDERR "\n\n\tCreate HTML-file 'med.html'\n\n\n";
 exit;
@@ -335,12 +335,16 @@ exit;
 =pod
 	Шаблон HTML
 	---
-		make_pattern($file_name, \%subs)
+		make_pattern($file_name, \%subs, $output_folder)
+		
+			$file_name		- имя файла шаблона
+			%subs			- хэш для замены в файле шаблона
+			$output_folder	- папка для HTML-файла
 =cut
 sub make_pattern
 {
-	#	имя файла, ссылка хэш
-	my	($file_name, $subs) = @_;
+	#	имя файла, ссылка хэш, папка для HTML-файла
+	my	($file_name, $subs, $output_folder) = @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Открыть файл шаблона
 	open(my $fh, '<', $file_name) or die "Cannot open '$file_name': $!";
@@ -354,16 +358,18 @@ sub make_pattern
 	#	Модификация шаблона
 	Utils::subs(\$content, $subs);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	HTML-файл
+	#	имя HTML-файла
 	$file_name = do
 	{
 		my	@path = split('/', $file_name);
 		my	@file = split('\.', $path[$#path]);
-		$file[0] . '.html';
+		$file[0];
 	};
+	#	Путь HTML-файла
+	my	$html_file = sprintf '%s/%s.html', $output_folder, $file_name;
 	#
 	#	Открыть файл
-	open($fh, ">", $file_name) or die "Cannot open '$file_name': $!";
+	open($fh, ">", $html_file) or die "Cannot open '$html_file': $!";
 	#
 	#	Печать в файл
 	print $fh $content;
