@@ -30,7 +30,9 @@ my	$font = $pdf->ttfont('Arial.ttf');
 #	Добавить пустую страницу
 #
 my	$page = $pdf->page();
-
+#
+#	A4 (210mm x 297mm)
+	$page->mediabox(595, 842);  # 595 x 842 points
 
 # Add a text object
 my	$text = $page->text();
@@ -39,7 +41,8 @@ my	$text = $page->text();
 	$text->font($font, 12);
 
 # Write text at specific coordinates
-	$text->translate(50, 750);
+#	$text->translate(50, 800);
+	$text->translate(36, 842-36);
 	$text->text('Hello, World!');
 
 # Данные таблицы
@@ -87,9 +90,9 @@ my	$table = PDF::Table->new();
 		font 		=> $font,
 		font_size	=> 12,
         x         	=> 50,
-		y			=> 700,
+		y			=> 750,
         w         	=> 500,
-        start_h   	=> 300,
+        h   		=> 500,
         padding   	=> 5,
 		size		=> '* 1cm 2* 4cm',
 #        background_color_odd  => "gray",
