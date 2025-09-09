@@ -31,17 +31,6 @@ my	$font = $pdf->ttfont('Arial.ttf');
 #
 my	$page = $pdf->page();
 
-
-# Add a text object
-my	$text = $page->text();
-
-# Set font and size
-	$text->font($font, 12);
-
-# Write text at specific coordinates
-	$text->translate(0, 700);
-	$text->text('Hello, World!');
-
 # Данные таблицы
 my @headers = ("Имя", "Возраст", "Город", "Профессия");
 my @data = (
@@ -102,6 +91,16 @@ my @data = (
     ["Алексей", "28", "Новосибирск", "Программист"],
     ["Ольга", "35", "Екатеринбург", "Учитель"],
 );
+my	$hdr_props = 
+        {
+            # This param could be a pdf core font or user specified TTF.
+            #  See PDF::API2 FONT METHODS for more information
+			font 		=> $font,
+            font_size	=> 10,
+            font_color	=> '#006666',
+            bg_color	=> 'yellow',
+            repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
+        };
 #
 #	Декодирование данных
 #
@@ -140,13 +139,14 @@ my	$table = PDF::Table->new();
 		size		=> '* 1cm 2* 4cm',
 #        background_color_odd  => "gray",
 #        background_color_even => "lightblue",
+#		header_props   => $hdr_props, # see section HEADER ROW PROPERTIES
 );
 #
 #	Сохраняем PDF
 #
 $pdf->saveas('russian_table2.pdf');
 
-print STDERR "Create file: 'russian_table2.pdf'\n";
+print STDERR encode('windows-1251',decode('UTF-8',"PDF файл создан: russian_table2.pdf\n"));
 
 exit;
 
