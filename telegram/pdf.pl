@@ -105,10 +105,22 @@ foreach my $i (0 .. $#data)
 #	Создаем таблицу
 #
 my	$table = PDF::Table->new();
+#
+#	Опции таблицы
+#	https://metacpan.org/pod/PDF::Table#Table-settings
 	$table->table(
         $pdf,
         $page,
 		\@data,
+#		headers 	=> \@headers,
+#		header => 1,
+header_props => {
+    'font_size'	=> 18,
+    'fg_color' 	=> '#004444',
+    'bg_color' 	=> 'yellow',
+    'repeat'   	=> 1,
+    'justify'  	=> 'center',
+},
 		font 		=> $font,
 		font_size	=> 14,
         x         	=> 50,
@@ -116,8 +128,9 @@ my	$table = PDF::Table->new();
         start_y   	=> 750,
         start_h   	=> 300,
         padding   	=> 5,
-        background_color_odd  => "gray",
-        background_color_even => "lightblue",
+		size		=> '* 1cm 2* 4cm',
+#        background_color_odd  => "gray",
+#        background_color_even => "lightblue",
 );
 #
 #	Сохраняем PDF
