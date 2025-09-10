@@ -21,9 +21,17 @@ my	$query = {};
 #	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
 #	SQLite:	https://www.techonthenet.com/sqlite/index.php
 use DBI;
-#	файл базы данных
-my	$db_file = 'C:/Apache24/sql/med.db';
-#my	$db_file = 'D:/GIT-HUB/apache/sql/med.db';
+#
+#	Переменные окружения
+	$ENV{'DB_FILE'} =~ s/\\/\//g;
+	$ENV{'HTML_FOLDER'} =~ s/\\/\//g;
+#
+#	Файл базы данных
+my	$db_file = $ENV{'DB_FILE'};
+#
+#	Папка для сохранения HTML-файла
+my	$html_folder = $ENV{'HTML_FOLDER'};
+#
 #	открыть базу данных
 my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
 		or die $DBI::errstr;
@@ -321,10 +329,7 @@ $hash->{'--probe--'} = $data;
 #
 #	Создать HTML-файл
 #
-	make_pattern(
-		'med.txt', $hash,
-#		'D:\GIT-HUB\viacheslav-simakov.github.io\med');
-		'C:\Git-Hub\viacheslav-simakov.github.io\med');
+	make_pattern('med.txt', $hash, $html_folder);
 exit;
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 =pod
