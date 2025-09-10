@@ -362,6 +362,7 @@ sub make_pattern
 	};
 	#	Путь HTML-файла
 	my	$html_file = sprintf '%s/%s.html', $output_folder, $file_name;
+		$html_file =~ s/\\/\//g;
 	#
 	#	Открыть файл
 	open($fh, ">", $html_file) or die "Cannot open '$html_file': $!";
