@@ -245,63 +245,28 @@ sub send_pdf
 	#
 	#	Вывод на экран
 	printf STDERR "\n\tsend pdf file to chat_id='%s'\n\n", $msg->{chat}->{id};
-	
 #return;
 	#
 	#	Безопасная конструкция
-#	eval {
+	eval {
 		#	Отправляем PDF файл
 		my $result = $api->api_request('sendDocument',
 		{
 			chat_id		=> $msg->{chat}->{id},
+			caption		=> decode('windows-1251','СГМУ имени В.И. Разумовского'),
 			document	=>
 			{
 				file		=> $pdf_file,
-#				filename	=> encode('utf8', decode('windows-1251', 'Рекомендации')),
 				filename	=> decode('windows-1251', 'Рекомендации.pdf'),
 			},
-			caption		=> decode('windows-1251','Вот ваш PDF файл'),
 		});
 		#	Вывод на экран
 		printf STDERR
 			"PDF файл успешно отправлен!\nMessage ID: %s\n",
 			$result->{result}->{message_id};
 		print STDERR Dumper($result);
-#	};
-	#	Проверка ошибок
-	die "\nОшибка при отправке файла: $@\n" if ($@);
-}
-__DATA__
-sub send_pdf
-{
-	#	ссылка на сообщение
-    my	$msg = shift @_;
-	#	путь pdf-файла
-	my	$pdf_file = shift @_;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Проверяем существование файла
-	die "Файл $pdf_file не существует!\n" unless (-e $pdf_file);
-	
-	printf STDERR "\n\tsend pdf file,\tchat_id=%s\n\n%s",
-		$msg->{chat}->{id}, Dumper($msg);
-	return;
-	#
-	#	Безопасная конструкция
-	eval {
-		#	Отправляем PDF файл
-		my $result = $api->sendDocument(
-		{
-			chat_id              => $msg->{chat}->{id},
-			document             => $pdf_file,
-			caption              => "PDF файл",
-			disable_notification => 0,
-			protect_content      => 0,
-		});
-		#	Вывод на экран
-		printf STDERR
-			"PDF файл успешно отправлен!\nMessage ID: %s\n",
-			$result->{result}{message_id};
 	};
 	#	Проверка ошибок
 	die "\nОшибка при отправке файла: $@\n" if ($@);
 }
+__DATA__
