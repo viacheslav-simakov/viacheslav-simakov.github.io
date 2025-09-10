@@ -32,6 +32,17 @@ my	$token = '8278981933:AAGOZMWywJZxlR-Vj5kwh4HeISQhwPpXuwE';
 #
 #	Создаем объект API
 my	$api = WWW::Telegram::BotAPI->new(token => $token);
+=pod
+#
+#	Создание клавиатуры
+my	$keyboard =
+	[[{
+		text => decode('windows-1251', 'Начать'),
+		web_app => {
+			url => 'https://viacheslav-simakov.github.io/'
+		},
+	},],];
+=cut
 #
 #	Получаем последние обновления
 my	$offset = 0;
@@ -39,9 +50,7 @@ my	$offset = 0;
 #	Главный цикл обработки событий бота
 print STDERR "Telegram Bot \@tele_rheumatology_bot ... started\n\n";
 while (1) {
-	#	задержка 1 секунда
 	sleep(1);
-	#	текущее время
 	my @time = localtime;
 #	printf STDERR "%3\$02d:%2\$02d:%1\$02d\n", @time[0 ... 2];
 	#
@@ -244,7 +253,7 @@ sub send_pdf
 	eval {
 		#	Отправляем PDF файл
 		my $result = $api->sendDocument({
-			chat_id              => $msg->{chat}->{id},
+			chat_id              => $chat_id,
 			document             => $pdf_file,
 			caption              => "PDF файл",
 			disable_notification => 0,
