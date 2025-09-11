@@ -245,7 +245,7 @@ sub send_pdf
 	#
 	#	Вывод на экран
 	printf STDERR "\n\tsend pdf file to chat_id='%s'\n\n", $msg->{chat}->{id};
-#return;
+return;
 	#
 	#	Безопасная конструкция
 	eval {

@@ -23,11 +23,13 @@ my	$query = {};
 use DBI;
 #
 #	Переменные окружения
-	$ENV{'DB_FILE'} =~ s/\\/\//g;
+#	$ENV{'DB_FILE'} =~ s/\\/\//g;
 	$ENV{'HTML_FOLDER'} =~ s/\\/\//g;
+	$ENV{'DB_TARGET'} =~ s/\\/\//g;
 #
 #	Файл базы данных
-my	$db_file = $ENV{'DB_FILE'};
+#my	$db_file = $ENV{'DB_FILE'};
+my	$db_file = $ENV{'DB_TARGET'};
 #
 #	Папка для сохранения HTML-файла
 my	$html_folder = $ENV{'HTML_FOLDER'};
