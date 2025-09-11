@@ -7,14 +7,6 @@ use strict;
 #	https://perldoc.perl.org/warnings
 use warnings;
 #
-#	Альтернативный warn и die для модулей
-#	https://perldoc.perl.org/Carp
-use Carp();
-#
-#	Копирование файлов или файловых дескрипторов
-#	https://metacpan.org/pod/File::Copy
-use File::Copy();
-#
 #	папки библиотек (модулей)
 #	'.' = текущая папка!
 use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
@@ -22,20 +14,29 @@ use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
 #	Утилиты
 use Utils();
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+#	ссылка на хэш
+my	$query = {};
+#
 #	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
 #	SQLite:	https://www.techonthenet.com/sqlite/index.php
 use DBI;
 #
-#	Папка для сохранения HTML-файла
-my	$html_folder = 'C:\Git-Hub\viacheslav-simakov.github.io\med';
+#	Переменные окружения
+#	$ENV{'DB_FILE'} =~ s/\\/\//g;
+	$ENV{'HTML_FOLDER'} =~ s/\\/\//g;
+	$ENV{'DB_TARGET'} =~ s/\\/\//g;
 #
-#	Копирование файла базы данных
-my	$db_file = db_copy('C:\Apache24\sql\med.db', $html_folder);
+#	Файл базы данных
+#my	$db_file = $ENV{'DB_FILE'};
+my	$db_file = $ENV{'DB_TARGET'};
+#
+#	Папка для сохранения HTML-файла
+my	$html_folder = $ENV{'HTML_FOLDER'};
 #
 #	открыть базу данных
 my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
-		or Carp::confess "$DBI::errstr\n\n\t";
-#	
+		or die $DBI::errstr;
 #	указатель таблицы
 my	$sth;
 #
@@ -326,64 +327,21 @@ $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
 }
 #	Хэш для замены
 $hash->{'--probe--'} = $data;
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #	Создать HTML-файл
 #
 	make_pattern('med.txt', $hash, $html_folder);
-
 exit;
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 =pod
-	Копировать файл базы данных
-	---
-	$db_copy = db_copy($db_file, $target_folder)
-	
-		$db_file		- файл базы данных
-		$target_folder	- папка для копирования
-		$db_copy		- файл копии базы данных
-=cut
-sub db_copy
-{
-	#	имя файла, папка для копирования
-	my	($db_file, $target_folder) = @_;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Преобразование слэшей
-		$db_file =~ s/\\/\//g;
-		$target_folder =~ s/\\/\//g;
-	#	Проверки файла базы данных
-    unless (-e $db_file)
-	{
-        Carp::confess "Bсходный файл '$db_file' не существует";
-    }
-    unless (-f $db_file)
-	{
-        Carp::confess "Исходный путь '$db_file' не является файлом";
-    }
-	unless (-d $target_folder)
-	{
-        Carp::confess "Папка для копирования '$target_folder' не существует";
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	путь файла
-	my	@path = split(/\//, $db_file);
-	#	путь копии файла базы данных
-	my	$db_copy = sprintf '%s/%s' , $target_folder, $path[$#path];
-	#
-	#	копирование файла
-	File::Copy::copy($db_file, $db_copy) or Carp::confess "Copy failed: $!";
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	файл базы данных
-	print ">>> $db_copy\n\n";
-	return $db_copy;
-}
-=pod
 	Шаблон HTML
 	---
-	make_pattern($file_name, \%subs, $output_folder)
+		make_pattern($file_name, \%subs, $output_folder)
 		
-		$file_name		- имя файла шаблона
-		%subs			- хэш для замены в файле шаблона
-		$output_folder	- папка для HTML-файла
+			$file_name		- имя файла шаблона
+			%subs			- хэш для замены в файле шаблона
+			$output_folder	- папка для HTML-файла
 =cut
 sub make_pattern
 {
