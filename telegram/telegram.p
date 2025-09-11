@@ -22,11 +22,24 @@ use	JSON;
 #	Телеграм-Бот
 #	https://metacpan.org/pod/WWW::Telegram::BotAPI
 use WWW::Telegram::BotAPI;
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
+#	SQLite:	https://www.techonthenet.com/sqlite/index.php
+use DBI;
 #
-#	Токен бота (получите у @BotFather)
-#	my	$token = '8105314834:AAE6cZ9KTYsXr4od7SvZckslisl1MRp0OXI';
+#	Файл базы данных
+my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 #
-#	имя бота: @tele_rheumatology_bot
+#	открыть базу данных
+my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
+		or die "$DBI::errstr\n\n\t";
+#	
+#	указатель таблицы
+my	$sth;
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+#	Бот @tele_rheumatology_bot
+#	Токен (получите у @BotFather)
 #
 my	$token = '8278981933:AAGOZMWywJZxlR-Vj5kwh4HeISQhwPpXuwE';
 #
@@ -206,13 +219,34 @@ sub web_app_data
 	#
 	#	Данные HTML-формы
     my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
-#    my	$web_app_data = $message->{web_app_data}->{data};
 	#
     #	Декодирование JSON данных полученных из Web App
 	my	$data = decode_json($web_app_data);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Основное заболевание
+	my	$id_rheumatology = join(',', @{ $data->{rheumatology} });
+	#
+	#	SQL-запрос
+	$sth = $dbh->prepare(qq
+	@
+		SELECT id,name,info FROM "rheumatology"
+		WHERE id IN ($id_rheumatology)
+		ORDER BY "name_lc"
+	@);
+	$sth->execute;
+	#	Данные
+	my	@rheumatology;
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+#		printf STDERR "%d\n", $row->{id};
+		push @rheumatology, [ $row->{name}, $row->{info} || 'нет информации'];
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	print STDERR Dumper(\@rheumatology);	
+	return;
 	
-	print STDERR Dumper($data);
-
 #	return;
 	
     $api->sendMessage(
@@ -236,23 +270,26 @@ sub web_app_data
 sub send_pdf
 {
 	#	ссылка на сообщение
-    my	$msg = shift @_;
+    my	$message = shift @_;
 	#	путь pdf-файла
 	my	$pdf_file = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ID чата
+    my	$chat_id = $message->{chat}->{id};
+	#
 	#	Проверяем существование файла
 	die "Файл $pdf_file не существует!\n" unless (-e $pdf_file);
 	#
 	#	Вывод на экран
-	printf STDERR "\n\tsend pdf file to chat_id='%s'\n\n", $msg->{chat}->{id};
-return;
+	printf STDERR "\n\tsend pdf file to chat_id='%s'\n\n", $chat_id;
+#return;
 	#
 	#	Безопасная конструкция
 	eval {
 		#	Отправляем PDF файл
 		my $result = $api->api_request('sendDocument',
 		{
-			chat_id		=> $msg->{chat}->{id},
+			chat_id		=> $chat_id,
 			caption		=> decode('windows-1251','СГМУ имени В.И. Разумовского'),
 			document	=>
 			{
