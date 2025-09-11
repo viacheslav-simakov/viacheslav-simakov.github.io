@@ -223,7 +223,7 @@ sub web_app_data
     #	Декодирование JSON данных полученных из Web App
 	my	$data = decode_json($web_app_data);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Основное заболевание
+	#	"Основное заболевание"
 	my	$id_rheumatology = join(',', @{ $data->{rheumatology} });
 	#
 	#	SQL-запрос
@@ -240,14 +240,34 @@ sub web_app_data
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
-#		printf STDERR "%d\n", $row->{id};
-		push @rheumatology, [ $row->{name}, $row->{info} || 'нет информации'];
+		push @rheumatology,
+			[ $row->{name}, $row->{info} || 'нет информации'];
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	print STDERR Dumper(\@rheumatology);	
-	return;
+	#	"Сопутствующие заболевания"
+	my	$id_comorbidity = join(',', @{ $data->{comorbidity} });
+	#
+	#	SQL-запрос
+	$sth = $dbh->prepare(qq
+	@
+		SELECT id,name,info FROM "comorbidity"
+		WHERE id IN ($id_comorbidity)
+		ORDER BY "name_lc"
+	@);
+	$sth->execute;
+	#	Данные
+	my	@comorbidity;
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+		push @comorbidity,
+			[ $row->{name}, $row->{info} || 'нет информации'];
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	print STDERR Dumper(\@rheumatology, \@comorbidity);	
 	
-#	return;
+	return;
 	
     $api->sendMessage(
 	{
@@ -257,6 +277,24 @@ sub web_app_data
 	
 #	send_pdf($message, 'C:/Git-Hub/viacheslav-simakov.github.io/telegram/russian_table2.pdf');
 	send_pdf($message, 'russian_table2.pdf');
+}
+=pod
+	Формирование pdf-файла
+	---
+	make_pdf($message, \%request)
+	
+		$message	- ссылка на сообщение (хэш)
+		%request	- хэш запроса данных
+		
+=cut
+sub make_pdf
+{
+	#	ссылка на сообщение
+    my	$message = shift @_;
+	#	путь pdf-файла
+	my	$pdf_file = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	
 }
 =pod
 	Отправка PDF-файла
