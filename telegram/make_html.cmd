@@ -22,5 +22,5 @@ rem ECHO %TARGET%
 rem COPY /B /V "%DB_FILE%" "%DB_TARGET%"
 rem
 rem Telegram
-perl "db.pl"
+perl "make_html.pl"
 PAUSE

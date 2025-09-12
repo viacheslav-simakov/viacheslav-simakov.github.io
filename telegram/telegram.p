@@ -84,7 +84,7 @@ while (1) {
         my	$message = $update->{message} or next;
         #
 		#	ID чата
-        next unless $message->{chat}->{id};
+		my	$chat_id = $message->{chat}->{id} or next;
 		#
 		#	Текст сообщения
         my	$msg_text = $message->{text} or undef;
