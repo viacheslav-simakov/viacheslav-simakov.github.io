@@ -19,6 +19,10 @@ use Encode;# qw(decode encode);
 #	https://metacpan.org/pod/JSON
 use	JSON;
 #
+#	Создание и изменение PDF-файлов
+#	https://metacpan.org/pod/PDF::Builder
+use PDF::Builder;
+#
 #	Телеграм-Бот
 #	https://metacpan.org/pod/WWW::Telegram::BotAPI
 use WWW::Telegram::BotAPI;
@@ -50,13 +54,12 @@ my	$api = WWW::Telegram::BotAPI->new(token => $token);
 my	$offset = 0;
 #
 #	Главный цикл обработки событий бота
-print STDERR "Telegram Bot \@tele_rheumatology_bot ... started\n\n";
+printf STDERR
+	"Telegram Bot \@tele_rheumatology_bot is started at %3\$02d:%2\$02d:%1\$02d\n\n",
+	(localtime)[0 ... 2];
 while (1) {
 	#	задержка 1 секунда
 	sleep(1);
-	#	текущее время
-	my @time = localtime;
-#	printf STDERR "%3\$02d:%2\$02d:%1\$02d\n", @time[0 ... 2];
 	#
     #	Получаем обновления
 	#
@@ -170,7 +173,19 @@ sub _button
 sub web_app_keyboard
 {
 	#	ссылка на сообщение
-	my	$msg = shift @_;
+	my	$message = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ID чата
+    my	$chat_id = $message->{chat}->{id} || undef;
+	#
+	#	Проверка ID чата
+	unless (defined $chat_id)
+	{
+		printf STDERR "\n\t%s: Ошибка! Неверный 'chat id'\n", (caller(0))[3];
+		#
+		#	возврат из функции
+		return undef;
+	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Клавиатура
 	my	$keyboard = [
@@ -189,7 +204,7 @@ sub web_app_keyboard
 	#	Сообщение
 	$api->sendMessage(
 	{
-		chat_id => $msg->{chat}->{id},
+		chat_id => $chat_id,
 		parse_mode => 'Markdown',
 		text => decode('windows-1251',
 			"*Электронный ассистент врача-ревматолога*\n(СГМУ имени В.И. Разумовского)"),
@@ -217,6 +232,15 @@ sub web_app_data
 	#	ID чата
     my	$chat_id = $message->{chat}->{id};
 	#
+	#	Проверка ID чата
+	unless (defined $chat_id)
+	{
+		printf STDERR "\n\t%s: Ошибка! Неверный 'chat id'\n", (caller(0))[3];
+		#
+		#	возврат из функции
+		return undef;
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Данные HTML-формы
     my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
 	#
@@ -241,7 +265,7 @@ sub web_app_data
 	while (my $row = $sth->fetchrow_hashref)
 	{
 		push @rheumatology,
-			[ $row->{name}, $row->{info} || 'нет информации'];
+			[$row->{name}, $row->{info} || 'нет информации'];
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	"Сопутствующие заболевания"
@@ -262,7 +286,7 @@ sub web_app_data
 	while (my $row = $sth->fetchrow_hashref)
 	{
 		push @comorbidity,
-			[ $row->{name}, $row->{info} || 'нет информации'];
+			[$row->{name}, $row->{info} || 'нет информации'];
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	print STDERR Dumper(\@rheumatology, \@comorbidity);	
