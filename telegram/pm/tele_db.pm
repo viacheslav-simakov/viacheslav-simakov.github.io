@@ -65,7 +65,7 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@rheumatology;
+	my	@rheumatology = ('Основное заболевание');
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
@@ -86,7 +86,7 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@comorbidity;
+	my	@comorbidity = ('Сопутствующие заболевания');
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
@@ -107,7 +107,7 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@status;
+	my	@status = ('Сопутствующие состояния');
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
@@ -128,7 +128,7 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@manual;
+	my	@manual = ('Лабораторные показатели');
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
@@ -149,7 +149,7 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@preparation;
+	my	@preparation = ('Препараты');
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
@@ -173,7 +173,7 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@probe;
+	my	@probe = ('Лабораторные исследования');
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
@@ -183,14 +183,14 @@ sub request {
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
 	return
-	{
-		-rheumatology	=> \@rheumatology,
-		-comorbidity	=> \@comorbidity,
-		-status			=> \@status,
-		-manual			=> \@manual,
-		-probe			=> \@probe,
-		-preparation	=> \@preparation,
-	}
+	[
+		\@rheumatology,
+		\@comorbidity,
+		\@status,
+		\@manual,
+		\@probe,
+		\@preparation,
+	]
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
