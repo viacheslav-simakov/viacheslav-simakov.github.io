@@ -53,7 +53,7 @@ printf STDERR
 	(localtime)[0 ... 2];
 while (1) {
 	#	задержка 1 секунда
-	sleep(1);
+#	sleep(1);
 	#
     #	Получаем обновления
 	#
@@ -99,7 +99,6 @@ while (1) {
         }
         else
 		{
-=pod
             $api->sendMessage(
 			{
                 chat_id => $message->{chat}->{id},
@@ -109,7 +108,6 @@ while (1) {
 					encode('windows-1251', ($message->{from}->{first_name} || 'unknow')))
 				),
             });
-=cut
         }
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     }
