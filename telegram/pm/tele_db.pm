@@ -24,7 +24,8 @@ use	JSON;
 use DBI;
 #
 #	Файл базы данных
-my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
+#my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
+my	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 #
 #	открыть базу данных
 my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
@@ -187,8 +188,8 @@ sub request {
 		-comorbidity	=> \@comorbidity,
 		-status			=> \@status,
 		-manual			=> \@manual,
-		-preparation	=> \@preparation,
 		-probe			=> \@probe,
+		-preparation	=> \@preparation,
 	}
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

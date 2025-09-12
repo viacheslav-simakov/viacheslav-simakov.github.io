@@ -21,7 +21,7 @@ use	JSON;
 #
 #	Создание и изменение PDF-файлов
 #	https://metacpan.org/pod/PDF::Builder
-use PDF::Builder;
+#use PDF::Builder;
 #
 #	Телеграм-Бот
 #	https://metacpan.org/pod/WWW::Telegram::BotAPI
