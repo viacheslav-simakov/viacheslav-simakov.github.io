@@ -35,6 +35,20 @@ use lib ('pm');
 #	Утилиты
 use tele_db();
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
+#	SQLite:	https://www.techonthenet.com/sqlite/index.php
+use DBI;
+#
+#	Файл базы данных
+my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
+#
+#	открыть базу данных
+my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
+		or die "$DBI::errstr\n\n\t";
+#	
+#	указатель таблицы
+my	$sth;
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
 #	Бот @tele_rheumatology_bot
 #	Токен (получите у @BotFather)
@@ -127,8 +141,7 @@ sub _logger
 	my	$update = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Журнал
-	printf STDERR "update at %3\$02d:%2\$02d:%1\$02d\n", (localtime)[0 ... 2];
-	printf STDERR "from_id='%s'\ttext='%s'\tweb_app_data='%s'\n%s%s\n",
+	printf STDERR "\n\nfrom_id='%s'\ttext='%s'\tweb_app_data='%s'\n%s%s\n",
 		$update->{message}->{from}->{id},
 		encode('windows-1251', $update->{message}->{text} || ''),
 		encode('windows-1251', $update->{message}->{web_app_data}->{data} || ''),
@@ -197,7 +210,7 @@ sub web_app_keyboard
 	];
 	#-----------------------------------------------------------------
 	#	Сообщение
-	$api->api_request('sendMessage',
+	$api->sendMessage(
 	{
 		chat_id => $chat_id,
 		parse_mode => 'Markdown',
@@ -241,11 +254,54 @@ sub web_app_data
 	#
     #	Декодирование JSON данных полученных из Web App
 	my	$data = decode_json($web_app_data);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=pod
+	#	"Основное заболевание"
+	my	$id_rheumatology = join(',', @{ $data->{rheumatology} });
 	#
-	#	Параметры запроса
-	my	$req = tele_db::request($data);
+	#	SQL-запрос
+	$sth = $dbh->prepare(qq
+	@
+		SELECT id,name,info FROM "rheumatology"
+		WHERE id IN ($id_rheumatology)
+		ORDER BY "name_lc"
+	@);
+	$sth->execute;
+	#	Данные
+	my	@rheumatology;
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+		push @rheumatology,
+			[$row->{name}, $row->{info} || 'нет информации'];
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	"Сопутствующие заболевания"
+	my	$id_comorbidity = join(',', @{ $data->{comorbidity} });
+	#
+	#	SQL-запрос
+	$sth = $dbh->prepare(qq
+	@
+		SELECT id,name,info FROM "comorbidity"
+		WHERE id IN ($id_comorbidity)
+		ORDER BY "name_lc"
+	@);
+	$sth->execute;
+	#	Данные
+	my	@comorbidity;
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+		push @comorbidity,
+			[$row->{name}, $row->{info} || 'нет информации'];
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=cut
+	my	$req = tele_db::request($dbh, $data);
 	
-	
+#	print STDERR Dumper(\@rheumatology, \@comorbidity);	
 	print STDERR Dumper($req);	
 	
 	return;

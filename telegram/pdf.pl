@@ -33,10 +33,10 @@ my	$page = $pdf->page();
 #
 #	A4 (210mm x 297mm)
 	$page->mediabox(595, 842);  # 595 x 842 points
-
+#
 # Add a text object
 my	$text = $page->text();
-
+#
 # Set font and size
 	$text->font($font, 12);
 
@@ -44,9 +44,8 @@ my	$text = $page->text();
 #	$text->translate(50, 800);
 	$text->translate(36, 842-36);
 	$text->text('Hello, World!');
-
+#
 # Данные таблицы
-my @headers = ("Имя", "Возраст", "Город", "Профессия");
 my @data = (
     ["Sam-Иван", "25", "Москва", "Инженер"],
     ["Мария", "30", "Санкт-Петербург", "Врач"],
@@ -95,8 +94,13 @@ my	$table = PDF::Table->new();
         h   		=> 500,
         padding   	=> 5,
 		size		=> '* 1cm 2* 4cm',
+		border_w	=> 0,
 #        background_color_odd  => "gray",
 #        background_color_even => "lightblue",
+		cell_props =>
+		[
+			[{colspan => 4}], # Для первой строки, первой ячейки
+		],
 );
 #
 #	Сохраняем PDF
@@ -106,39 +110,3 @@ $pdf->saveas('russian_table2.pdf');
 print STDERR "Create file: 'russian_table2.pdf'\n";
 
 exit;
-
-__DATA__
-# 1. Initialize PDF object and page
-my $pdf = PDF::API2->new(-file => "output_table.pdf");
-my $page = $pdf->page;
-
-# 2. Prepare table data
-my $table_data = [
-    ["Header 1", "Header 2 Привет, Hello: Starting Y-coordinate on the first page. Maximum height on the first page// X-coordinate for table start", "Header 3"],
-    ["Data A1", "Data B1", "Data C1"],
-    ["Data A2", "Data B2", "Data C2"],
-    # ... more rows
-];
-
-# 3. Create PDF::Table object
-my $pdftable = PDF::Table->new;
-
-# 4. Build the table
-$pdftable->table(
-    $pdf,
-    $page,
-    $table_data,
-    x           => 50,    # X-coordinate for table start
-    w           => 500,   # Width of the table
-    start_y     => 750,   # Starting Y-coordinate on the first page
-    next_y      => 700,   # Starting Y-coordinate on subsequent pages
-    start_h     => 300,   # Maximum height on the first page
-    next_h      => 500,   # Maximum height on subsequent pages
-    padding     => 5,     # Cell padding
-    background_color_odd  => "gray",
-    background_color_even => "lightblue",
-    # Add font settings if needed: -font => $pdf->add_font('Verdana'),
-);
-
-# 5. Save the PDF
-$pdf->saveas();
