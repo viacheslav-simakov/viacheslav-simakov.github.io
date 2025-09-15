@@ -244,7 +244,7 @@ sub web_app_data
 	my	$req = tele_db::request($data);
 	
 	
-	print STDERR Dumper($req);	
+#	print STDERR Dumper($req);	
 	
 	return;
 	

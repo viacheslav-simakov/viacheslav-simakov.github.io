@@ -12,9 +12,6 @@ use warnings;
 #	Строковые структуры данных Perl, подходящие как для печати
 #	https://metacpan.org/pod/Data::Dumper
 use	Data::Dumper;
-#	Декодирование символов
-#	https://perldoc.perl.org/Encode
-#use Encode qw(decode encode);
 #	JSON (JavaScript Object Notation) кодирование/декодирование
 #	https://metacpan.org/pod/JSON
 use	JSON;
@@ -33,8 +30,8 @@ use PDF::Table;
 use DBI;
 #
 #	Файл базы данных
-my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
-#my	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
+#my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
+my	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 #
 #	открыть базу данных
 my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
@@ -74,7 +71,11 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@rheumatology = ('Основное заболевание');
+	my	@rheumatology = ([map
+		{
+			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+		}
+		('Основное заболевание', 'Информация')]);
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
@@ -95,7 +96,11 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@comorbidity = ('Сопутствующие заболевания');
+	my	@comorbidity = ([map
+		{
+			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+		}
+		('Сопутствующие заболевания', 'Информация')]);
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
@@ -116,7 +121,11 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@status = ('Сопутствующие состояния');
+	my	@status = ([map
+		{
+			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+		}
+		('Сопутствующие состояния', 'Информация')]);
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
@@ -137,7 +146,11 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@manual = ('Лабораторные показатели');
+	my	@manual = ([map
+		{
+			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+		}
+		('Лабораторные показатели', 'Информация')]);
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
@@ -158,14 +171,13 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@preparation = ([Encode::encode('UTF-8',
-			Encode::decode('windows-1251','Препараты'))]);
-#	my	@preparation = (['example']);
+	my	@preparation = ([ map {Encode::decode('windows-1251', $_)}
+		('Препараты', 'Информация')] );
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
-		push @preparation,
-			[$row->{name}, $row->{info} || ''];
+		push @preparation, [ map {Encode::decode('UTF-8', $_)}
+			($row->{name}, $row->{info} || '') ];
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	"Лабораторные исследования"
@@ -219,16 +231,16 @@ sub pdf_file
 =pod
 	Новая таблица
 	---
-	pdf_table
+	pdf_table($data)
+		
 =cut
 sub pdf_table
 {
 	#	Данные таблицы (ссылка на список)
 	my	$data = shift @_;
-	
+=pod
 	#
 	#	Декодирование данных
-	#
 	foreach my $i (0 .. $#{ $data })
 	{
 		foreach my $j (0 .. $#{ $data->[$i] })
@@ -236,7 +248,7 @@ sub pdf_table
 			$data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
 		}
 	}
-	
+=cut
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
 	#	Создаем PDF
@@ -269,7 +281,7 @@ sub pdf_table
 			font 		=> $font,
 			font_size	=> 12,
 			x         	=> 50,
-			y			=> 750,
+			y			=> 842-50,
 			w         	=> 500,
 			h   		=> 500,
 			padding   	=> 5,
@@ -277,12 +289,12 @@ sub pdf_table
 			border_w	=> 1,
 	#        background_color_odd  => "gray",
 	#        background_color_even => "lightblue",
-			cell_props =>
-			[
-				[{colspan => 2}],#	Для первой строки, первой ячейки
+#			cell_props =>
+#			[
+#				[{colspan => 2}],#	Для первой строки, первой ячейки
 #				[],
 #				[{colspan => 4}],#	Для третьей строки, первой ячейки
-			],
+#			],
 	);
 	#
 	#	Сохраняем PDF
