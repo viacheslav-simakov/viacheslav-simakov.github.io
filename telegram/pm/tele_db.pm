@@ -14,18 +14,27 @@ use warnings;
 use	Data::Dumper;
 #	Декодирование символов
 #	https://perldoc.perl.org/Encode
-use Encode;# qw(decode encode);
+#use Encode qw(decode encode);
 #	JSON (JavaScript Object Notation) кодирование/декодирование
 #	https://metacpan.org/pod/JSON
 use	JSON;
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+#	Создание, изменение и проверка PDF-файлов
+#	https://metacpan.org/pod/PDF::API2
+use PDF::API2;
+#
+#	Служебный класс для построения макетов таблиц
+#	https://metacpan.org/pod/PDF::Table
+use PDF::Table;
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
 #	SQLite:	https://www.techonthenet.com/sqlite/index.php
 use DBI;
 #
 #	Файл базы данных
-#my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
-my	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
+my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
+#my	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 #
 #	открыть базу данных
 my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
@@ -91,7 +100,7 @@ sub request {
 	while (my $row = $sth->fetchrow_hashref)
 	{
 		push @comorbidity,
-			[$row->{name}, $row->{info} || 'нет информации'];
+			[$row->{name}, '', $row->{info} || ''];
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	"Сопутствующие состояния"
@@ -112,7 +121,7 @@ sub request {
 	while (my $row = $sth->fetchrow_hashref)
 	{
 		push @status,
-			[$row->{name}, $row->{info} || 'нет информации'];
+			[$row->{name}, '', $row->{info} || ''];
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	"Лабораторные показатели"
@@ -133,7 +142,7 @@ sub request {
 	while (my $row = $sth->fetchrow_hashref)
 	{
 		push @manual,
-			[$row->{name}, $row->{info} || 'нет информации'];
+			[$row->{name}, '', $row->{info} || ''];
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	"Препараты"
@@ -149,12 +158,14 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@preparation = ('Препараты');
+	my	@preparation = ([Encode::encode('UTF-8',
+			Encode::decode('windows-1251','Препараты'))]);
+#	my	@preparation = (['example']);
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
 		push @preparation,
-			[$row->{name}, $row->{info} || 'нет информации'];
+			[$row->{name}, $row->{info} || ''];
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	"Лабораторные исследования"
@@ -173,13 +184,15 @@ sub request {
 	$sth->execute;
 	#
 	#	Данные
-	my	@probe = ('Лабораторные исследования');
+	my	@probe = ([Encode::decode('UTF-8', 'Лабораторные исследования'),'','']);
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
 		push @probe,
 		[$row->{name}, $probe{$row->{id}}, $row->{info} || 'нет информации'];
 	}
+	pdf_table(\@preparation);
+	
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
 	return
@@ -193,7 +206,91 @@ sub request {
 	]
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
 
+=cut
+sub pdf_file
+{
+	#
+	#	ссылки
+#	return ($pdf, $font);
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Новая таблица
+	---
+	pdf_table
+=cut
+sub pdf_table
+{
+	#	Данные таблицы (ссылка на список)
+	my	$data = shift @_;
+	
+	#
+	#	Декодирование данных
+	#
+	foreach my $i (0 .. $#{ $data })
+	{
+		foreach my $j (0 .. $#{ $data->[$i] })
+		{
+			$data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
+		}
+	}
+	
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#
+	#	Создаем PDF
+	my	$pdf = PDF::API2->new();
+	#
+	#	Устанавливаем шрифт с кириллицей
+	my	$font = $pdf->ttfont('Arial.ttf');
+	#
+	#	Добавить пустую страницу
+	my	$page = $pdf->page();
+	#
+	#	A4 (210mm x 297mm)
+		$page->mediabox(595, 842);  # 595 x 842 points
+	
+	#	Создаем таблицу
+	my	$table = PDF::Table->new();
+	#
+	#	Опции таблицы
+	#	https://metacpan.org/pod/PDF::Table#Table-settings
+		$table->table(
+			$pdf,
+			$page,
+			$data,
+			header_props => {
+				font 		=> $font,
+				font_size	=> 14,
+				bg_color	=> 'yellow',
+				repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
+			},
+			font 		=> $font,
+			font_size	=> 12,
+			x         	=> 50,
+			y			=> 750,
+			w         	=> 500,
+			h   		=> 500,
+			padding   	=> 5,
+			size		=> '5cm *',
+			border_w	=> 1,
+	#        background_color_odd  => "gray",
+	#        background_color_even => "lightblue",
+			cell_props =>
+			[
+				[{colspan => 2}],#	Для первой строки, первой ячейки
+#				[],
+#				[{colspan => 4}],#	Для третьей строки, первой ячейки
+			],
+	);
+	#
+	#	Сохраняем PDF
+	#
+	$pdf->saveas('russian_table2.pdf');
+	
+	print STDERR "Create file: 'russian_table2.pdf'\n";
+}
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package
 return 1;
