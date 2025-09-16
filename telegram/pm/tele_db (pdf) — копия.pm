@@ -9,26 +9,36 @@ use strict;
 #	Управление необязательными предупреждениями
 #	https://perldoc.perl.org/warnings
 use warnings;
+#	Строковые структуры данных Perl, подходящие как для печати
+#	https://metacpan.org/pod/Data::Dumper
+use	Data::Dumper;
 #	JSON (JavaScript Object Notation) кодирование/декодирование
 #	https://metacpan.org/pod/JSON
 use	JSON;
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+#	Создание, изменение и проверка PDF-файлов
+#	https://metacpan.org/pod/PDF::API2
+use PDF::API2;
+#
+#	Служебный класс для построения макетов таблиц
+#	https://metacpan.org/pod/PDF::Table
+use PDF::Table;
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
 #	SQLite:	https://www.techonthenet.com/sqlite/index.php
 use DBI;
 #
 #	Файл базы данных
-my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
-#my	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
-#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
+my	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 #
-#	папки библиотек (модулей)
-#	'.' = текущая папка!
-use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
-#
-#	Формирование ОТЧЕТОВ из базы данных
-#
-use Report();
+#	открыть базу данных
+my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
+		or die "$DBI::errstr\n\n\t";
+#	
+#	указатель таблицы
+my	$sth;
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
 #	Обработка SQL-запросов к базе данных SQLite
@@ -38,8 +48,9 @@ package tele_db {
 =pod
 	Обработчик запросов к базе данных
 	---
-	request(\%query);
+	db_request($dbh , \%query);
 
+		$dbh	- указатель базы данных
 		%query	- данные CGI-запроса
 
 =cut
@@ -47,7 +58,6 @@ sub request {
 	#	ссылка на хэш-данные запроса
 	my	$query = shift @_;
 	#-------------------------------------------------------------------------
-	my	($dbh, $sth);
 	#	"Основное заболевание"
 	my	$id_rheumatology = join(',', @{ $query->{rheumatology} });
 	#
@@ -191,9 +201,9 @@ sub request {
 	while (my $row = $sth->fetchrow_hashref)
 	{
 		push @probe,
-		[$row->{name}, $probe{$row->{id}}, $row->{info} || ''];
+		[$row->{name}, $probe{$row->{id}}, $row->{info} || 'нет информации'];
 	}
-#	pdf_table(\@preparation);
+	pdf_table(\@preparation);
 	
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
@@ -208,154 +218,92 @@ sub request {
 	]
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-sub report
+=pod
+
+=cut
+sub pdf_file
 {
-	#	ссылка на хэш-данные запроса
-	my	$query = shift @_;
-	#-------------------------------------------------------------------------
-	#	"Основное заболевание"
-	my	%rheumatology = map
-		{
-			sprintf('rheumatology#%d', $_) => $_
-		}
-		@{ $query->{rheumatology} };
 	#
-	#	"Сопутствующие заболевания"
-	my	%comorbidity = map
-		{
-			sprintf('comorbidity#%d', $_) => $_
-		}
-		@{ $query->{comorbidity} };
+	#	ссылки
+#	return ($pdf, $font);
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Новая таблица
+	---
+	pdf_table($data)
+		
+=cut
+sub pdf_table
+{
+	#	Данные таблицы (ссылка на список)
+	my	$data = shift @_;
+=pod
 	#
-	#	"Сопутствующие состояния"
-	my	%status = map
-		{
-			sprintf('status#%d', $_) => $_
-		}
-		@{ $query->{status} };
-	#
-	#	"Лабораторные показатели"
-	my	%manual = map
-		{
-			sprintf('manual#%d', $_) => $_
-		}
-		@{ $query->{manual} };
-	#
-	#	"Препараты"
-	my	%preparation = map
-		{
-			sprintf('preparation#%d', $_) => $_
-		}
-		@{ $query->{preparation} };
-	#
-	#	"Лабораторные исследования"
-	my	%probe = map
-		{
-			sprintf('probe#%d', $_->{id}) => $_->{val}
-		}
-		@{ $query->{probe} };
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#
-	#	CGI-запрос
-	#
-	my	$cgi_query =
-		{
-			%rheumatology,
-			%comorbidity,
-			%status,
-			%manual,
-			%preparation,
-			%probe,
-		};
-	#
-	#	открыть базу данных
-	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
-			or die "$DBI::errstr\n\n\t";
-	#
-	#	ссылка на объект
-	my	$report = Report->new( $dbh );
-	#
-	#	Разрешенные препараты
-	my	$list_prescription = $report->approved_preparation( $cgi_query );
-	#
-	#	Количество рекомендаций
-	my	$sth = $dbh->prepare(qq
-		@
-			SELECT count(*) AS rows FROM "$list_prescription"
-		@);
-		$sth->execute();
-	#
-	#	нет рекомендаций?
-	if ( $sth->fetchrow_hashref()->{rows} == 0 )
+	#	Декодирование данных
+	foreach my $i (0 .. $#{ $data })
 	{
-		return "<tr><td colspan=7>Для заданных условий поиска нет рекомендуемых препаратов</td></tr>";
+		foreach my $j (0 .. $#{ $data->[$i] })
+		{
+			$data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
+		}
 	}
+=cut
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
-	#	Список препаратов
-	#	https://www.sqlitetutorial.net/sqlite-count-function/
+	#	Создаем PDF
+	my	$pdf = PDF::API2->new();
 	#
-	$sth = $dbh->prepare(qq
-	@
-		SELECT
-			ROW_NUMBER() OVER (
-				PARTITION BY "preparation_name"
-				ORDER BY "preparation_name", "probe_name"
-			) AS num,
-			COUNT("preparation_name") OVER (
-				PARTITION BY "preparation_name"
-			) AS rowspan,
-			"preparation_name",
-			"preparation_info",
-			"indication_info",
-			"indication_memo",
-			"probe_name",
-			"probe_value",
-			"probe_min",
-			"probe_max",
-			"prescription_instruction"
-		FROM $list_prescription
-	@);
-	$sth->execute();
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	цикл по списку препаратов
-	my	$order = 0;
-	while (my $row = $sth->fetchrow_hashref)
-	{
-		$order++;
-	}
+	#	Устанавливаем шрифт с кириллицей
+	my	$font = $pdf->ttfont('Arial.ttf');
 	#
-	#	закрыть базу данных
-	$dbh->disconnect
-		or warn $dbh->errstr;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	возвращаемое значение
-	return {order => $order, cgi_query => $cgi_query};
+	#	Добавить пустую страницу
+	my	$page = $pdf->page();
+	#
+	#	A4 (210mm x 297mm)
+		$page->mediabox(595, 842);  # 595 x 842 points
+	
+	#	Создаем таблицу
+	my	$table = PDF::Table->new();
+	#
+	#	Опции таблицы
+	#	https://metacpan.org/pod/PDF::Table#Table-settings
+		$table->table(
+			$pdf,
+			$page,
+			$data,
+			header_props => {
+				font 		=> $font,
+				font_size	=> 14,
+				bg_color	=> 'yellow',
+				repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
+			},
+			font 		=> $font,
+			font_size	=> 12,
+			x         	=> 50,
+			y			=> 842-50,
+			w         	=> 500,
+			h   		=> 500,
+			padding   	=> 5,
+			size		=> '5cm *',
+			border_w	=> 1,
+	#        background_color_odd  => "gray",
+	#        background_color_even => "lightblue",
+#			cell_props =>
+#			[
+#				[{colspan => 2}],#	Для первой строки, первой ячейки
+#				[],
+#				[{colspan => 4}],#	Для третьей строки, первой ячейки
+#			],
+	);
+	#
+	#	Сохраняем PDF
+	#
+	$pdf->saveas('russian_table2.pdf');
+	
+	print STDERR "Create file: 'russian_table2.pdf'\n";
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package
 return 1;
 __DATA__
-
-
-$VAR1 = {
-          'action' => 'report',
-          'offset-comorbidity' => '0',
-          'offset-deviation' => '0',
-          'offset-preparation' => '0',
-          'offset-report' => '0',
-          'offset-rheumatology' => '0',
-          'offset-status' => '0',
-          'probe#1' => '',
-          'probe#2' => '',
-          'probe#39' => ''
-          'probe#4' => '',
-          'probe#40' => '',
-          'probe#41' => '',
-          'probe#42' => '',
-          'probe#5' => '',
-          'probe#6' => '',
-          'probe#7' => '',
-          'rheumatology#2' => '2',
-          'rheumatology#5' => '5',
-        };

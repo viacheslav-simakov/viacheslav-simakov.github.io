@@ -241,7 +241,9 @@ sub web_app_data
 	my	$data = decode_json($web_app_data);
 	#
 	#	Параметры запроса
-	my	$req = tele_db::request($data);
+#	my	$req = tele_db::request($data);
+		
+	print STDERR Dumper(tele_db::report($data));
 	
 	
 #	print STDERR Dumper($req);	
