@@ -216,44 +216,59 @@ sub report
 	#	ссылка на хэш-данные запроса
 	my	$query = shift @_;
 	#-------------------------------------------------------------------------
-	#	CGI-запрос (ссылка на хэш)
-	my	$cgi_query = {};
-	#
 	#	"Основное заболевание"
-	foreach (@{ $query->{rheumatology} })
-	{
-		$cgi_query->{'rheumatology#'.$_} = $_;
-	}
+	my	%rheumatology = map
+		{
+			sprintf('rheumatology#%d', $_) => $_
+		}
+		@{ $query->{rheumatology} };
 	#
 	#	"Сопутствующие заболевания"
-	foreach (@{ $query->{comorbidity} })
-	{
-		$cgi_query->{'comorbidity#'.$_} = $_;
-	}
+	my	%comorbidity = map
+		{
+			sprintf('comorbidity#%d', $_) => $_
+		}
+		@{ $query->{comorbidity} };
 	#
 	#	"Сопутствующие состояния"
-	foreach (@{ $query->{status} })
-	{
-		$cgi_query->{'status#'.$_} = $_;
-	}
+	my	%status = map
+		{
+			sprintf('status#%d', $_) => $_
+		}
+		@{ $query->{status} };
 	#
 	#	"Лабораторные показатели"
-	foreach (@{ $query->{manual} })
-	{
-		$cgi_query->{'manual#'.$_} = $_;
-	}
+	my	%manual = map
+		{
+			sprintf('manual#%d', $_) => $_
+		}
+		@{ $query->{manual} };
 	#
 	#	"Препараты"
-	foreach (@{ $query->{preparation} })
-	{
-		$cgi_query->{'preparation#'.$_} = $_;
-	}
+	my	%preparation = map
+		{
+			sprintf('preparation#%d', $_) => $_
+		}
+		@{ $query->{preparation} };
 	#
 	#	"Лабораторные исследования"
-	foreach (@{ $query->{probe} })
-	{
-		$cgi_query->{'probe#'.$_->{id}} = $_->{val};
-	}
+	my	%probe = map
+		{
+			sprintf('probe#%d', $_->{id}) => $_->{val}
+		}
+		@{ $query->{probe} };
+	#
+	#	CGI-запрос
+	#
+	my	$cgi_query =
+		{
+			%rheumatology,
+			%comorbidity,
+			%status,
+			%manual,
+			%preparation,
+			%probe,
+		};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
 	#	Открыть базу данных
@@ -264,7 +279,7 @@ sub report
 	#	Ссылка на объект
 	my	$report = Report->new( $dbh );
 	#
-	#	Разрешенные препараты (user.pl)
+	#	Разрешенные препараты
 	my	$list_prescription = $report->approved_preparation( $cgi_query );
 	#
 	#	Количество рекомендаций
@@ -312,18 +327,15 @@ sub report
 	my	$text = '';
 	while (my $row = $sth->fetchrow_hashref)
 	{
-		#	первая строка группы записей
+		#	первая строка группы
 		if ($row->{num} == 1)
 		{
-			#	заголовок группы записей
+			#	группа ячеек таблицы
 			$text .= sprintf qq
 			@
-				***
-				%d) Препарат: %s
-				Информация: %s
-				***
-				Клинические показания: %s
-				С осторожностью: %s
+				%d
+				%s (%s)
+				%s (%s)
 				---
 			@,
 			$order++,
@@ -332,25 +344,6 @@ sub report
 			Utils::break_line($row->{'indication_info'}),
 			Utils::break_line($row->{'indication_memo'});
 		}
-		#	данные группы записей
-		$text .= sprintf qq
-		@
-			Лабораторное исследование: %s
-			Значение показателя:
-			от: %s
-			факт: %s
-			до: %s
-			Рекомендации по применению: %s
-		@,
-		$row->{'probe_name'},
-		$row->{'probe_min'},
-		$row->{'probe_value'},
-		$row->{'probe_max'},
-		(
-			defined $row->{'prescription_instruction'}
-				? Utils::break_line($row->{'prescription_instruction'})
-				: ''
-		);
 	}
 	#
 	#	закрыть базу данных
