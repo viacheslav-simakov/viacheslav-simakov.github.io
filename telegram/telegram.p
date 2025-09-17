@@ -273,12 +273,13 @@ sub web_app_data
 	my	$pdf = tele_pdf->new($message->{from}->{id});
 	
 	
-	print Dumper($info_query->{rheumatology});
+	print STDERR Dumper($info_query->{rheumatology}),"---------";
 	
 	
 		$pdf->table($info_query->{rheumatology});
 		
-		$pdf->{-pdf}->saveas('example.pdf');
+		$pdf->save();
+		
 	
 #	print STDERR Dumper($req);	
 	

@@ -38,6 +38,10 @@ sub new {
 	#
 	#	Размер страницы по умолчанию
 		$pdf->default_page_size('A4');
+		print STDERR join(',', $pdf->default_page_size),"\n\n";
+
+	my	@rectangle = 
+
 	#
 	#	Устанавливаем шрифт с кириллицей
 	my	$font = $pdf->ttfont('Arial.ttf');
@@ -45,13 +49,30 @@ sub new {
 	#	ссылка на объект
 	my	$self =
 		{
-			-user_id	=> $user_id,	# ID пользоватиеля
-			-pdf		=> $pdf,		# pdf-документ
-			-font		=> $font,		# шрифт
+			-user_id		=> $user_id,	# ID пользоватиеля
+			-pdf			=> $pdf,		# pdf-документ
+			-font			=> $font,		# шрифт
+			-page_width		=> ($pdf->default_page_size)[2],
+			-page_height	=> ($pdf->default_page_size)[3],
 		};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	привести ссылку к типу __PACKAGE__
 	return bless $self, $class;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Сохранить файл
+	---
+	$obj->save();
+
+=cut
+sub save
+{
+	#	ссылка на объект
+	my	$self = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Сохранить файл
+	$self->{-pdf}->saveas($self->{-user_id}.'.pdf');
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -63,19 +84,35 @@ sub table
 	my	$self = shift @_;
 	#	данные таблицы
 	my	$data = shift @_;
-	
-
+	#	опции таблицы
+	my	%settings = (
+			header_props => {
+				font 		=> $self->{-font},
+				font_size	=> 14,
+				font_color	=> '#006666',
+				bg_color	=> 'yellow',
+				repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
+			},
+			font 		=> $self->{-font},
+			font_size	=> 12,
+			x         	=> 36,
+			w         	=> $self->{-page_width} - 72,
+			padding   	=> 5,
+			size		=> '8cm *',
+			border_w	=> 1,
+		, @_);
 #
 #	Декодирование данных
 #
-foreach my $i (0 .. $#data)
+foreach my $i (0 .. $#{ $data })
 {
-	foreach my $j (0 .. $#{ $data[$i] })
+	foreach my $j (0 .. $#{ $data->[$i] })
 	{
-		$data[$i]->[$j] = decode('UTF-8', $data[$i]->[$j]);
+		$data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
 	}
 }
-print Dumper::Dumper($data);
+#print STDERR Data::Dumper::Dump($data);
+#return;
 	#-------------------------------------------------------------------------
 	#	pdf-документ
 	my	$pdf = $self->{-pdf};
@@ -95,22 +132,23 @@ print Dumper::Dumper($data);
 			$pdf,
 			$page,
 			$data,
-			header_props => {
-				font 		=> $font,
-				font_size	=> 14,
-				font_color	=> '#006666',
-				bg_color	=> 'yellow',
-				repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
-			},
-			font 		=> $font,
-			font_size	=> 12,
-			x         	=> 50,
-			y			=> 750,
-			w         	=> 500,
+			%settings,
+#			header_props => {
+#				font 		=> $font,
+#				font_size	=> 14,
+#				font_color	=> '#006666',
+#				bg_color	=> 'yellow',
+#				repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
+#			},
+#			font 		=> $font,
+#			font_size	=> 12,
+#			x         	=> 36,
+			y			=> $self->{-page_height} - 36,
+#			w         	=> $self->{-page_width} - 72,
 			h   		=> 500,
-			padding   	=> 5,
-			size		=> '5cm *',
-			border_w	=> 1,
+#			padding   	=> 5,
+#			size		=> '8cm *',
+#			border_w	=> 1,
 	#        background_color_odd  => "gray",
 	#        background_color_even => "lightblue",
 	#		cell_props =>
