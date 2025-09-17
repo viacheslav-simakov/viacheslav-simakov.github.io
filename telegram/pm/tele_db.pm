@@ -58,14 +58,48 @@ my	%FORM_number =
 (
 	probe			=> 'Лабораторные исследования',
 );
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-foreach (keys %FORM_checkbox)
-{
-	$FORM_checkbox{$_} = Encode::encode('UTF-8',
-		Encode::decode('windows-1251',
-			$FORM_checkbox{$_}));
-}
+	Конструктор
+	---
+	$report = tele_db->new( $query );
+
+		%query	- данные запроса
 =cut
+sub new {
+	#	название класса
+	my	$class = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#
+	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
+			or die $DBI::errstr;
+	#
+	#	ссылка на объект
+	my	$self =
+		{
+			-dbh	=> $dbh,
+			-query	=> shift @_,	# запрос (ссылка на хэш)
+		};
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	привести ссылку к типу __PACKAGE__
+	return bless $self, $class;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Деструктор
+	---
+=cut
+sub DESTROY
+{
+	#	ссылка на объект
+	my	$self = shift @_;
+	#-------------------------------------------------------------------------
+	#	закрыть базу данных
+	$self->{-dbh}->disconnect or warn $self->{-dbh}->errstr;
+	#
+	#	вывод на экран
+	print STDERR "disconnect from data base\n";
+}
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Обработчик запросов к базе данных
@@ -76,17 +110,17 @@ foreach (keys %FORM_checkbox)
 
 =cut
 sub request {
-	#	ссылка на хэш-данные запроса
-	my	$query = shift @_;
+	#	ссылка на объект
+	my	$self = shift @_;
 	#-------------------------------------------------------------------------
-	#
-	#	Открыть базу данных
-	#
-	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
-			or die $DBI::errstr;
+	#	ссылка на хэш-данные запроса
+	my	$query = $self->{-query};
 	#
 	#	Данные запроса (флажки, строки ввода)
-	my	(@req_checkbox, @req_number);
+	my	$req;
+	#
+	#	Указатель базы данных/Открыть базу данных
+	my	$dbh = $self->{-dbh};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	цикл по группам флажков (checkbox)
 	foreach my $name (keys %FORM_checkbox)
@@ -94,10 +128,14 @@ sub request {
 		#	ID флажков html-формы
 		my	$id = join(',', @{ $query->{$name} });
 		#
+		#	Таблица базы данных
+		my	$table = $name;
+			$table = 'probe-manual' if $table eq 'manual';
+		#
 		#	SQL-запрос
 		my	$sth = $dbh->prepare(qq
 		@
-			SELECT id,name,info FROM "$name"
+			SELECT id,name,info FROM "$table"
 			WHERE id IN ($id)
 			ORDER BY "name_lc"
 		@);
@@ -117,7 +155,7 @@ sub request {
 		}
 		#
 		#	добавить данные запроса
-		push @req_checkbox, \@data;
+		$req->{$name} = \@data;
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	цикл по группам строк ввода (input)
@@ -143,7 +181,7 @@ sub request {
 			{
 				Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
 			}
-			($FORM_checkbox{$name}, 'Результат', 'Информация')]);
+			($FORM_number{$name}, 'Результат', 'Информация')]);
 		#
 		#	цикл по выбранным записям
 		while (my $row = $sth->fetchrow_hashref)
@@ -152,26 +190,21 @@ sub request {
 		}
 		#
 		#	добавить данные запроса
-		push @req_number, \@data;	
+		$req->{$name} = \@data;
 	}
-	#
-	#	закрыть базу данных
-	$dbh->disconnect or warn $dbh->errstr;
-#	pdf_table(\@preparation);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
-	return
-	{
-		-checkbox	=> \@req_checkbox,
-		-number		=> \@req_number,
-	}
+	return $req;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 sub report
 {
-	#	ссылка на хэш-данные запроса
-	my	$query = shift @_;
+	#	ссылка на объект
+	my	$self = shift @_;
 	#-------------------------------------------------------------------------
+	#	данные запроса
+	my	$query = $self->{-query};
+	#
 	#	CGI-запрос (ссылка на хэш)
 	my	$cgi_query = {};
 	#
@@ -196,12 +229,11 @@ sub report
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
-	#	Открыть базу данных
+	#	Указатель базы данных/Открыть базу данных
 	#
-	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
-			or die $DBI::errstr;
+	my	$dbh = $self->{-dbh};
 	#
-	#	Ссылка на объект
+	#	Ссылка на объект (отчет)
 	my	$report = Report->new( $dbh );
 	#
 	#	Разрешенные препараты (user.pl)
@@ -257,51 +289,52 @@ sub report
 		{
 			#	заголовок группы записей
 			$text .= sprintf qq
-			@
-				***
-				%d) Препарат: %s
-				Информация: %s
-				***
-				Клинические показания: %s
-				С осторожностью: %s
-				---
-			@,
+@
+***
+%d) preparation-name: %s
+	preparation-info: %s
+***
+indication_info: %s
+indication_memo: %s
+---
+@,
 			$order++,
 			$row->{'preparation_name'},
 			$row->{'preparation_info'},
-			Utils::break_line($row->{'indication_info'}),
-			Utils::break_line($row->{'indication_memo'});
+			Utils::break_line($row->{'indication_info'} || ''),
+			Utils::break_line($row->{'indication_memo'} || '');
 		}
+		next if
+		(
+			!defined($row->{'probe_name'})					&& 
+			!defined($row->{'probe_min'})					&&
+			!defined($row->{'probe_value'})					&&
+			!defined($row->{'probe_max'})					&&
+			!defined($row->{'prescription_instruction'})
+		);
 		#	данные группы записей
 		$text .= sprintf qq
-		@
-			Лабораторное исследование: %s
-			Значение показателя:
-			от: %s
-			факт: %s
-			до: %s
-			Рекомендации по применению: %s
-		@,
-		$row->{'probe_name'},
-		$row->{'probe_min'},
-		$row->{'probe_value'},
-		$row->{'probe_max'},
-		(
-			defined $row->{'prescription_instruction'}
-				? Utils::break_line($row->{'prescription_instruction'})
-				: ''
-		);
+@
+	probe_name: %s
+	min: %s
+	value: %s
+	max: %s
+	prescription_instruction: %s
+@,
+		$row->{'probe_name'} 	|| '',
+		$row->{'probe_min'}		|| '',
+		$row->{'probe_value'}	|| '',
+		$row->{'probe_max'}		|| '',
+		Utils::break_line($row->{'prescription_instruction'} || '');
 	}
-	#
-	#	закрыть базу данных
-	$dbh->disconnect or warn $dbh->errstr;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
 	return
 	{
 		order => $order,
 		cgi_query => $cgi_query,
-		text => Encode::encode('windows-1251', Encode::decode('UTF-8', $text)),
+#		text => Encode::encode('windows-1251', Encode::decode('UTF-8', $text)),
+		text => $text,
 	};
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

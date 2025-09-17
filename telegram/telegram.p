@@ -242,8 +242,26 @@ sub web_app_data
 	#
 	#	Параметры запроса
 #	my	$req = tele_db::request($data);
+	#
+	#	ссылка на объект
+	my	$req = tele_db->new($data);
 		
-	print STDERR Dumper(tele_db::report($data));
+#	print STDERR Dumper($req->report);
+#	print STDERR Dumper($req->request);
+	
+	#	Открыть файл
+	open(my $fh, ">", '000.txt') or die "Cannot open file: $!";
+	#
+	#	Печать в файл
+	print $fh Dumper($req->request);
+#	print $fh decode('UTF-8', Dumper($req->report));
+	print $fh Dumper($req->report);
+	#
+	#	Закрыть файл
+	close($fh);
+	#
+	#	Вывод на экран
+	print STDERR "\n\n\tCreate TXT-file\n\n\n";
 	
 	
 #	print STDERR Dumper($req);	
