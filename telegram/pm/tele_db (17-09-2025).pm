@@ -26,9 +26,6 @@ my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 #	'.' = текущая папка!
 use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
 #
-#	Утилиты
-use Utils();
-#
 #	Формирование ОТЧЕТОВ из базы данных
 #
 use Report();
@@ -257,6 +254,7 @@ sub report
 			sprintf('probe#%d', $_->{id}) => $_->{val}
 		}
 		@{ $query->{probe} };
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
 	#	CGI-запрос
 	#
@@ -269,14 +267,12 @@ sub report
 			%preparation,
 			%probe,
 		};
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
-	#	Открыть базу данных
-	#
+	#	открыть базу данных
 	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
-			or die $DBI::errstr;
+			or die "$DBI::errstr\n\n\t";
 	#
-	#	Ссылка на объект
+	#	ссылка на объект
 	my	$report = Report->new( $dbh );
 	#
 	#	Разрешенные препараты
@@ -292,7 +288,7 @@ sub report
 	#	нет рекомендаций?
 	if ( $sth->fetchrow_hashref()->{rows} == 0 )
 	{
-		return 'Для заданных условий поиска нет рекомендуемых препаратов';
+		return "<tr><td colspan=7>Для заданных условий поиска нет рекомендуемых препаратов</td></tr>";
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
@@ -323,27 +319,10 @@ sub report
 	$sth->execute();
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	цикл по списку препаратов
-	my	$order = 1;
-	my	$text = '';
+	my	$order = 0;
 	while (my $row = $sth->fetchrow_hashref)
 	{
-		#	первая строка группы
-		if ($row->{num} == 1)
-		{
-			#	группа ячеек таблицы
-			$text .= sprintf qq
-			@
-				%d
-				%s (%s)
-				%s (%s)
-				---
-			@,
-			$order++,
-			$row->{'preparation_name'},
-			$row->{'preparation_info'},
-			Utils::break_line($row->{'indication_info'}),
-			Utils::break_line($row->{'indication_memo'});
-		}
+		$order++;
 	}
 	#
 	#	закрыть базу данных
@@ -351,7 +330,7 @@ sub report
 		or warn $dbh->errstr;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
-	return {order => $order, cgi_query => $cgi_query, text => $text};
+	return {order => $order, cgi_query => $cgi_query};
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package
