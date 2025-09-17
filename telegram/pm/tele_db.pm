@@ -38,6 +38,27 @@ use Report();
 #
 package tele_db {
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+#	Данные модуля
+#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#	флажки html-формы
+my	%form_checkbox =
+(
+	rheumatology	=> 'Основное заболевание',
+	comorbidity		=> 'Сопутствующие заболевания',
+	status			=> 'Сопутствующие состояния',
+	manual			=> 'Лабораторные показатели',
+	preparation		=> 'Препараты',
+);
+#
+#	строки ввода html-формы
+my	%form_number =
+(
+	probe			=> 'Лабораторные исследования',
+);
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Обработчик запросов к базе данных
 	---
@@ -219,40 +240,24 @@ sub report
 	#	CGI-запрос (ссылка на хэш)
 	my	$cgi_query = {};
 	#
-	#	"Основное заболевание"
-	foreach (@{ $query->{rheumatology} })
+	#	цикл по группам флажков (checkbox)
+	foreach my $name ( keys %form_checkbox )
 	{
-		$cgi_query->{'rheumatology#'.$_} = $_;
+		#	цикл по ID флажков
+		foreach my $id (@{ $query->{$name} })
+		{
+			$cgi_query->{"$name#$id"} = $id;
+		}
 	}
 	#
-	#	"Сопутствующие заболевания"
-	foreach (@{ $query->{comorbidity} })
+	#	цикл по группам строк ввода (input)
+	foreach my $name ( keys %form_number )
 	{
-		$cgi_query->{'comorbidity#'.$_} = $_;
-	}
-	#
-	#	"Сопутствующие состояния"
-	foreach (@{ $query->{status} })
-	{
-		$cgi_query->{'status#'.$_} = $_;
-	}
-	#
-	#	"Лабораторные показатели"
-	foreach (@{ $query->{manual} })
-	{
-		$cgi_query->{'manual#'.$_} = $_;
-	}
-	#
-	#	"Препараты"
-	foreach (@{ $query->{preparation} })
-	{
-		$cgi_query->{'preparation#'.$_} = $_;
-	}
-	#
-	#	"Лабораторные исследования"
-	foreach (@{ $query->{probe} })
-	{
-		$cgi_query->{'probe#'.$_->{id}} = $_->{val};
+		#	цикл по строкам ввода
+		foreach my $input (@{ $query->{$name} })
+		{
+			$cgi_query->{"$name#".$input->{id}} = $input->{val};
+		}
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
