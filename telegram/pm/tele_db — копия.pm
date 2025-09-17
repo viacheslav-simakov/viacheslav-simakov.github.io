@@ -38,6 +38,35 @@ use Report();
 #
 package tele_db {
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+#	Данные модуля
+#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#	флажки html-формы
+my	%FORM_checkbox =
+(
+	rheumatology	=> 'Основное заболевание',
+	comorbidity		=> 'Сопутствующие заболевания',
+	status			=> 'Сопутствующие состояния',
+	manual			=> 'Лабораторные показатели',
+	preparation		=> 'Препараты',
+);
+#
+#	строки ввода html-формы
+my	%FORM_number =
+(
+	probe			=> 'Лабораторные исследования',
+);
+=pod
+foreach (keys %FORM_checkbox)
+{
+	$FORM_checkbox{$_} = Encode::encode('UTF-8',
+		Encode::decode('windows-1251',
+			$FORM_checkbox{$_}));
+}
+=cut
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Обработчик запросов к базе данных
 	---
@@ -50,7 +79,84 @@ sub request {
 	#	ссылка на хэш-данные запроса
 	my	$query = shift @_;
 	#-------------------------------------------------------------------------
-	my	($dbh, $sth);
+	#
+	#	Открыть базу данных
+	#
+	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
+			or die $DBI::errstr;
+	#
+	#	Данные запроса
+	my	@request = ();
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	цикл по группам флажков (checkbox)
+	foreach my $name (keys %FORM_checkbox)
+	{
+		#	ID флажков html-формы
+		my	$id = join(',', @{ $query->{$name} });
+		#
+		#	SQL-запрос
+		my	$sth = $dbh->prepare(qq
+		@
+			SELECT id,name,info FROM "$name"
+			WHERE id IN ($id)
+			ORDER BY "name_lc"
+		@);
+		$sth->execute;
+		#
+		#	Заголовок данных
+		my	@data = ([map
+			{
+				Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+			}
+			($FORM_checkbox{$name}, 'Информация')]);
+		#
+		#	цикл по выбранным записям
+		while (my $row = $sth->fetchrow_hashref)
+		{
+			push @data, [$row->{name}, $row->{info} || ''];
+		}
+		#
+		#	добавить данные запроса
+		push @request, \@data;
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	цикл по группам строк ввода (input)
+	foreach my $name ( keys %FORM_number )
+	{
+		#	хэш строк ввода (id, значение)
+		my	%value = map { $_->{id} => $_->{val} } @{ $query->{$name} };
+		#
+		#	ID строк ввода html-формы
+		my	$id = join(',', sort keys %value);
+		#
+		#	SQL-запрос
+		$sth = $dbh->prepare(qq
+		@
+			SELECT id,name,info FROM "$name"
+			WHERE id IN ($id)
+			ORDER BY "name_lc"
+		@);
+		$sth->execute;
+		#
+		#	Заголовок данных
+		my	@data = ([map
+			{
+				Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+			}
+			($FORM_checkbox{$name}, 'Результат', 'Информация')]);
+		#
+		#	цикл по выбранным записям
+		while (my $row = $sth->fetchrow_hashref)
+		{
+			push @probe, [$row->{name}, $value{$row->{id}}, $row->{info} || ''];
+		}
+		#
+		#	добавить данные запроса
+		push @request, \@data;	
+	}
+	
+	
+=pod
 	#	"Основное заболевание"
 	my	$id_rheumatology = join(',', @{ $query->{rheumatology} });
 	#
@@ -73,7 +179,7 @@ sub request {
 	while (my $row = $sth->fetchrow_hashref)
 	{
 		push @rheumatology,
-			[$row->{name}, $row->{info} || 'нет информации'];
+			[$row->{name}, $row->{info} || ''];
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	"Сопутствующие заболевания"
@@ -172,6 +278,7 @@ sub request {
 		push @preparation, [ map {Encode::decode('UTF-8', $_)}
 			($row->{name}, $row->{info} || '') ];
 	}
+=cut
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	"Лабораторные исследования"
 	my	%probe = map { $_->{id} => $_->{val} } @{ $query->{probe} };
@@ -216,59 +323,28 @@ sub report
 	#	ссылка на хэш-данные запроса
 	my	$query = shift @_;
 	#-------------------------------------------------------------------------
-	#	"Основное заболевание"
-	my	%rheumatology = map
+	#	CGI-запрос (ссылка на хэш)
+	my	$cgi_query = {};
+	#
+	#	цикл по группам флажков (checkbox)
+	foreach my $name ( keys %FORM_checkbox )
+	{
+		#	цикл по ID флажков
+		foreach my $id (@{ $query->{$name} })
 		{
-			sprintf('rheumatology#%d', $_) => $_
+			$cgi_query->{"$name#$id"} = $id;
 		}
-		@{ $query->{rheumatology} };
+	}
 	#
-	#	"Сопутствующие заболевания"
-	my	%comorbidity = map
+	#	цикл по группам строк ввода (input)
+	foreach my $name ( keys %FORM_number )
+	{
+		#	цикл по строкам ввода
+		foreach my $input (@{ $query->{$name} })
 		{
-			sprintf('comorbidity#%d', $_) => $_
+			$cgi_query->{"$name#".$input->{id}} = $input->{val};
 		}
-		@{ $query->{comorbidity} };
-	#
-	#	"Сопутствующие состояния"
-	my	%status = map
-		{
-			sprintf('status#%d', $_) => $_
-		}
-		@{ $query->{status} };
-	#
-	#	"Лабораторные показатели"
-	my	%manual = map
-		{
-			sprintf('manual#%d', $_) => $_
-		}
-		@{ $query->{manual} };
-	#
-	#	"Препараты"
-	my	%preparation = map
-		{
-			sprintf('preparation#%d', $_) => $_
-		}
-		@{ $query->{preparation} };
-	#
-	#	"Лабораторные исследования"
-	my	%probe = map
-		{
-			sprintf('probe#%d', $_->{id}) => $_->{val}
-		}
-		@{ $query->{probe} };
-	#
-	#	CGI-запрос
-	#
-	my	$cgi_query =
-		{
-			%rheumatology,
-			%comorbidity,
-			%status,
-			%manual,
-			%preparation,
-			%probe,
-		};
+	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
 	#	Открыть базу данных
@@ -279,7 +355,7 @@ sub report
 	#	Ссылка на объект
 	my	$report = Report->new( $dbh );
 	#
-	#	Разрешенные препараты
+	#	Разрешенные препараты (user.pl)
 	my	$list_prescription = $report->approved_preparation( $cgi_query );
 	#
 	#	Количество рекомендаций
@@ -327,15 +403,18 @@ sub report
 	my	$text = '';
 	while (my $row = $sth->fetchrow_hashref)
 	{
-		#	первая строка группы
+		#	первая строка группы записей
 		if ($row->{num} == 1)
 		{
-			#	группа ячеек таблицы
+			#	заголовок группы записей
 			$text .= sprintf qq
 			@
-				%d
-				%s (%s)
-				%s (%s)
+				***
+				%d) Препарат: %s
+				Информация: %s
+				***
+				Клинические показания: %s
+				С осторожностью: %s
 				---
 			@,
 			$order++,
@@ -344,6 +423,25 @@ sub report
 			Utils::break_line($row->{'indication_info'}),
 			Utils::break_line($row->{'indication_memo'});
 		}
+		#	данные группы записей
+		$text .= sprintf qq
+		@
+			Лабораторное исследование: %s
+			Значение показателя:
+			от: %s
+			факт: %s
+			до: %s
+			Рекомендации по применению: %s
+		@,
+		$row->{'probe_name'},
+		$row->{'probe_min'},
+		$row->{'probe_value'},
+		$row->{'probe_max'},
+		(
+			defined $row->{'prescription_instruction'}
+				? Utils::break_line($row->{'prescription_instruction'})
+				: ''
+		);
 	}
 	#
 	#	закрыть базу данных

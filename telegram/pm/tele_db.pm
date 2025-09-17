@@ -44,7 +44,7 @@ package tele_db {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #	флажки html-формы
-my	%form_checkbox =
+my	%FORM_checkbox =
 (
 	rheumatology	=> 'Основное заболевание',
 	comorbidity		=> 'Сопутствующие заболевания',
@@ -54,10 +54,18 @@ my	%form_checkbox =
 );
 #
 #	строки ввода html-формы
-my	%form_number =
+my	%FORM_number =
 (
 	probe			=> 'Лабораторные исследования',
 );
+=pod
+foreach (keys %FORM_checkbox)
+{
+	$FORM_checkbox{$_} = Encode::encode('UTF-8',
+		Encode::decode('windows-1251',
+			$FORM_checkbox{$_}));
+}
+=cut
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Обработчик запросов к базе данных
@@ -71,165 +79,92 @@ sub request {
 	#	ссылка на хэш-данные запроса
 	my	$query = shift @_;
 	#-------------------------------------------------------------------------
-	my	($dbh, $sth);
-	#	"Основное заболевание"
-	my	$id_rheumatology = join(',', @{ $query->{rheumatology} });
 	#
-	#	SQL-запрос
-	$sth = $dbh->prepare(qq
-	@
-		SELECT id,name,info FROM "rheumatology"
-		WHERE id IN ($id_rheumatology)
-		ORDER BY "name_lc"
-	@);
-	$sth->execute;
+	#	Открыть базу данных
 	#
-	#	Данные
-	my	@rheumatology = ([map
+	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
+			or die $DBI::errstr;
+	#
+	#	Данные запроса (флажки, строки ввода)
+	my	(@req_checkbox, @req_number);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	цикл по группам флажков (checkbox)
+	foreach my $name (keys %FORM_checkbox)
+	{
+		#	ID флажков html-формы
+		my	$id = join(',', @{ $query->{$name} });
+		#
+		#	SQL-запрос
+		my	$sth = $dbh->prepare(qq
+		@
+			SELECT id,name,info FROM "$name"
+			WHERE id IN ($id)
+			ORDER BY "name_lc"
+		@);
+		$sth->execute;
+		#
+		#	Заголовок данных
+		my	@data = ([map
+			{
+				Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+			}
+			($FORM_checkbox{$name}, 'Информация')]);
+		#
+		#	цикл по выбранным записям
+		while (my $row = $sth->fetchrow_hashref)
 		{
-			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+			push @data, [$row->{name}, $row->{info} || ''];
 		}
-		('Основное заболевание', 'Информация')]);
-	#	цикл по выбранным записям
-	while (my $row = $sth->fetchrow_hashref)
-	{
-		push @rheumatology,
-			[$row->{name}, $row->{info} || 'нет информации'];
+		#
+		#	добавить данные запроса
+		push @req_checkbox, \@data;
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	"Сопутствующие заболевания"
-	my	$id_comorbidity = join(',', @{ $query->{comorbidity} });
-	#
-	#	SQL-запрос
-	$sth = $dbh->prepare(qq
-	@
-		SELECT id,name,info FROM "comorbidity"
-		WHERE id IN ($id_comorbidity)
-		ORDER BY "name_lc"
-	@);
-	$sth->execute;
-	#
-	#	Данные
-	my	@comorbidity = ([map
+	#	цикл по группам строк ввода (input)
+	foreach my $name ( keys %FORM_number )
+	{
+		#	хэш строк ввода (id, значение)
+		my	%value = map { $_->{id} => $_->{val} } @{ $query->{$name} };
+		#
+		#	ID строк ввода html-формы
+		my	$id = join(',', sort keys %value);
+		#
+		#	SQL-запрос
+		my	$sth = $dbh->prepare(qq
+		@
+			SELECT id,name,info FROM "$name"
+			WHERE id IN ($id)
+			ORDER BY "name_lc"
+		@);
+		$sth->execute;
+		#
+		#	Заголовок данных
+		my	@data = ([map
+			{
+				Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+			}
+			($FORM_checkbox{$name}, 'Результат', 'Информация')]);
+		#
+		#	цикл по выбранным записям
+		while (my $row = $sth->fetchrow_hashref)
 		{
-			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+			push @data, [$row->{name}, $value{$row->{id}}, $row->{info} || ''];
 		}
-		('Сопутствующие заболевания', 'Информация')]);
-	#	цикл по выбранным записям
-	while (my $row = $sth->fetchrow_hashref)
-	{
-		push @comorbidity,
-			[$row->{name}, '', $row->{info} || ''];
+		#
+		#	добавить данные запроса
+		push @req_number, \@data;	
 	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	"Сопутствующие состояния"
-	my	$id_status = join(',', @{ $query->{status} });
 	#
-	#	SQL-запрос
-	$sth = $dbh->prepare(qq
-	@
-		SELECT id,name,info FROM "status"
-		WHERE id IN ($id_status)
-		ORDER BY "name_lc"
-	@);
-	$sth->execute;
-	#
-	#	Данные
-	my	@status = ([map
-		{
-			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
-		}
-		('Сопутствующие состояния', 'Информация')]);
-	#	цикл по выбранным записям
-	while (my $row = $sth->fetchrow_hashref)
-	{
-		push @status,
-			[$row->{name}, '', $row->{info} || ''];
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	"Лабораторные показатели"
-	my	$id_manual = join(',', @{ $query->{manual} });
-	#
-	#	SQL-запрос
-	$sth = $dbh->prepare(qq
-	@
-		SELECT id,name,info FROM "probe-manual"
-		WHERE id IN ($id_manual)
-		ORDER BY "name_lc"
-	@);
-	$sth->execute;
-	#
-	#	Данные
-	my	@manual = ([map
-		{
-			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
-		}
-		('Лабораторные показатели', 'Информация')]);
-	#	цикл по выбранным записям
-	while (my $row = $sth->fetchrow_hashref)
-	{
-		push @manual,
-			[$row->{name}, '', $row->{info} || ''];
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	"Препараты"
-	my	$id_preparation = join(',', @{ $query->{preparation} });
-	#
-	#	SQL-запрос
-	$sth = $dbh->prepare(qq
-	@
-		SELECT id,name,info FROM "preparation"
-		WHERE id IN ($id_preparation)
-		ORDER BY "name_lc"
-	@);
-	$sth->execute;
-	#
-	#	Данные
-	my	@preparation = ([ map {Encode::decode('windows-1251', $_)}
-		('Препараты', 'Информация')] );
-	#	цикл по выбранным записям
-	while (my $row = $sth->fetchrow_hashref)
-	{
-		push @preparation, [ map {Encode::decode('UTF-8', $_)}
-			($row->{name}, $row->{info} || '') ];
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	"Лабораторные исследования"
-	my	%probe = map { $_->{id} => $_->{val} } @{ $query->{probe} };
-	#
-	#	id записей таблицы
-	my	$id_probe = join(',', sort keys %probe);
-	#
-	#	SQL-запрос
-	$sth = $dbh->prepare(qq
-	@
-		SELECT id,name,info FROM "probe"
-		WHERE id IN ($id_probe)
-		ORDER BY "name_lc"
-	@);
-	$sth->execute;
-	#
-	#	Данные
-	my	@probe = ([Encode::decode('UTF-8', 'Лабораторные исследования'),'','']);
-	#	цикл по выбранным записям
-	while (my $row = $sth->fetchrow_hashref)
-	{
-		push @probe,
-		[$row->{name}, $probe{$row->{id}}, $row->{info} || ''];
-	}
+	#	закрыть базу данных
+	$dbh->disconnect or warn $dbh->errstr;
 #	pdf_table(\@preparation);
-	
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
 	return
-	[
-		\@rheumatology,
-		\@comorbidity,
-		\@status,
-		\@manual,
-		\@probe,
-		\@preparation,
-	]
+	{
+		-checkbox	=> \@req_checkbox,
+		-number		=> \@req_number,
+	}
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 sub report
@@ -241,7 +176,7 @@ sub report
 	my	$cgi_query = {};
 	#
 	#	цикл по группам флажков (checkbox)
-	foreach my $name ( keys %form_checkbox )
+	foreach my $name ( keys %FORM_checkbox )
 	{
 		#	цикл по ID флажков
 		foreach my $id (@{ $query->{$name} })
@@ -251,7 +186,7 @@ sub report
 	}
 	#
 	#	цикл по группам строк ввода (input)
-	foreach my $name ( keys %form_number )
+	foreach my $name ( keys %FORM_number )
 	{
 		#	цикл по строкам ввода
 		foreach my $input (@{ $query->{$name} })
@@ -359,8 +294,7 @@ sub report
 	}
 	#
 	#	закрыть базу данных
-	$dbh->disconnect
-		or warn $dbh->errstr;
+	$dbh->disconnect or warn $dbh->errstr;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
 	return
