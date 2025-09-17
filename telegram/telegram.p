@@ -32,8 +32,11 @@ use WWW::Telegram::BotAPI;
 #	'.' = текущая папка!
 use lib ('pm');
 #
-#	Утилиты
+#	База данных
 use tele_db();
+#
+#	pdf-документы
+use tele_pdf();
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
 #	Бот @tele_rheumatology_bot
@@ -263,6 +266,19 @@ sub web_app_data
 	#	Вывод на экран
 	print STDERR "\n\n\tCreate TXT-file\n\n\n";
 	
+	
+	my	$info_query = $req->request;
+	#
+	#	pdf-документ
+	my	$pdf = tele_pdf->new($message->{from}->{id});
+	
+	
+	print Dumper($info_query->{rheumatology});
+	
+	
+		$pdf->table($info_query->{rheumatology});
+		
+		$pdf->{-pdf}->saveas('example.pdf');
 	
 #	print STDERR Dumper($req);	
 	

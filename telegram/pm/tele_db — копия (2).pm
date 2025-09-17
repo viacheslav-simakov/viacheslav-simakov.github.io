@@ -19,10 +19,7 @@ use DBI;
 #
 #	Файл базы данных
 my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
-	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db' unless (-f $db_file);
-#
-#	файл база данных не найден
-	die "Cannot find file data base" unless (-f $db_file);
+#my	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
 #	папки библиотек (модулей)
@@ -40,20 +37,11 @@ use Report();
 #	Обработка SQL-запросов к базе данных SQLite
 #
 package tele_db {
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
 #	Данные модуля
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#	псевдонимы таблиц базы данных
-my	%TABLE =
-(
-	rheumatology	=> 'rheumatology',
-	comorbidity		=> 'comorbidity',
-	manual			=> 'probe-manual',
-	status			=> 'status',
-	preparation		=> 'preparation',
-	probe			=> 'probe',
-);
 #
 #	флажки html-формы
 my	%FORM_checkbox =
@@ -141,7 +129,8 @@ sub request {
 		my	$id = join(',', @{ $query->{$name} });
 		#
 		#	Таблица базы данных
-		my	$table = $TABLE{$name};
+		my	$table = $name;
+			$table = 'probe-manual' if $table eq 'manual';
 		#
 		#	SQL-запрос
 		my	$sth = $dbh->prepare(qq
@@ -178,13 +167,10 @@ sub request {
 		#	ID строк ввода html-формы
 		my	$id = join(',', sort keys %value);
 		#
-		#	Таблица базы данных
-		my	$table = $TABLE{$name};
-		#
 		#	SQL-запрос
 		my	$sth = $dbh->prepare(qq
 		@
-			SELECT id,name,info FROM "$table"
+			SELECT id,name,info FROM "$name"
 			WHERE id IN ($id)
 			ORDER BY "name_lc"
 		@);
@@ -342,11 +328,12 @@ indication_memo: %s
 		Utils::break_line($row->{'prescription_instruction'} || '');
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	ссылка на хэш
+	#	возвращаемое значение
 	return
 	{
 		order => $order,
 		cgi_query => $cgi_query,
+#		text => Encode::encode('windows-1251', Encode::decode('UTF-8', $text)),
 		text => $text,
 	};
 }
