@@ -82,6 +82,8 @@ sub table
 {
 	#	ссылка на объект
 	my	$self = shift @_;
+	#	страница документа
+	my	$page = shift @_;
 	#	данные таблицы
 	my	$data = shift @_;
 	#	опции таблицы

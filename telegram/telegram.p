@@ -271,8 +271,10 @@ sub web_app_data
 	#
 	#	pdf-документ
 	my	$pdf = Tele_PDF->new($message->{from}->{id});
-	
-	
+	#
+	#	добавить пустую страницу
+#	my	$page = $pdf->{-pdf}->page();
+		
 	my	@res = $pdf->table($info_query->{status}, ink => 0);
 	
 	printf "\n\n%s\ny=%s\n\n", join(',', @res), $res[0];
