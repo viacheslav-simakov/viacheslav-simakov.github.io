@@ -104,14 +104,15 @@ sub table
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Копирование данных
-	my	@copy_data = @{ _deep_copy($data) };
+#	my	@copy_data = @{ _deep_copy($data) };
+	my	$copy_data;
 	#
 	#	Декодирование данных
-	foreach my $i (0 .. $#copy_data)
+	foreach my $i (0 .. $#{ $data })
 	{
-		foreach my $j (0 .. $#{ $copy_data[$i] })
+		foreach my $j (0 .. $#{ $data->[$i] })
 		{
-			$copy_data[$i]->[$j] = Encode::decode('UTF-8', $copy_data[$i]->[$j]);
+			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
 		}
 	}
 	#
@@ -126,7 +127,7 @@ sub table
 	#
 	#	Опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
 	#
-	my	@res = $table->table($pdf, $page, \@copy_data,
+	my	@res = $table->table($pdf, $page, $copy_data,
 			y	=> $self->{-page_height} - 36,
 			h   => 500,
 			%settings,
