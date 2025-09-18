@@ -86,7 +86,8 @@ sub table
 	my	$data = shift @_;
 	#	опции таблицы
 	my	%settings = (
-			header_props => {
+			header_props => # Заголовок таблицы
+			{
 				font 		=> $self->{-font},
 				font_size	=> 14,
 				font_color	=> '#006666',
@@ -102,14 +103,16 @@ sub table
 			border_w	=> 1,
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Копирование данных
+#	my	@copy_data = @{ _deep_copy($data) };
+	my	$copy_data;
 	#
 	#	Декодирование данных
-	#
 	foreach my $i (0 .. $#{ $data })
 	{
 		foreach my $j (0 .. $#{ $data->[$i] })
 		{
-			$data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
+			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
 		}
 	}
 	#
@@ -124,14 +127,29 @@ sub table
 	#
 	#	Опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
 	#
-	print join ',',	$table->table($pdf, $page, $data,
-			%settings,
+	my	@res = $table->table($pdf, $page, $copy_data,
 			y	=> $self->{-page_height} - 36,
 			h   => 500,
-			ink => 0
+			%settings,
 	);
-	print "\n\n\n";
+	return @res;
 }
+=pod
+	"Глубокое" копирование списка ссылок на списки
+	---
+	$copy = deep_copy($array_ref)
+	
+		$array_ref	- ссылка на список [[],[],[]]
+=cut
+sub _deep_copy
+{
+	#	ссылка на список
+    my	$array_ref = shift;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ссылка на копию списка
+    return [ map { [ @{$_} ] } @{$array_ref} ];
+}
+
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package
 return 1;
