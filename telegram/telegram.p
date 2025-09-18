@@ -247,7 +247,7 @@ sub web_app_data
 #	my	$req = tele_db::request($data);
 	#
 	#	ссылка на объект
-	my	$req = tele_db->new($data);
+	my	$req = Tele_DB->new($data);
 		
 #	print STDERR Dumper($req->report);
 #	print STDERR Dumper($req->request);
@@ -270,7 +270,7 @@ sub web_app_data
 	my	$info_query = $req->request;
 	#
 	#	pdf-документ
-	my	$pdf = tele_pdf->new($message->{from}->{id});
+	my	$pdf = Tele_PDF->new($message->{from}->{id});
 	
 	
 	print STDERR Dumper($info_query->{rheumatology}),"---------";

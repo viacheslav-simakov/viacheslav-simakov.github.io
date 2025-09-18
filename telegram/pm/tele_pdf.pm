@@ -10,7 +10,7 @@ use warnings;
 #
 #	Обработка SQL-запросов к базе данных SQLite
 #
-package tele_pdf {
+package Tele_PDF {
 #
 #	Создание, изменение и проверка PDF-файлов
 #	https://metacpan.org/pod/PDF::API2
@@ -23,7 +23,7 @@ use PDF::Table;
 =pod
 	Конструктор
 	---
-	$obj = tele_pdf->new( $user_id );
+	$obj = Tele_PDF->new( $user_id );
 	
 		$user_id	- ID пользователя, который сделал запрос
 =cut

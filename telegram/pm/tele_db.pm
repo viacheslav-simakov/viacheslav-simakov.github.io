@@ -39,7 +39,7 @@ use Report();
 #
 #	Обработка SQL-запросов к базе данных SQLite
 #
-package tele_db {
+package Tele_DB {
 #
 #	Данные модуля
 #
@@ -74,7 +74,7 @@ my	%FORM_number =
 =pod
 	Конструктор
 	---
-	$report = tele_db->new( $query );
+	$obj = Tele_DB->new( $query );
 
 		%query	- данные запроса
 =cut
