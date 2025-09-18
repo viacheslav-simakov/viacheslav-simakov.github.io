@@ -103,14 +103,15 @@ sub table
 			border_w	=> 1,
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Копирование данных
+	my	@copy_data = @{ _deep_copy($data) };
 	#
 	#	Декодирование данных
-	#
-	foreach my $i (0 .. $#{ $data })
+	foreach my $i (0 .. $#copy_data)
 	{
-		foreach my $j (0 .. $#{ $data->[$i] })
+		foreach my $j (0 .. $#{ $copy_data[$i] })
 		{
-			$data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
+			$copy_data[$i]->[$j] = Encode::decode('UTF-8', $copy_data[$i]->[$j]);
 		}
 	}
 	#
@@ -125,13 +126,29 @@ sub table
 	#
 	#	Опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
 	#
-	my	@res = $table->table($pdf, $page, $data,
+	my	@res = $table->table($pdf, $page, \@copy_data,
 			y	=> $self->{-page_height} - 36,
 			h   => 500,
 			%settings,
 	);
 	return @res;
 }
+=pod
+	"Глубокое" копирование списка ссылок на списки
+	---
+	$copy = deep_copy($array_ref)
+	
+		$array_ref	- ссылка на список [[],[],[]]
+=cut
+sub _deep_copy
+{
+	#	ссылка на список
+    my	$array_ref = shift;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ссылка на копию списка
+    return [ map { [ @{$_} ] } @{$array_ref} ];
+}
+
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package
 return 1;
