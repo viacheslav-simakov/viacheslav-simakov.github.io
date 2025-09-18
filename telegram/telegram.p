@@ -274,9 +274,18 @@ sub web_app_data
 	
 	
 	print STDERR Dumper($info_query->{rheumatology}),"---------";
+
+	my	@a = @{ deep_copy($info_query->{status}) };
+
+	my	@res = $pdf->table(\@a, ink => 0);
+	printf "\n\n%s\ny=%s\n\n", join(',', @res), $res[0];
+
+	print STDERR 
+		"\n---------",Dumper($info_query->{status}),"---------\n\n";
 	
-	
-		$pdf->table($info_query->{rheumatology});
+		$pdf->table($info_query->{status}, y => 842-36-$res[0], ink => 1);
+		
+#		$pdf->table($info_query->{status}, y => $res[0] + 32);
 		
 		$pdf->save();
 		
@@ -359,5 +368,9 @@ sub send_pdf
 	};
 	#	Проверка ошибок
 	die "\nОшибка при отправке файла: $@\n" if ($@);
+}
+sub deep_copy {
+    my $array_ref = shift;
+    return [ map { [ @$_ ] } @$array_ref ];
 }
 __DATA__

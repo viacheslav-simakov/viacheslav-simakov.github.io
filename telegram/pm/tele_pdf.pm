@@ -86,7 +86,8 @@ sub table
 	my	$data = shift @_;
 	#	опции таблицы
 	my	%settings = (
-			header_props => {
+			header_props => # Заголовок таблицы
+			{
 				font 		=> $self->{-font},
 				font_size	=> 14,
 				font_color	=> '#006666',
@@ -124,13 +125,12 @@ sub table
 	#
 	#	Опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
 	#
-	print join ',',	$table->table($pdf, $page, $data,
-			%settings,
+	my	@res = $table->table($pdf, $page, $data,
 			y	=> $self->{-page_height} - 36,
 			h   => 500,
-			ink => 0
+			%settings,
 	);
-	print "\n\n\n";
+	return @res;
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package
