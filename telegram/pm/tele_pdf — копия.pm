@@ -10,7 +10,7 @@ use warnings;
 #
 #	Обработка SQL-запросов к базе данных SQLite
 #
-package tele_pdf {
+package Tele_PDF {
 #
 #	Создание, изменение и проверка PDF-файлов
 #	https://metacpan.org/pod/PDF::API2
@@ -23,7 +23,7 @@ use PDF::Table;
 =pod
 	Конструктор
 	---
-	$obj = tele_pdf->new( $user_id );
+	$obj = Tele_PDF->new( $user_id );
 	
 		$user_id	- ID пользователя, который сделал запрос
 =cut
@@ -38,22 +38,25 @@ sub new {
 	#
 	#	Размер страницы по умолчанию
 		$pdf->default_page_size('A4');
-		print STDERR join(',', $pdf->default_page_size),"\n\n";
-
-	my	@rectangle = 
-
+	#
+	#	Размеры страницы (pt)
+	my	($page_width, $page_height) = ($pdf->default_page_size)[2,3];
 	#
 	#	Устанавливаем шрифт с кириллицей
-	my	$font = $pdf->ttfont('Arial.ttf');
+	my	$font = $pdf->ttfont('arial.ttf');
+	#
+	#	Жирный шрифт
+	my	$font_bold = $pdf->ttfont('arialbd.ttf');	
 	#
 	#	ссылка на объект
 	my	$self =
 		{
-			-user_id		=> $user_id,	# ID пользоватиеля
-			-pdf			=> $pdf,		# pdf-документ
-			-font			=> $font,		# шрифт
-			-page_width		=> ($pdf->default_page_size)[2],
-			-page_height	=> ($pdf->default_page_size)[3],
+			-user_id		=> $user_id,		# ID пользователя
+			-pdf			=> $pdf,			# pdf-документ
+			-font			=> $font,			# шрифт
+			-font_bold		=> $font_bold,		# жирный шрифт
+			-page_width		=> $page_width,		# ширина страницы
+			-page_height	=> $page_height,	# высота страницы
 		};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	привести ссылку к типу __PACKAGE__
@@ -76,88 +79,76 @@ sub save
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-
+	Создать таблицу
+	---
+	$obj->table($page_number, $data, %settings);
+	
 =cut
 sub table
 {
 	#	ссылка на объект
 	my	$self = shift @_;
+	#	номер страницы в документе
+	my	$page_number = shift @_;
 	#	данные таблицы
 	my	$data = shift @_;
-	#	опции таблицы
+	#	опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
 	my	%settings = (
-			header_props => {
-				font 		=> $self->{-font},
-				font_size	=> 14,
-				font_color	=> '#006666',
-				bg_color	=> 'yellow',
+			header_props => # Заголовок таблицы
+			{
+				font 			=> $self->{-font_bold},
+				font_size		=> 14,
+				font_color		=> 'black',
+				bg_color		=> 'lightgray',
+				valign			=> 'middle',
+				padding_top		=> 10,
+				padding_bottom	=> 10,
 				repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
 			},
 			font 		=> $self->{-font},
 			font_size	=> 12,
 			x         	=> 36,
-			w         	=> $self->{-page_width} - 72,
+			w         	=> $self->{-page_width} - 2*36,
+			y			=> undef,
+			h			=> undef,
 			padding   	=> 5,
 			size		=> '8cm *',
 			border_w	=> 1,
+			next_y		=> $self->{-page_height} - 1*36,
+			next_h		=> $self->{-page_height} - 2*36,
 		, @_);
-#
-#	Декодирование данных
-#
-foreach my $i (0 .. $#{ $data })
-{
-	foreach my $j (0 .. $#{ $data->[$i] })
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Копия данных таблицы
+	my	$copy_data;
+	#
+	#	Декодирование данных (из UTF-8)
+	foreach my $i (0 .. $#{ $data })
 	{
-		$data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
+		foreach my $j (0 .. $#{ $data->[$i] })
+		{
+			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
+		}
 	}
-}
-#print STDERR Data::Dumper::Dump($data);
-#return;
-	#-------------------------------------------------------------------------
+	#
 	#	pdf-документ
 	my	$pdf = $self->{-pdf};
 	#
-	#	шрифт
-	my	$font = $self->{-font};
+	#	Открыть страницу с номером 'page_number'
+	my	$page = $pdf->open_page($page_number);
 	#
-	#	Добавить пустую страницу
-	my	$page = $pdf->page();
-	#
-	#	Создаем таблицу
+	#	Создать объект-таблицу
 	my	$table = PDF::Table->new();
 	#
-	#	Опции таблицы
-	#	https://metacpan.org/pod/PDF::Table#Table-settings
-		$table->table(
-			$pdf,
-			$page,
-			$data,
-			%settings,
-#			header_props => {
-#				font 		=> $font,
-#				font_size	=> 14,
-#				font_color	=> '#006666',
-#				bg_color	=> 'yellow',
-#				repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
-#			},
-#			font 		=> $font,
-#			font_size	=> 12,
-#			x         	=> 36,
-			y			=> $self->{-page_height} - 36,
-#			w         	=> $self->{-page_width} - 72,
-			h   		=> 500,
-#			padding   	=> 5,
-#			size		=> '8cm *',
-#			border_w	=> 1,
-	#        background_color_odd  => "gray",
-	#        background_color_even => "lightblue",
-	#		cell_props =>
-	#		[
-	#			[{colspan => 4}],#	Для первой строки, первой ячейки
-	#			[],
-	#			[{colspan => 4}],#	Для третьей строки, первой ячейки
-	#		],
-	);
+	#	Сгенерировать таблицу: https://metacpan.org/pod/PDF::Table#table()
+	my	@res = $table->table(
+			$pdf,			# ссылка на объект
+			$page,			# страница
+			$copy_data,		# данные таблицы
+			%settings,		# опции таблицы
+		);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	список фактических параметров таблицы
+	return @res;
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package
