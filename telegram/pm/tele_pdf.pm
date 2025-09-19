@@ -96,28 +96,32 @@ sub table
 	my	%settings = (
 			header_props => # Заголовок таблицы
 			{
-				font 		=> $self->{-font_bold},
-				font_size	=> 14,
-				font_color	=> 'black',
-#				font_color	=> '#006666',
-				bg_color	=> 'lightgray',
+				font 			=> $self->{-font_bold},
+				font_size		=> 14,
+				font_color		=> 'black',
+				bg_color		=> 'lightgray',
+				valign			=> 'middle',
+				padding_top		=> 10,
+				padding_bottom	=> 10,
 				repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
 			},
 			font 		=> $self->{-font},
 			font_size	=> 12,
 			x         	=> 36,
-			w         	=> $self->{-page_width} - 72,
+			w         	=> $self->{-page_width} - 2*36,
+			y			=> undef,
+			h			=> undef,
 			padding   	=> 5,
 			size		=> '8cm *',
 			border_w	=> 1,
-			next_y		=> $self->{-page_height} - 36,
+			next_y		=> $self->{-page_height} - 1*36,
 			next_h		=> $self->{-page_height} - 2*36,
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Копия данных таблицы
 	my	$copy_data;
 	#
-	#	Декодирование данных
+	#	Декодирование данных (из UTF-8)
 	foreach my $i (0 .. $#{ $data })
 	{
 		foreach my $j (0 .. $#{ $data->[$i] })
@@ -136,11 +140,14 @@ sub table
 	my	$table = PDF::Table->new();
 	#
 	#	Сгенерировать таблицу: https://metacpan.org/pod/PDF::Table#table()
-	my	@res = $table->table($pdf, $page, $copy_data,
-			y	=> $self->{-page_height} - 36,
-			h   => 500,
-			%settings,
-	);
+	my	@res = $table->table(
+			$pdf,			# ссылка на объект
+			$page,			# страница
+			$copy_data,		# данные таблицы
+			%settings,		# опции таблицы
+		);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	список фактических параметров таблицы
 	return @res;
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
