@@ -274,13 +274,15 @@ sub web_app_data
 	#
 	#	добавить пустую страницу
 #	my	$page = $pdf->{-pdf}->page();
-		
+	
+	$pdf->{-pdf}->page();
+	
 	my	@res = $pdf->table($info_query->{status}, ink => 0);
 	
 	printf "\n\n%s\ny=%s\n\n", join(',', @res), $res[0];
 
 
-		$pdf->table($info_query->{status}, y => 842-36-$res[0], ink => 1);
+	$pdf->table($info_query->{status}, y => 842-36-$res[0], ink => 1);
 		
 #		$pdf->table($info_query->{status}, y => $res[0] + 32);
 		

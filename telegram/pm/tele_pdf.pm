@@ -83,7 +83,7 @@ sub table
 	#	ссылка на объект
 	my	$self = shift @_;
 	#	страница документа
-	my	$page = shift @_;
+#	my	$page = shift @_;
 	#	данные таблицы
 	my	$data = shift @_;
 	#	опции таблицы
@@ -121,7 +121,7 @@ sub table
 	my	$pdf = $self->{-pdf};
 	#
 	#	Добавить пустую страницу
-	my	$page = $pdf->page();
+	my	$page = $pdf->open_page($pdf->page_count);
 	#
 	#	Создаем таблицу
 	my	$table = PDF::Table->new();
