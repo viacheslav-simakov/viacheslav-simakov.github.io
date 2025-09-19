@@ -7,6 +7,10 @@ use strict;
 #	https://perldoc.perl.org/warnings
 use warnings;
 #
+#	Альтернатива 'warn' и 'die' для модулей
+#	https://perldoc.perl.org/Carp
+use Carp();
+#
 #	Строковые структуры данных Perl, подходящие как для печати
 #	https://metacpan.org/pod/Data::Dumper
 use	Data::Dumper;
@@ -274,13 +278,27 @@ sub web_app_data
 	#
 	#	добавить пустую страницу
 	$pdf->{-pdf}->page();
-	
-	my	@res = $pdf->table(1, $info_query->{rheumatology}, ink => 0);
-	
-	printf "\n\n%s\ny=%s\n\n", join(',', @res), $res[0];
 
-	$pdf->table(1, $info_query->{rheumatology}, y => 842-36-$res[0], ink => 1);
-		
+	my	$y = 842 - 36 - 4*36;
+	my	$h = $y - 36;
+
+	my	@res = $pdf->table(1, $info_query->{rheumatology},
+		y	=> $y,
+		h	=> $h,
+		ink => 0,
+	);
+	
+	printf "\n(%s)\nh=%s\n", join(', ', @res), $h;
+	
+	@res = $pdf->table(1, $info_query->{rheumatology},
+#		y	=> 842-36-$res[0],
+		y	=> $y,
+#		h	=> $res[0],
+		h	=> $h,
+		ink	=> 1,
+	);
+	
+	printf "\n(%s)\nh=%s\n", join(', ', @res), $h;
 	#
 	#	Создать PDF-файл
 	$pdf->save();
@@ -296,25 +314,8 @@ sub web_app_data
     });
 	
 #	send_pdf($message, 'C:/Git-Hub/viacheslav-simakov.github.io/telegram/russian_table2.pdf');
-	send_pdf($message, 'russian_table2.pdf');
-}
-=pod
-	Формирование pdf-файла
-	---
-	make_pdf($message, \%request)
-	
-		$message	- ссылка на сообщение (хэш)
-		%request	- хэш запроса данных
-		
-=cut
-sub make_pdf
-{
-	#	ссылка на сообщение
-    my	$message = shift @_;
-	#	путь pdf-файла
-	my	$pdf_file = shift @_;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	
+#	send_pdf($message, 'russian_table2.pdf');
+	send_pdf($message);
 }
 =pod
 	Отправка PDF-файла
@@ -329,14 +330,25 @@ sub send_pdf
 {
 	#	ссылка на сообщение
     my	$message = shift @_;
-	#	путь pdf-файла
-	my	$pdf_file = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ID чата
     my	$chat_id = $message->{chat}->{id};
 	#
+	#	PDF-файл
+	my	$pdf_file = sprintf '%s.pdf', $chat_id;
+	#
 	#	Проверяем существование файла
-	die "Файл $pdf_file не существует!\n" unless (-e $pdf_file);
+	unless (-e $pdf_file)
+	{
+		#	предупреждение!
+		Carp::carp sprintf
+			"package '%s', filename '%s', subroutine '%s':\n".
+			"PDF-file '%s' file is not exist!\n",
+			(caller(0))[0,1,3], $pdf_file;
+		#
+		#	возврат из функции
+		return undef;
+	}
 	#
 	#	Вывод на экран
 	printf STDERR "\n\tsend pdf file to chat_id='%s'\n\n", $chat_id;
@@ -352,13 +364,14 @@ sub send_pdf
 			document	=>
 			{
 				file		=> $pdf_file,
-				filename	=> decode('windows-1251', 'Рекомендации.pdf'),
+#				filename	=> decode('windows-1251', 'Рекомендации.pdf'),
+				filename	=> $pdf_file,
 			},
 		});
 		#	Вывод на экран
 		printf STDERR
-			"PDF файл успешно отправлен!\nMessage ID: %s\n",
-			$result->{result}->{message_id};
+			"PDF файл '%s' успешно отправлен!\nmessage ID: %s\n",
+			$pdf_file, $result->{result}->{message_id};
 		print STDERR Dumper($result);
 	};
 	#	Проверка ошибок

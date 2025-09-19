@@ -38,9 +38,9 @@ sub new {
 	#
 	#	Размер страницы по умолчанию
 		$pdf->default_page_size('A4');
-		print STDERR join(',', $pdf->default_page_size),"\n\n";
+#		print STDERR join(',', $pdf->default_page_size),"\n\n";
 
-	my	@rectangle = 
+#	my	@rectangle = 
 
 	#
 	#	Устанавливаем шрифт с кириллицей
@@ -85,11 +85,11 @@ sub table
 {
 	#	ссылка на объект
 	my	$self = shift @_;
-	#	страница документа
+	#	номер страницы в документе
 	my	$page_number = shift @_;
 	#	данные таблицы
 	my	$data = shift @_;
-	#	опции таблицы
+	#	опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
 	my	%settings = (
 			header_props => # Заголовок таблицы
 			{
@@ -106,6 +106,8 @@ sub table
 			padding   	=> 5,
 			size		=> '8cm *',
 			border_w	=> 1,
+			next_y		=> $self->{-page_height} - 36,
+			next_h		=> $self->{-page_height} - 2*36,
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Копия данных таблицы
@@ -123,14 +125,13 @@ sub table
 	#	pdf-документ
 	my	$pdf = $self->{-pdf};
 	#
-	#	Добавить пустую страницу
+	#	Открыть страницу с номером 'page_number'
 	my	$page = $pdf->open_page($page_number);
 	#
-	#	Создаем таблицу
+	#	Создать объект-таблицу
 	my	$table = PDF::Table->new();
 	#
-	#	Опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
-	#
+	#	Сгенерировать таблицу: https://metacpan.org/pod/PDF::Table#table()
 	my	@res = $table->table($pdf, $page, $copy_data,
 			y	=> $self->{-page_height} - 36,
 			h   => 500,

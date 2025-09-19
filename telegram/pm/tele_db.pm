@@ -9,6 +9,9 @@ use strict;
 #	Управление необязательными предупреждениями
 #	https://perldoc.perl.org/warnings
 use warnings;
+#	Альтернатива 'warn' и 'die' для модулей
+#	https://perldoc.perl.org/Carp
+use Carp();
 #	JSON (JavaScript Object Notation) кодирование/декодирование
 #	https://metacpan.org/pod/JSON
 use	JSON;
