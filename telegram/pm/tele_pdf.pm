@@ -38,22 +38,25 @@ sub new {
 	#
 	#	Размер страницы по умолчанию
 		$pdf->default_page_size('A4');
-#		print STDERR join(',', $pdf->default_page_size),"\n\n";
-
-#	my	@rectangle = 
-
+	#
+	#	Размеры страницы (pt)
+	my	($page_width, $page_height) = ($pdf->default_page_size)[2,3];
 	#
 	#	Устанавливаем шрифт с кириллицей
-	my	$font = $pdf->ttfont('Arial.ttf');
+	my	$font = $pdf->ttfont('arial.ttf');
+	#
+	#	Жирный шрифт
+	my	$font_bold = $pdf->ttfont('arialbd.ttf');	
 	#
 	#	ссылка на объект
 	my	$self =
 		{
-			-user_id		=> $user_id,	# ID пользоватиеля
-			-pdf			=> $pdf,		# pdf-документ
-			-font			=> $font,		# шрифт
-			-page_width		=> ($pdf->default_page_size)[2],
-			-page_height	=> ($pdf->default_page_size)[3],
+			-user_id		=> $user_id,		# ID пользователя
+			-pdf			=> $pdf,			# pdf-документ
+			-font			=> $font,			# шрифт
+			-font_bold		=> $font_bold,		# жирный шрифт
+			-page_width		=> $page_width,		# ширина страницы
+			-page_height	=> $page_height,	# высота страницы
 		};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	привести ссылку к типу __PACKAGE__
@@ -93,10 +96,11 @@ sub table
 	my	%settings = (
 			header_props => # Заголовок таблицы
 			{
-				font 		=> $self->{-font},
+				font 		=> $self->{-font_bold},
 				font_size	=> 14,
+				font_color	=> 'black',
 #				font_color	=> '#006666',
-				bg_color	=> 'yellow',
+				bg_color	=> 'lightgray',
 				repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
 			},
 			font 		=> $self->{-font},

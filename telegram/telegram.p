@@ -280,25 +280,24 @@ sub web_app_data
 	$pdf->{-pdf}->page();
 
 	my	$y = 842 - 36 - 4*36;
-	my	$h = $y - 36;
 
 	my	@res = $pdf->table(1, $info_query->{rheumatology},
 		y	=> $y,
-		h	=> $h,
+		h	=> $y - 36,
 		ink => 0,
 	);
 	
-	printf "\n(%s)\nh=%s\n", join(', ', @res), $h;
+	printf "\n(%s)\n", join(', ', @res);
 	
 	@res = $pdf->table(1, $info_query->{rheumatology},
 #		y	=> 842-36-$res[0],
 		y	=> $y,
 #		h	=> $res[0],
-		h	=> $h,
+		h	=> $y - 36,
 		ink	=> 1,
 	);
 	
-	printf "\n(%s)\nh=%s\n", join(', ', @res), $h;
+	printf "\n(%s)\n", join(', ', @res);
 	#
 	#	Ñîçäàòü PDF-ôàéë
 	$pdf->save();
