@@ -279,11 +279,11 @@ sub web_app_data
 	#	добавить пустую страницу
 	$pdf->{-pdf}->page();
 
-	my	$y = 842 - 36 - 4*36;
+	my	$y = 842 - 36 - 6*36;
 
 	my	@res = $pdf->table(1, $info_query->{rheumatology},
 		y	=> $y,
-		h	=> $y - 36,
+#		h	=> $y - 36,
 		ink => 0,
 	);
 	
@@ -291,7 +291,7 @@ sub web_app_data
 	
 	@res = $pdf->table(1, $info_query->{rheumatology},
 		y	=> $y,
-		h	=> $y - 36,
+#		h	=> $y - 36,
 		ink	=> 1,
 	);
 	
