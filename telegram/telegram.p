@@ -273,23 +273,19 @@ sub web_app_data
 	my	$pdf = Tele_PDF->new($message->{from}->{id});
 	#
 	#	добавить пустую страницу
-#	my	$page = $pdf->{-pdf}->page();
-	
 	$pdf->{-pdf}->page();
 	
-	my	@res = $pdf->table($info_query->{status}, ink => 0);
+	my	@res = $pdf->table(1, $info_query->{rheumatology}, ink => 0);
 	
 	printf "\n\n%s\ny=%s\n\n", join(',', @res), $res[0];
 
-
-	$pdf->table($info_query->{status}, y => 842-36-$res[0], ink => 1);
+	$pdf->table(1, $info_query->{rheumatology}, y => 842-36-$res[0], ink => 1);
 		
-#		$pdf->table($info_query->{status}, y => $res[0] + 32);
-		
-		$pdf->save();
-		
+	#
+	#	Создать PDF-файл
+	$pdf->save();
 	
-	print STDERR "\n\n\tCreate *PDF-file\n\n\n";
+	print STDERR "\n\n\tCreate *PDF*-file\n\n\n";
 	
 	return;
 	

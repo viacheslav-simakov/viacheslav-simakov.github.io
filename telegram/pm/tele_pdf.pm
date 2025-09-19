@@ -76,14 +76,17 @@ sub save
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-
+	Создать таблицу
+	---
+	$obj->table($page_number, $data, %settings);
+	
 =cut
 sub table
 {
 	#	ссылка на объект
 	my	$self = shift @_;
 	#	страница документа
-#	my	$page = shift @_;
+	my	$page_number = shift @_;
 	#	данные таблицы
 	my	$data = shift @_;
 	#	опции таблицы
@@ -92,7 +95,7 @@ sub table
 			{
 				font 		=> $self->{-font},
 				font_size	=> 14,
-				font_color	=> '#006666',
+#				font_color	=> '#006666',
 				bg_color	=> 'yellow',
 				repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
 			},
@@ -121,7 +124,7 @@ sub table
 	my	$pdf = $self->{-pdf};
 	#
 	#	Добавить пустую страницу
-	my	$page = $pdf->open_page($pdf->page_count);
+	my	$page = $pdf->open_page($page_number);
 	#
 	#	Создаем таблицу
 	my	$table = PDF::Table->new();
