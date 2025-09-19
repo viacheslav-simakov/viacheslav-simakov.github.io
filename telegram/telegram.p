@@ -290,9 +290,7 @@ sub web_app_data
 	printf "\n(%s)\n", join(', ', @res);
 	
 	@res = $pdf->table(1, $info_query->{rheumatology},
-#		y	=> 842-36-$res[0],
 		y	=> $y,
-#		h	=> $res[0],
 		h	=> $y - 36,
 		ink	=> 1,
 	);
