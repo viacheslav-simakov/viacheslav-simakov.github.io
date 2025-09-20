@@ -274,7 +274,7 @@ sub web_app_data
 	my	$info_query = $req->request;
 	#
 	#	pdf-документ
-	my	$pdf = Tele_PDF->new($message->{from}->{id});
+	my	$pdf = Tele_PDF->new( $message->{from} );
 	#
 	#	добавить пустую страницу
 	$pdf->{-pdf}->page();
