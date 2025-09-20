@@ -296,6 +296,10 @@ sub web_app_data
 	);
 	
 	printf "\n(%s)\n", join(', ', @res);
+	
+	#
+	#	Êîëîíòèòóëû íà ñòğàíèöå
+	$pdf->page_header_footer();
 	#
 	#	Ñîçäàòü PDF-ôàéë
 	$pdf->save();
