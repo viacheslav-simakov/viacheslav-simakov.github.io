@@ -198,14 +198,14 @@ sub table
 			},
 			font 		=> $self->{-font},
 			font_size	=> 12,
-			x         	=> 36,
-			w         	=> $self->{-page_width} - 2*36,
+			x         	=> $self->{-page_margin}->{-left},
+			w         	=> $self->{-page_width} - $self->{-page_margin}->{-left} - $self->{-page_margin}->{-right},
 			y			=> undef,
 			padding   	=> 5,
 			size		=> '8cm *',
 			border_w	=> 1,
-			next_y		=> $self->{-page_height} - 1*36,
-			next_h		=> $self->{-page_height} - 2*36,
+			next_y		=> $self->{-page_height} - $self->{-page_margin}->{-top},
+			next_h		=> $self->{-page_height} - $self->{-page_margin}->{-top} - $self->{-page_margin}->{-bottom},
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Высота таблицы (до конца страницы)

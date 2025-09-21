@@ -1,4 +1,22 @@
 $VAR1 = {
+          'status' => [
+                        [
+                          'Сопутствующие состояния',
+                          'Информация'
+                        ]
+                      ],
+          'probe' => [
+                       [
+                         'Лабораторные исследования',
+                         'Результат',
+                         'Информация'
+                       ],
+                       [
+                         'Ig G',
+                         '21',
+                         'мг/дл'
+                       ]
+                     ],
           'rheumatology' => [
                               [
                                 'Основное заболевание',
@@ -64,6 +82,20 @@ $VAR1 = {
                                 ''
                               ]
                             ],
+          'comorbidity' => [
+                             [
+                               'Сопутствующие заболевания',
+                               'Информация'
+                             ],
+                             [
+                               'Алкогольный гепатит',
+                               ''
+                             ],
+                             [
+                               'Иммунодефицит первичный или вторичный (выраженный)',
+                               ''
+                             ]
+                           ],
           'preparation' => [
                              [
                                'Препараты',
@@ -94,26 +126,6 @@ $VAR1 = {
                                'Ингибитор ИЛ 6 (Левилимаб)'
                              ]
                            ],
-          'comorbidity' => [
-                             [
-                               'Сопутствующие заболевания',
-                               'Информация'
-                             ],
-                             [
-                               'Алкогольный гепатит',
-                               ''
-                             ],
-                             [
-                               'Иммунодефицит первичный или вторичный (выраженный)',
-                               ''
-                             ]
-                           ],
-          'status' => [
-                        [
-                          'Сопутствующие состояния',
-                          'Информация'
-                        ]
-                      ],
           'manual' => [
                         [
                           'Лабораторные показатели',
@@ -127,22 +139,35 @@ $VAR1 = {
                           'Клиренс креатинина <40 мл/мин',
                           ''
                         ]
-                      ],
-          'probe' => [
-                       [
-                         'Лабораторные исследования',
-                         'Результат',
-                         'Информация'
-                       ],
-                       [
-                         'Ig G',
-                         '21',
-                         'мг/дл'
-                       ]
-                     ]
+                      ]
         };
 $VAR1 = {
-          'order' => 5,
+          'cgi_query' => {
+                           'preparation#77' => '77',
+                           'rheumatology#8' => '8',
+                           'manual#16' => '16',
+                           'rheumatology#1' => '1',
+                           'manual#3' => '3',
+                           'probe#40' => '21',
+                           'preparation#5' => '5',
+                           'rheumatology#6' => '6',
+                           'rheumatology#3' => '3',
+                           'preparation#10' => '10',
+                           'rheumatology#14' => '14',
+                           'preparation#78' => '78',
+                           'rheumatology#10' => '10',
+                           'rheumatology#13' => '13',
+                           'rheumatology#12' => '12',
+                           'preparation#75' => '75',
+                           'rheumatology#9' => '9',
+                           'rheumatology#4' => '4',
+                           'comorbidity#41' => '41',
+                           'rheumatology#5' => '5',
+                           'rheumatology#2' => '2',
+                           'preparation#79' => '79',
+                           'rheumatology#11' => '11',
+                           'comorbidity#22' => '22'
+                         },
           'text' => '
 ***
 1) preparation-name: Артлегиа
@@ -260,30 +285,5 @@ indication_memo: У пациентов:<br>с хроническими и рец
 	max: 1000
 	prescription_instruction: терапия разрешена
 ',
-          'cgi_query' => {
-                           'rheumatology#1' => '1',
-                           'rheumatology#5' => '5',
-                           'rheumatology#11' => '11',
-                           'rheumatology#3' => '3',
-                           'rheumatology#4' => '4',
-                           'comorbidity#22' => '22',
-                           'preparation#10' => '10',
-                           'rheumatology#6' => '6',
-                           'preparation#75' => '75',
-                           'rheumatology#14' => '14',
-                           'manual#3' => '3',
-                           'preparation#77' => '77',
-                           'manual#16' => '16',
-                           'preparation#78' => '78',
-                           'rheumatology#9' => '9',
-                           'rheumatology#10' => '10',
-                           'comorbidity#41' => '41',
-                           'rheumatology#2' => '2',
-                           'probe#40' => '21',
-                           'rheumatology#13' => '13',
-                           'preparation#5' => '5',
-                           'rheumatology#12' => '12',
-                           'rheumatology#8' => '8',
-                           'preparation#79' => '79'
-                         }
+          'order' => 5
         };
