@@ -57,6 +57,13 @@ sub new {
 			-font_bold		=> $font_bold,		# жирный шрифт
 			-page_width		=> $page_width,		# ширина страницы
 			-page_height	=> $page_height,	# высота страницы
+			-page_margin	=>					# отступы от края страницы
+			{
+				-left		=> 36,
+				-right		=> 36,
+				-top		=> 36,
+				-bottom		=> 36,
+			}
 		};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	привести ссылку к типу __PACKAGE__
@@ -101,6 +108,9 @@ sub page_header_footer {
 	#	pdf-документ
 	my	$pdf = $self->{-pdf};
 	#
+	#	отступы от края страницы
+	my	$margin = $self->{-page_margin};
+	#
 	#	количество страниц
 	my	$total_pages = $pdf->page_count();
 	#
@@ -119,19 +129,22 @@ sub page_header_footer {
 		#	Верхний колонтитул (header)
 		my	$header = Encode::decode('windows-1251', sprintf "Пользователь '%s' (%s)",
 				$self->{-from}->{username} || 'unknow', $self->{-from}->{id});
-		#	позиция
-			$text->translate(36, 842 - 18);
+		#	x-позиция
+		my	$x = $margin->{-left};
+		#	y-позиция
+		my	$y = $self->{-page_height} - 0.5*$margin->{-top};
+			$text->translate($x, $y);
 			$text->text($header);
 		#
-		#	временная метка
+		#	Дата + Время
 			$header = $time_stamp;
 		#
 		#	Вычисляем ширину текста
 		my	$text_width = $text->advancewidth($header);
 		#
 		#	Вычисляем позицию x для выравнивания по правому краю
-		my	$x = $self->{-page_width} - $text_width - 36;
-			$text->translate($x, 842 - 18);
+			$x = $self->{-page_width} - $text_width - $margin->{-right};
+			$text->translate($x, $y);
 			$text->text($header);
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	Нижний колонтитул (footer)
@@ -140,9 +153,9 @@ sub page_header_footer {
 		#	Вычисляем ширину текста
 			$text_width = $text->advancewidth($footer);
 		#
-		#	Вычисляем позицию X для выравнивания по правому краю
-			$x = $self->{-page_width} - $text_width - 36;
-			$text->translate($x, 18);
+		#	Вычисляем позицию 'x' для выравнивания по правому краю
+			$x = $self->{-page_width} - $text_width - $margin->{-right};
+			$text->translate($x, 0.5*$margin->{-bottom});
 			$text->text($footer);
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

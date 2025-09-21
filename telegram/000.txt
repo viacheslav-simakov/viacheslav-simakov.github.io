@@ -64,26 +64,6 @@ $VAR1 = {
                                 ''
                               ]
                             ],
-          'comorbidity' => [
-                             [
-                               'Сопутствующие заболевания',
-                               'Информация'
-                             ],
-                             [
-                               'Алкогольный гепатит',
-                               ''
-                             ],
-                             [
-                               'Иммунодефицит первичный или вторичный (выраженный)',
-                               ''
-                             ]
-                           ],
-          'status' => [
-                        [
-                          'Сопутствующие состояния',
-                          'Информация'
-                        ]
-                      ],
           'preparation' => [
                              [
                                'Препараты',
@@ -114,6 +94,20 @@ $VAR1 = {
                                'Ингибитор ИЛ 6 (Левилимаб)'
                              ]
                            ],
+          'comorbidity' => [
+                             [
+                               'Сопутствующие заболевания',
+                               'Информация'
+                             ],
+                             [
+                               'Алкогольный гепатит',
+                               ''
+                             ],
+                             [
+                               'Иммунодефицит первичный или вторичный (выраженный)',
+                               ''
+                             ]
+                           ],
           'manual' => [
                         [
                           'Лабораторные показатели',
@@ -126,6 +120,12 @@ $VAR1 = {
                         [
                           'Клиренс креатинина <40 мл/мин',
                           ''
+                        ]
+                      ],
+          'status' => [
+                        [
+                          'Сопутствующие состояния',
+                          'Информация'
                         ]
                       ],
           'probe' => [
@@ -259,31 +259,31 @@ indication_memo: У пациентов:<br>с хроническими и рец
 	max: 1000
 	prescription_instruction: терапия разрешена
 ',
-          'order' => 5,
           'cgi_query' => {
-                           'rheumatology#1' => '1',
-                           'rheumatology#11' => '11',
-                           'rheumatology#10' => '10',
-                           'rheumatology#5' => '5',
-                           'comorbidity#22' => '22',
-                           'manual#3' => '3',
-                           'preparation#10' => '10',
-                           'probe#40' => '21',
-                           'preparation#77' => '77',
-                           'preparation#75' => '75',
-                           'rheumatology#6' => '6',
-                           'comorbidity#41' => '41',
-                           'rheumatology#8' => '8',
-                           'preparation#79' => '79',
                            'rheumatology#13' => '13',
-                           'rheumatology#14' => '14',
+                           'rheumatology#8' => '8',
                            'rheumatology#3' => '3',
-                           'preparation#5' => '5',
-                           'manual#16' => '16',
-                           'preparation#78' => '78',
-                           'rheumatology#12' => '12',
-                           'rheumatology#9' => '9',
+                           'rheumatology#2' => '2',
+                           'rheumatology#14' => '14',
+                           'rheumatology#5' => '5',
                            'rheumatology#4' => '4',
-                           'rheumatology#2' => '2'
-                         }
+                           'rheumatology#1' => '1',
+                           'rheumatology#12' => '12',
+                           'preparation#78' => '78',
+                           'preparation#75' => '75',
+                           'manual#3' => '3',
+                           'preparation#79' => '79',
+                           'manual#16' => '16',
+                           'preparation#77' => '77',
+                           'comorbidity#41' => '41',
+                           'rheumatology#10' => '10',
+                           'comorbidity#22' => '22',
+                           'rheumatology#9' => '9',
+                           'probe#40' => '21',
+                           'preparation#5' => '5',
+                           'rheumatology#11' => '11',
+                           'rheumatology#6' => '6',
+                           'preparation#10' => '10'
+                         },
+          'order' => 5
         };
