@@ -74,6 +74,9 @@ sub save
 	#	ссылка на объект
 	my	$self = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Колонтитулы на странице
+	$self->page_header_footer();
+	#
 	#	Сохранить файл
 	$self->{-pdf}->saveas($self->{-from}->{id}.'.pdf');
 }
@@ -114,21 +117,24 @@ sub page_header_footer {
 			$text->font($self->{-font}, 10);
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	Верхний колонтитул (header)
+		my	$header = Encode::decode('windows-1251', sprintf "Пользователь '%s' (%s)",
+				$self->{-from}->{username} || 'unknow', $self->{-from}->{id});
+		#	позиция
 			$text->translate(36, 842 - 18);
-			$text->text("$time_stamp");
-#				"$time_stamp Страница $i из $total_pages"));
-		my	$header = sprintf 'user id = %s', $self->{-from}->{id};
+			$text->text($header);
+		#
+		#	временная метка
+			$header = $time_stamp;
 		#
 		#	Вычисляем ширину текста
 		my	$text_width = $text->advancewidth($header);
 		#
-		#	Вычисляем позицию X для выравнивания по правому краю
+		#	Вычисляем позицию x для выравнивания по правому краю
 		my	$x = $self->{-page_width} - $text_width - 36;
 			$text->translate($x, 842 - 18);
 			$text->text($header);
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	Нижний колонтитул (footer)
-#		my	$footer = sprintf 'user id = %s', $self->{-from}->{id};
 		my	$footer = Encode::decode('windows-1251', "Страница $i из $total_pages");
 		#
 		#	Вычисляем ширину текста
@@ -138,8 +144,6 @@ sub page_header_footer {
 			$x = $self->{-page_width} - $text_width - 36;
 			$text->translate($x, 18);
 			$text->text($footer);
-		
-#			print STDERR "text_width = $text_width\n";
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на объект
