@@ -183,6 +183,11 @@ sub table
 	my	$page_number = shift @_;
 	#	данные таблицы
 	my	$data = shift @_;
+	#	размеры страницы (ширина, высота)
+	my	$page_width = $self->{-page_width};
+	my	$page_height = $self->{-page_height};
+	#	отступы от краёв страницы
+	my	$margin = $self->{-page_margin};
 	#	опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
 	my	%settings = (
 			header_props => # Заголовок таблицы
@@ -194,22 +199,22 @@ sub table
 				valign			=> 'middle',
 				padding_top		=> 10,
 				padding_bottom	=> 10,
-				repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
+				repeat			=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
 			},
 			font 		=> $self->{-font},
 			font_size	=> 12,
-			x         	=> $self->{-page_margin}->{-left},
-			w         	=> $self->{-page_width} - $self->{-page_margin}->{-left} - $self->{-page_margin}->{-right},
+			x         	=> $margin->{-left},
+			w         	=> $page_width - $margin->{-left} - $margin->{-right},
 			y			=> undef,
 			padding   	=> 5,
 			size		=> '8cm *',
 			border_w	=> 1,
-			next_y		=> $self->{-page_height} - $self->{-page_margin}->{-top},
-			next_h		=> $self->{-page_height} - $self->{-page_margin}->{-top} - $self->{-page_margin}->{-bottom},
+			next_y		=> $page_height - $margin->{-top},
+			next_h		=> $page_height - $margin->{-top} - $margin->{-bottom},
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Высота таблицы (до конца страницы)
-		$settings{h} = $settings{y} - 36;
+		$settings{h} = $settings{y} - $margin->{-top} - $margin->{-bottom};
 	#
 	#	Копия данных таблицы
 	my	$copy_data;
