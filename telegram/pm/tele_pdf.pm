@@ -59,7 +59,7 @@ sub new {
 			-page_height	=> $page_height,	# высота страницы
 			-page_margin	=>					# отступы от края страницы
 			{
-				-left		=> 36,
+				-left		=> 72,
 				-right		=> 36,
 				-top		=> 36,
 				-bottom		=> 36,
@@ -133,6 +133,8 @@ sub page_header_footer {
 		my	$x = $margin->{-left};
 		#	y-позиция
 		my	$y = $self->{-page_height} - 0.5*$margin->{-top};
+		#
+		#	позиция текста
 			$text->translate($x, $y);
 			$text->text($header);
 		#
@@ -144,6 +146,8 @@ sub page_header_footer {
 		#
 		#	Вычисляем позицию x для выравнивания по правому краю
 			$x = $self->{-page_width} - $text_width - $margin->{-right};
+		#
+		#	позиция текста
 			$text->translate($x, $y);
 			$text->text($header);
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,6 +159,8 @@ sub page_header_footer {
 		#
 		#	Вычисляем позицию 'x' для выравнивания по правому краю
 			$x = $self->{-page_width} - $text_width - $margin->{-right};
+		#
+		#	позиция текста
 			$text->translate($x, 0.5*$margin->{-bottom});
 			$text->text($footer);
 	}

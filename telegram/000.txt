@@ -108,6 +108,12 @@ $VAR1 = {
                                ''
                              ]
                            ],
+          'status' => [
+                        [
+                          'Сопутствующие состояния',
+                          'Информация'
+                        ]
+                      ],
           'manual' => [
                         [
                           'Лабораторные показатели',
@@ -120,12 +126,6 @@ $VAR1 = {
                         [
                           'Клиренс креатинина <40 мл/мин',
                           ''
-                        ]
-                      ],
-          'status' => [
-                        [
-                          'Сопутствующие состояния',
-                          'Информация'
                         ]
                       ],
           'probe' => [
@@ -142,6 +142,7 @@ $VAR1 = {
                      ]
         };
 $VAR1 = {
+          'order' => 5,
           'text' => '
 ***
 1) preparation-name: Артлегиа
@@ -260,30 +261,29 @@ indication_memo: У пациентов:<br>с хроническими и рец
 	prescription_instruction: терапия разрешена
 ',
           'cgi_query' => {
-                           'rheumatology#13' => '13',
-                           'rheumatology#8' => '8',
-                           'rheumatology#3' => '3',
-                           'rheumatology#2' => '2',
-                           'rheumatology#14' => '14',
-                           'rheumatology#5' => '5',
-                           'rheumatology#4' => '4',
                            'rheumatology#1' => '1',
-                           'rheumatology#12' => '12',
-                           'preparation#78' => '78',
-                           'preparation#75' => '75',
-                           'manual#3' => '3',
-                           'preparation#79' => '79',
-                           'manual#16' => '16',
-                           'preparation#77' => '77',
-                           'comorbidity#41' => '41',
-                           'rheumatology#10' => '10',
-                           'comorbidity#22' => '22',
-                           'rheumatology#9' => '9',
-                           'probe#40' => '21',
-                           'preparation#5' => '5',
+                           'rheumatology#5' => '5',
                            'rheumatology#11' => '11',
+                           'rheumatology#3' => '3',
+                           'rheumatology#4' => '4',
+                           'comorbidity#22' => '22',
+                           'preparation#10' => '10',
                            'rheumatology#6' => '6',
-                           'preparation#10' => '10'
-                         },
-          'order' => 5
+                           'preparation#75' => '75',
+                           'rheumatology#14' => '14',
+                           'manual#3' => '3',
+                           'preparation#77' => '77',
+                           'manual#16' => '16',
+                           'preparation#78' => '78',
+                           'rheumatology#9' => '9',
+                           'rheumatology#10' => '10',
+                           'comorbidity#41' => '41',
+                           'rheumatology#2' => '2',
+                           'probe#40' => '21',
+                           'rheumatology#13' => '13',
+                           'preparation#5' => '5',
+                           'rheumatology#12' => '12',
+                           'rheumatology#8' => '8',
+                           'preparation#79' => '79'
+                         }
         };
