@@ -214,7 +214,7 @@ sub table
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Высота таблицы (до конца страницы)
-		$settings{h} = $settings{y} - $margin->{-top} - $margin->{-bottom};
+		$settings{h} = $settings{y} - $margin->{-top};# - $margin->{-bottom};
 	#
 	#	Копия данных таблицы
 	my	$copy_data;
