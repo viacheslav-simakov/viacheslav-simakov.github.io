@@ -115,11 +115,31 @@ sub page_header_footer {
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	Верхний колонтитул (header)
 			$text->translate(36, 842 - 18);
-			$text->text("$time_stamp Страница $i из $total_pages");
+			$text->text("$time_stamp");
+#				"$time_stamp Страница $i из $total_pages"));
+		my	$header = sprintf 'user id = %s', $self->{-from}->{id};
+		#
+		#	Вычисляем ширину текста
+		my	$text_width = $text->advancewidth($header);
+		#
+		#	Вычисляем позицию X для выравнивания по правому краю
+		my	$x = $self->{-page_width} - $text_width - 36;
+			$text->translate($x, 842 - 18);
+			$text->text($header);
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	Нижний колонтитул (footer)
-			$text->translate(36, 18);
-			$text->text(sprintf 'user id = %s', $self->{-from}->{id});
+#		my	$footer = sprintf 'user id = %s', $self->{-from}->{id};
+		my	$footer = Encode::decode('windows-1251', "Страница $i из $total_pages");
+		#
+		#	Вычисляем ширину текста
+			$text_width = $text->advancewidth($footer);
+		#
+		#	Вычисляем позицию X для выравнивания по правому краю
+			$x = $self->{-page_width} - $text_width - 36;
+			$text->translate($x, 18);
+			$text->text($footer);
+		
+#			print STDERR "text_width = $text_width\n";
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на объект
