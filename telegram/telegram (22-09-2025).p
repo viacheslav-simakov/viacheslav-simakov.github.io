@@ -280,53 +280,23 @@ sub web_app_data
 	$pdf->{-pdf}->page();
 
 	my	$y = 842 - 6*36;
-=pod
+
 	my	@res = $pdf->table(1, $info_query->{rheumatology},
 		y	=> $y,
 #		h	=> $y - 36,
 		ink => 0,
 	);
 	
-	printf "\nstart=(%s)\n", join(', ', @res);
-=cut
-	foreach my $name (sort keys %{$info_query})
-	{
-		#	нет выбранных данных
-		next if scalar @{ $info_query->{$name} } < 2;
-		#
-		#	параметры таблицы
-		my	@res;
-		#
-		#	добавить таблицу
-		if ($name eq 'probe')
-		{
-			print Dumper($info_query->{$name});
-#			next;
-			@res = $pdf->add_table(
-				$info_query->{$name},
-				y		=> $y,
-				size	=> '8cm 2cm *',
-			);
-		}
-		else
-		{
-			@res = $pdf->add_table(
-				$info_query->{$name},
-				y	=> $y,
-			);
-		}
-		printf "\n$name=(%s)\n", join(', ', @res);
-		$y = $res[2] - 36;
-	}
-=pod	
-	@res = $pdf->add_table($info_query->{comorbidity},
-		y	=> $res[2] - 36,
+	printf "\n(%s)\n", join(', ', @res);
+	
+	@res = $pdf->table(1, $info_query->{rheumatology},
+		y	=> $y,
 #		h	=> $y - 36,
 		ink	=> 1,
 	);
 	
-	printf "\n2=(%s)\n", join(', ', @res);
-=cut	
+	printf "\n(%s)\n", join(', ', @res);
+	
 	#
 	#	Создать PDF-файл
 	$pdf->save();

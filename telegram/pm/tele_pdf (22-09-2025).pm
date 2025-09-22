@@ -181,6 +181,8 @@ sub add_table
 {
 	#	ссылка на объект
 	my	$self = shift @_;
+	#	номер страницы в документе
+#	my	$page_number = shift @_;
 	#	данные таблицы
 	my	$data = shift @_;
 	#	размеры страницы (ширина, высота)
@@ -233,13 +235,14 @@ sub add_table
 	#
 	#	Открыть страницу с номером 'page_number'
 	#	https://metacpan.org/pod/PDF::API2#open_page
+#	my	$page = $pdf->open_page($page_number);
 	my	$page = $pdf->open_page(0);
 	#
 	#	Создать объект-таблицу
 	my	$table = PDF::Table->new();
 	#
 	#	Сгенерировать таблицу: https://metacpan.org/pod/PDF::Table#table()
-	my	@result = $table->table(
+	my	@res = $table->table(
 			$pdf,									# ссылка на объект
 			$page,									# страница
 			$copy_data,								# данные таблицы
@@ -247,7 +250,7 @@ sub add_table
 		);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	список фактических параметров таблицы
-	return @result;
+	return @res;
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package
