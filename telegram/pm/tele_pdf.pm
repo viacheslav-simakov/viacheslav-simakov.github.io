@@ -43,10 +43,12 @@ sub new {
 	my	($page_width, $page_height) = ($pdf->default_page_size)[2,3];
 	#
 	#	Устанавливаем шрифт с кириллицей
-	my	$font = $pdf->ttfont('arial.ttf');
+#	my	$font = $pdf->ttfont('arial.ttf');
+	my	$font = $pdf->ttfont('times.ttf');
 	#
 	#	Жирный шрифт
-	my	$font_bold = $pdf->ttfont('arialbd.ttf');	
+#	my	$font_bold = $pdf->ttfont('arialbd.ttf');
+	my	$font_bold = $pdf->ttfont('timesbd.ttf');
 	#
 	#	ссылка на объект
 	my	$self =
