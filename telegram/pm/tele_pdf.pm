@@ -195,12 +195,12 @@ sub add_table
 			header_props => # Заголовок таблицы
 			{
 				font 			=> $self->{-font_bold},
-				font_size		=> 14,
+				font_size		=> 12,
 				font_color		=> 'black',
 				bg_color		=> 'lightgray',
 				valign			=> 'middle',
-				padding_top		=> 10,
-				padding_bottom	=> 10,
+				padding_top		=> 7,
+				padding_bottom	=> 7,
 				repeat			=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
 			},
 			font 		=> $self->{-font},
@@ -210,7 +210,7 @@ sub add_table
 			y			=> undef,
 			padding   	=> 5,
 			size		=> '8cm 1*',
-			border_w	=> 1,
+			border_w	=> 0.5,
 			next_y		=> $page_height - $margin->{-top},
 			next_h		=> $page_height - $margin->{-top} - $margin->{-bottom},
 		, @_);
