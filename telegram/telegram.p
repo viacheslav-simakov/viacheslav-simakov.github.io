@@ -301,7 +301,6 @@ sub web_app_data
 			@res = $pdf->add_table(
 				$info_query->{$name},
 				y		=> $y,
-#				size	=> '8cm 1* 6cm',
 				size	=> '8cm 3cm 1*',
 			);
 		}
@@ -309,10 +308,11 @@ sub web_app_data
 		{
 			@res = $pdf->add_table(
 				$info_query->{$name},
-				y	=> $y,
+				y		=> $y,
+				size	=> '8cm 1*',
 			);
 		}
-		printf "\n$name=(%s)\n", join(', ', @res);
+		printf "\t$name=(%s)\n", join(', ', @res);
 		#
 		#	Îòñòóïèòü âíèç ñòğàíèöû
 		$y = $res[2] - 36;
@@ -327,15 +327,6 @@ sub web_app_data
 			$y = 842 - 36;
 		};
 	}
-=pod	
-	@res = $pdf->add_table($info_query->{comorbidity},
-		y	=> $res[2] - 36,
-#		h	=> $y - 36,
-		ink	=> 1,
-	);
-	
-	printf "\n2=(%s)\n", join(', ', @res);
-=cut	
 	#
 	#	Ñîçäàòü PDF-ôàéë
 	$pdf->save();
