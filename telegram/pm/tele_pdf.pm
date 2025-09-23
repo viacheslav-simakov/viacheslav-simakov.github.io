@@ -207,7 +207,7 @@ sub add_table
 			w         	=> $page_width - $margin->{-left} - $margin->{-right},
 			y			=> undef,
 			padding   	=> 5,
-			size		=> '8cm *',
+			size		=> '8cm 1*',
 			border_w	=> 1,
 			next_y		=> $page_height - $margin->{-top},
 			next_h		=> $page_height - $margin->{-top} - $margin->{-bottom},

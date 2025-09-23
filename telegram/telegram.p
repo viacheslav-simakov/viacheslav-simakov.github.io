@@ -305,7 +305,7 @@ sub web_app_data
 			@res = $pdf->add_table(
 				$info_query->{$name},
 				y		=> $y,
-				size	=> '8cm 2cm *',
+				size	=> '8cm * 6cm',
 			);
 		}
 		else
