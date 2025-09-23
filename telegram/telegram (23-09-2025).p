@@ -279,7 +279,7 @@ sub web_app_data
 	#	добавить пустую страницу
 	$pdf->{-pdf}->page();
 
-	my	$y = 842 - 1*36;
+	my	$y = 842 - 6*36;
 =pod
 	my	@res = $pdf->table(1, $info_query->{rheumatology},
 		y	=> $y,
@@ -289,7 +289,7 @@ sub web_app_data
 	
 	printf "\nstart=(%s)\n", join(', ', @res);
 =cut
-	foreach my $name ('rheumatology', 'comorbidity', 'status', 'manual', 'probe', 'preparation')
+	foreach my $name (sort keys %{$info_query})
 	{
 		#	нет выбранных данных
 		next if scalar @{ $info_query->{$name} } < 2;
@@ -305,8 +305,7 @@ sub web_app_data
 			@res = $pdf->add_table(
 				$info_query->{$name},
 				y		=> $y,
-#				size	=> '8cm 1* 6cm',
-				size	=> '8cm 3cm 1*',
+				size	=> '8cm * 6cm',
 			);
 		}
 		else
@@ -318,16 +317,6 @@ sub web_app_data
 		}
 		printf "\n$name=(%s)\n", join(', ', @res);
 		$y = $res[2] - 36;
-		#
-		#	Проверка
-		if ($y <= 1.5*72)
-		{
-			#	добавить пустую страницу
-			$pdf->{-pdf}->page();
-			#
-			#	текущее положение на странице
-			$y = 842 - 36;
-		};
 	}
 =pod	
 	@res = $pdf->add_table($info_query->{comorbidity},
