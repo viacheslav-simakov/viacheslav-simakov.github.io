@@ -271,24 +271,20 @@ sub web_app_data
 	print STDERR "\n\n\tCreate TXT-file\n\n\n";
 	
 	
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Запрос пользователя
 	my	$info_query = $req->request;
 	#
 	#	pdf-документ
 	my	$pdf = Tele_PDF->new( $message->{from} );
 	#
 	#	добавить пустую страницу
-	$pdf->{-pdf}->page();
-
+		$pdf->{-pdf}->page();
+	#
+	#	Текущее положение на странице
 	my	$y = 842 - 1*36;
-=pod
-	my	@res = $pdf->table(1, $info_query->{rheumatology},
-		y	=> $y,
-#		h	=> $y - 36,
-		ink => 0,
-	);
-	
-	printf "\nstart=(%s)\n", join(', ', @res);
-=cut
+	#
+	#	цикл по секциям запроса
 	foreach my $name ('rheumatology', 'comorbidity', 'status', 'manual', 'probe', 'preparation')
 	{
 		#	нет выбранных данных
@@ -317,6 +313,8 @@ sub web_app_data
 			);
 		}
 		printf "\n$name=(%s)\n", join(', ', @res);
+		#
+		#	Отступить вниз страницы
 		$y = $res[2] - 36;
 		#
 		#	Проверка
@@ -341,6 +339,7 @@ sub web_app_data
 	#
 	#	Создать PDF-файл
 	$pdf->save();
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	
 	print STDERR "\n\n\tCreate *PDF*-file\n\n\n";
 	
