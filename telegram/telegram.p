@@ -333,7 +333,7 @@ sub web_app_data
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	
 	print STDERR "\n\n\tCreate *PDF*-file\n\n\n";
-	
+=pod	
 	return;
 	
     $api->sendMessage(
@@ -344,6 +344,7 @@ sub web_app_data
 	
 #	send_pdf($message, 'C:/Git-Hub/viacheslav-simakov.github.io/telegram/russian_table2.pdf');
 #	send_pdf($message, 'russian_table2.pdf');
+=cut
 	send_pdf($message);
 }
 =pod
@@ -401,9 +402,9 @@ sub send_pdf
 		printf STDERR
 			"PDF файл '%s' успешно отправлен!\nmessage ID: %s\n",
 			$pdf_file, $result->{result}->{message_id};
-		print STDERR Dumper($result);
+#		print STDERR Dumper($result);
 	};
 	#	Проверка ошибок
-	die "\nОшибка при отправке файла: $@\n" if ($@);
+	Carp::carp "\nОшибка при отправке файла: $@\n" if ($@);
 }
 __DATA__

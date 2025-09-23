@@ -129,7 +129,7 @@ sub page_header_footer {
 			$text->font($self->{-font}, 10);
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	Верхний колонтитул (header)
-		my	$header = Encode::decode('windows-1251', sprintf "Пользователь '%s' (%s)",
+		my	$header = Encode::decode('windows-1251', sprintf 'Пользователь "%s" (%s)',
 				$self->{-from}->{username} || 'unknow', $self->{-from}->{id});
 		#	x-позиция
 		my	$x = $margin->{-left};
