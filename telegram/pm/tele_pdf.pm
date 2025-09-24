@@ -227,19 +227,28 @@ sub add_text
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Ширина текста (до правого края страницы)
 	my	$width = $page_width - $settings{x} - $margin->{-right};
+	#
 	#	Высота текста (до нижнего края страницы)
 	my	$height = $settings{y} - $margin->{-top};
 	#
-	#	PDF-документ
-	my	$pdf = $self->{-pdf};
-	#
 	#	Открыть страницу с номером 'page_number'
 	#	https://metacpan.org/pod/PDF::API2#open_page
-	my	$page = $pdf->open_page(0);
+	my	$page = $self->{-pdf}->open_page(0);
+	#
+	#	Получаем объект текстового содержимого страницы
+	my	$text = $page->text();
+	#
+	#	Устанавливаем шрифт и размер
+		$text->font($settings{-font}, $settings{-font_size});
+	#
+	#	Положение текста
+		$text->translate($settings{x}, $settings{y});
 	#
 	#	Добавить параграф
 	#	https://metacpan.org/pod/PDF::API2::Content#paragraph
-	my	($overflow, $height) = $page->paragraph($string, $width, $height);
+	my	($overflow, $height) = $text->paragraph($string, $width, $height);
+	
+	print STDERR "$overflow, $height\n";
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
