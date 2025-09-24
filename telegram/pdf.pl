@@ -99,7 +99,7 @@ my	$table = PDF::Table->new();
 #        background_color_even => "lightblue",
 		cell_props =>
 		[
-			[{colspan => 4}],#	Для первой строки, первой ячейки
+			[{},{colspan => 4}],#	Для первой строки, первой ячейки
 			[],
 			[{colspan => 4}],#	Для третьей строки, первой ячейки
 		],

@@ -289,7 +289,8 @@ sub report
 	#	нет рекомендаций?
 	if ( $sth->fetchrow_hashref()->{rows} == 0 )
 	{
-		return 'Для заданных условий поиска нет рекомендуемых препаратов';
+		return Encode::encode('UTF-8', Encode::decode('windows-1251',
+			'Для заданных условий поиска нет рекомендуемых препаратов'));
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
@@ -326,10 +327,14 @@ sub report
 		}
 		('Препарат', 'Информация', 'Клинические показания', 'С осторожностью')];
 	#
+	#	данные препаратов
+	my	@preparation = ();
+	#
+	#	данные лабораторных исследований
+	my	@probe = ();
+	#
 	#	цикл по списку препаратов
 	my	$order = 1;
-	my	$text = '';
-	my	@preparation = ();
 	while (my $row = $sth->fetchrow_hashref)
 	{
 		#	первая строка группы записей
@@ -355,28 +360,22 @@ sub report
 			!defined($row->{'prescription_instruction'})
 		);
 		#	данные группы записей
-		$text .= sprintf qq
-@
-	probe_name: %s
-	min: %s
-	value: %s
-	max: %s
-	prescription_instruction: %s
-@,
-		$row->{'probe_name'} 	|| '',
-		$row->{'probe_min'}		|| '',
-		$row->{'probe_value'}	|| '',
-		$row->{'probe_max'}		|| '',
-		Utils::break_line($row->{'prescription_instruction'} || '');
+		push @{ $probe[$#preparation] },
+		[
+			trim($row->{'probe_name'}),
+			trim($row->{'probe_min'}),
+			trim($row->{'probe_value'}),
+			trim($row->{'probe_max'}),
+			trim($row->{'prescription_instruction'})
+		];
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
 	return
 	{
-		order => $order,
 		cgi_query => $cgi_query,
-		text => $text,
 		-preparation	=> \@preparation,
+		-probe			=> \@probe,
 	};
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

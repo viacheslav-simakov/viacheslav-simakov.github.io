@@ -299,7 +299,7 @@ sub send_pdf
 		});
 		#	Вывод на экран
 		printf STDERR
-			"PDF файл '%s' успешно отправлен!\nmessage ID: %s\n",
+			"Файл '%s' успешно отправлен! (message ID: %s)\n",
 			$pdf_file, $result->{result}->{message_id};
 #		print STDERR Dumper($result);
 	};
@@ -380,14 +380,37 @@ sub make_pdf
 			font => $pdf->{-font_bold}, font_size => 14);
 	#
 	#	цикл по выбранным препаратам
-	foreach my $preparation (@{ $data_report->{-preparation} })
+	for (my $i = 0; $i < scalar @{ $data_report->{-preparation} }; $i++)
 	{
 		#	добавить таблицу
-		$pdf->add_table($preparation,
+		$pdf->add_table($data_report->{-preparation}->[$i],
 			size	=> '5cm 1*',
 		);
-	}
+		#
+		#	лабораторные исследования
+		if (defined $data_report->{-probe}->[$i])
+		{
+#			print STDERR Dumper($data_report->{-probe}->[$i]);
+#			Заголовок таблицы
+			unshift @{ $data_report->{-probe}->[$i] }, [map
+				{
+					Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+				}
+				('Исследование', 'Показатель', '','', 'Рекомендации')
+			];
 
+			$pdf->add_table($data_report->{-probe}->[$i],
+				size		=> '5cm 1.5cm 1.5cm 1.5cm 1*',
+				header_props => {
+						repeat => 0,
+				},
+				cell_props =>
+				[
+					[{},{colspan => 3},{}],
+				],
+			);
+		}
+	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Создать PDF-файл
 	my	$pdf_file_name = $pdf->save();
