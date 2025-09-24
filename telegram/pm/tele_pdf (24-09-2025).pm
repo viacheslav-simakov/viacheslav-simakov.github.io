@@ -43,11 +43,9 @@ sub new {
 	my	($page_width, $page_height) = ($pdf->default_page_size)[2,3];
 	#
 	#	Устанавливаем шрифт с кириллицей
-#	my	$font = $pdf->ttfont('arial.ttf');
 	my	$font = $pdf->ttfont('times.ttf');
 	#
 	#	Жирный шрифт
-#	my	$font_bold = $pdf->ttfont('arialbd.ttf');
 	my	$font_bold = $pdf->ttfont('timesbd.ttf');
 	#
 	#	ссылка на объект
@@ -152,7 +150,7 @@ sub page_header_footer {
 			$header = $time_stamp;
 		#
 		#	Вычисляем ширину текста
-		my	$text_width = $text->advancewidth($header);
+		my	$text_width = $text->text_width($header);
 		#
 		#	Вычисляем позицию x для выравнивания по правому краю
 			$x = $self->{-page_width} - $text_width - $margin->{-right};
@@ -165,7 +163,7 @@ sub page_header_footer {
 		my	$footer = Encode::decode('windows-1251', "Страница $i из $total_pages");
 		#
 		#	Вычисляем ширину текста
-			$text_width = $text->advancewidth($footer);
+			$text_width = $text->text_width($footer);
 		#
 		#	Вычисляем позицию 'x' для выравнивания по правому краю
 			$x = $self->{-page_width} - $text_width - $margin->{-right};
@@ -180,12 +178,10 @@ sub page_header_footer {
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Создать таблицу
+	Добавить пустую страницу
 	---
 	$obj->add_page();
 	
-		$data		- ссылка на матрицу данных [[row-1],[row-2], ...]
-		%settings	- параметры таблицы
 =cut
 sub add_page
 {
@@ -201,6 +197,63 @@ sub add_page
 	#	ссылка на объект
 	return $self;
 }	
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Добавить текст
+	---
+	$obj->add_text($string, %settings);
+	
+		$string		- строка текста
+		%settings	- параметры текста
+=cut
+sub add_text
+{
+	#	ссылка на объект
+	my	$self = shift @_;
+	#	строка текста
+	my	$string = shift @_;
+	#	размеры страницы (ширина, высота)
+	my	$page_width = $self->{-page_width};
+	my	$page_height = $self->{-page_height};
+	#	отступы от краёв страницы
+	my	$margin = $self->{-page_margin};
+	#	параметры текста
+	my	%settings = (
+			font 		=> $self->{-font},
+			font_size	=> 12,
+			x         	=> $margin->{-left},
+			y			=> $self->{-current_y},
+	, @_);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Ширина текста (до правого края страницы)
+	my	$width = $page_width - $settings{x} - $margin->{-right};
+	#
+	#	Высота текста (до нижнего края страницы)
+	my	$height = $settings{y} - $margin->{-bottom};
+	#
+	#	Открыть страницу с номером 'page_number'
+	#	https://metacpan.org/pod/PDF::API2#open_page
+	my	$page = $self->{-pdf}->open_page(0);
+	#
+	#	Получаем объект текстового содержимого страницы
+	my	$text = $page->text();
+	#
+	#	Устанавливаем шрифт и размер
+		$text->font($settings{font}, $settings{font_size});
+	#
+	#	Положение текста (верхний левый угол)
+		$text->translate($settings{x}, $settings{y});
+	#
+	#	Добавить параграф
+	#	https://metacpan.org/pod/PDF::API2::Content#paragraph
+	my	($overflow, $last_height) = $text->paragraph($string, $width, $height);
+	#
+	#	Отступ от верхнего края страницы
+	$self->{-current_y} -= $height - $last_height + 0*36;
+	
+	print STDERR "$overflow, $last_height\n";
+	
+}
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Создать таблицу
@@ -247,7 +300,7 @@ sub add_table
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Высота таблицы (до конца страницы)
-		$settings{h} = $settings{y} - $margin->{-top};# - $margin->{-bottom};
+		$settings{h} = $settings{y} - $margin->{-bottom};
 	#
 	#	Копия данных таблицы
 	my	$copy_data;
@@ -261,7 +314,7 @@ sub add_table
 		}
 	}
 	#
-	#	pdf-документ
+	#	PDF-документ
 	my	$pdf = $self->{-pdf};
 	#
 	#	Открыть страницу с номером 'page_number'
@@ -271,17 +324,18 @@ sub add_table
 	#	Создать объект-таблицу
 	my	$table = PDF::Table->new();
 	#
-	#	Сгенерировать таблицу: https://metacpan.org/pod/PDF::Table#table()
-	#	@result = ($final_page, $number_of_pages, $final_y) после вставки таблицы
-	my	@result = $table->table(
-			$pdf,									# ссылка на объект
-			$page,									# страница
-			$copy_data,								# данные таблицы
-			%settings,								# опции таблицы
-		);
+	#	Сгенерировать таблицу
+	#	https://metacpan.org/pod/PDF::Table#table()
 	#
+	my	($final_page, $number_of_pages, $final_y) = $table->table(
+			$pdf,			# ссылка на объект
+			$page,			# страница
+			$copy_data,		# данные таблицы
+			%settings,		# опции таблицы
+		);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Увеличить отступ от верхнего края страницы
-		$self->{-current_y} = $result[2] - 36;
+		$self->{-current_y} = $final_y - 36;
 	#
 	#	Проверка
 	if ($self->{-current_y} <= 1.5*72)
@@ -290,8 +344,8 @@ sub add_table
 		$self->add_page();
 	};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	список фактических параметров таблицы
-	return @result;
+	#	ссылка на объект
+	return $self;
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package

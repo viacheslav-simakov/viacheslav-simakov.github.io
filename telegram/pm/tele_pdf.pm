@@ -241,7 +241,7 @@ sub add_text
 	#	Устанавливаем шрифт и размер
 		$text->font($settings{font}, $settings{font_size});
 	#
-	#	Положение текста
+	#	Положение текста (верхний левый угол)
 		$text->translate($settings{x}, $settings{y});
 	#
 	#	Добавить параграф
@@ -300,7 +300,7 @@ sub add_table
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Высота таблицы (до конца страницы)
-		$settings{h} = $settings{y} - $margin->{-top};# - $margin->{-bottom};
+		$settings{h} = $settings{y} - $margin->{-bottom};
 	#
 	#	Копия данных таблицы
 	my	$copy_data;

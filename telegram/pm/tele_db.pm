@@ -331,10 +331,26 @@ sub report
 			#	Препарат
 			push @preparation,
 			[
-				$row->{'preparation_name'},
-				$row->{'preparation_info'},
-				Utils::break_line($row->{'indication_info'} || ''),
-				Utils::break_line($row->{'indication_memo'} || '')
+				[
+					Encode::encode('UTF-8', Encode::decode('windows-1251',
+						'Препарат')),
+					$row->{'preparation_name'}
+				],
+				[
+					Encode::encode('UTF-8', Encode::decode('windows-1251',
+						'Информация')),
+					$row->{'preparation_info'}
+				],
+				[
+					Encode::encode('UTF-8', Encode::decode('windows-1251',
+						'Клинические показания')),
+					Utils::break_line($row->{'indication_info'} || '')
+				],
+				[
+					Encode::encode('UTF-8', Encode::decode('windows-1251',
+						'С осторожностью')),
+					Utils::break_line($row->{'indication_memo'} || '')
+				]
 			];
 			#	заголовок группы записей
 			$text .= sprintf qq
