@@ -350,13 +350,11 @@ sub make_pdf
 		#	добавить таблицу
 		if ($name eq 'probe')
 		{
-			$pdf->add_table($data_query->{$name},
-				size	=> '8cm 3cm 1*',);
+			$pdf->add_table($data_query->{$name}, size => '8cm 3cm 1*');
 		}
 		else
 		{
-			$pdf->add_table($data_query->{$name},
-				size	=> '8cm 1*',);
+			$pdf->add_table($data_query->{$name}, size => '8cm 1*');
 		}
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
