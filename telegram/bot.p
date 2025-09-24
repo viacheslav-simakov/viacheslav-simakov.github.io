@@ -378,22 +378,14 @@ sub make_pdf
 	$pdf->add_text(decode('windows-1251',
 			'Список препаратов рекомендуемых к применению'),
 			font => $pdf->{-font_bold}, font_size => 14);
-			
-#	print Dumper($data_report);
-
 	#
 	#	цикл по выбранным препаратам
 	foreach my $preparation (@{ $data_report->{-preparation} })
 	{
-=pod
-		print STDERR Dumper($preparation),"\n";
-		my	$header = [map
-			{
-				Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
-			}
-			('Препарат', 'Информация', 'Клинические показания', 'С осторожностью')];
-=cut
-		$pdf->add_table($preparation, size => '6cm 1*');
+		#	добавить таблицу
+		$pdf->add_table($preparation,
+			size	=> '5cm 1*',
+		);
 	}
 
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

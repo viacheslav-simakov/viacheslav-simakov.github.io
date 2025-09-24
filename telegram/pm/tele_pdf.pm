@@ -281,7 +281,7 @@ sub add_table
 				font 			=> $self->{-font_bold},
 				font_size		=> 12,
 				font_color		=> 'black',
-				bg_color		=> 'lightgray',
+				bg_color		=> '#D4EBF2',
 				valign			=> 'middle',
 				padding_top		=> 7,
 				padding_bottom	=> 7,

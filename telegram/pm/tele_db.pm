@@ -319,6 +319,13 @@ sub report
 	@);
 	$sth->execute();
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Заголовки строк
+	my	$row_title = [ map
+		{
+			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+		}
+		('Препарат', 'Информация', 'Клинические показания', 'С осторожностью')];
+	#
 	#	цикл по списку препаратов
 	my	$order = 1;
 	my	$text = '';
@@ -331,43 +338,13 @@ sub report
 			#	Препарат
 			push @preparation,
 			[
-				[
-					Encode::encode('UTF-8', Encode::decode('windows-1251',
-						'Препарат')),
-					$row->{'preparation_name'}
-				],
-				[
-					Encode::encode('UTF-8', Encode::decode('windows-1251',
-						'Информация')),
+				[	
+					sprintf('%d) %s', $order++, $row->{'preparation_name'}),
 					$row->{'preparation_info'}
 				],
-				[
-					Encode::encode('UTF-8', Encode::decode('windows-1251',
-						'Клинические показания')),
-					Utils::break_line($row->{'indication_info'} || '')
-				],
-				[
-					Encode::encode('UTF-8', Encode::decode('windows-1251',
-						'С осторожностью')),
-					Utils::break_line($row->{'indication_memo'} || '')
-				]
+				[$row_title->[2], trim($row->{'indication_info'})],
+				[$row_title->[3], trim($row->{'indication_memo'})],
 			];
-			#	заголовок группы записей
-			$text .= sprintf qq
-@
-***
-%d) preparation-name: %s
-	preparation-info: %s
-***
-indication_info: %s
-indication_memo: %s
----
-@,
-			$order++,
-			$row->{'preparation_name'},
-			$row->{'preparation_info'},
-			Utils::break_line($row->{'indication_info'} || ''),
-			Utils::break_line($row->{'indication_memo'} || '');
 		}
 		next if
 		(
