@@ -43,11 +43,9 @@ sub new {
 	my	($page_width, $page_height) = ($pdf->default_page_size)[2,3];
 	#
 	#	Устанавливаем шрифт с кириллицей
-#	my	$font = $pdf->ttfont('arial.ttf');
 	my	$font = $pdf->ttfont('times.ttf');
 	#
 	#	Жирный шрифт
-#	my	$font_bold = $pdf->ttfont('arialbd.ttf');
 	my	$font_bold = $pdf->ttfont('timesbd.ttf');
 	#
 	#	ссылка на объект
@@ -152,7 +150,7 @@ sub page_header_footer {
 			$header = $time_stamp;
 		#
 		#	Вычисляем ширину текста
-		my	$text_width = $text->advancewidth($header);
+		my	$text_width = $text->text_width($header);
 		#
 		#	Вычисляем позицию x для выравнивания по правому краю
 			$x = $self->{-page_width} - $text_width - $margin->{-right};
@@ -165,7 +163,7 @@ sub page_header_footer {
 		my	$footer = Encode::decode('windows-1251', "Страница $i из $total_pages");
 		#
 		#	Вычисляем ширину текста
-			$text_width = $text->advancewidth($footer);
+			$text_width = $text->text_width($footer);
 		#
 		#	Вычисляем позицию 'x' для выравнивания по правому краю
 			$x = $self->{-page_width} - $text_width - $margin->{-right};
@@ -180,12 +178,10 @@ sub page_header_footer {
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Создать таблицу
+	Добавить пустую страницу
 	---
 	$obj->add_page();
 	
-		$data		- ссылка на матрицу данных [[row-1],[row-2], ...]
-		%settings	- параметры таблицы
 =cut
 sub add_page
 {
@@ -201,6 +197,50 @@ sub add_page
 	#	ссылка на объект
 	return $self;
 }	
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Добавить текст
+	---
+	$obj->add_text($string, %settings);
+	
+		$string		- строка текста
+		%settings	- параметры текста
+=cut
+sub add_text
+{
+	#	ссылка на объект
+	my	$self = shift @_;
+	#	строка текста
+	my	$string;
+	#	размеры страницы (ширина, высота)
+	my	$page_width = $self->{-page_width};
+	my	$page_height = $self->{-page_height};
+	#	отступы от краёв страницы
+	my	$margin = $self->{-page_margin};
+	#	параметры текста
+	my	%settings = (
+			font 		=> $self->{-font},
+			font_size	=> 12,
+			x         	=> $margin->{-left},
+			y			=> $self->{-current_y},
+	, @_);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Ширина текста (до правого края страницы)
+	my	$width = $page_width - $settings{x} - $margin->{-right};
+	#	Высота текста (до нижнего края страницы)
+	my	$height = $settings{y} - $margin->{-top};
+	#
+	#	PDF-документ
+	my	$pdf = $self->{-pdf};
+	#
+	#	Открыть страницу с номером 'page_number'
+	#	https://metacpan.org/pod/PDF::API2#open_page
+	my	$page = $pdf->open_page(0);
+	#
+	#	Добавить параграф
+	#	https://metacpan.org/pod/PDF::API2::Content#paragraph
+	my	($overflow, $height) = $page->paragraph($string, $width, $height);
+}
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Создать таблицу
