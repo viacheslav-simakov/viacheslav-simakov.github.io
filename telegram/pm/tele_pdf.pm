@@ -211,7 +211,7 @@ sub add_text
 	#	ссылка на объект
 	my	$self = shift @_;
 	#	строка текста
-	my	$string;
+	my	$string = shift @_;
 	#	размеры страницы (ширина, высота)
 	my	$page_width = $self->{-page_width};
 	my	$page_height = $self->{-page_height};
@@ -229,7 +229,7 @@ sub add_text
 	my	$width = $page_width - $settings{x} - $margin->{-right};
 	#
 	#	Высота текста (до нижнего края страницы)
-	my	$height = $settings{y} - $margin->{-top};
+	my	$height = $settings{y} - $margin->{-bottom};
 	#
 	#	Открыть страницу с номером 'page_number'
 	#	https://metacpan.org/pod/PDF::API2#open_page
@@ -239,16 +239,20 @@ sub add_text
 	my	$text = $page->text();
 	#
 	#	Устанавливаем шрифт и размер
-		$text->font($settings{-font}, $settings{-font_size});
+		$text->font($settings{font}, $settings{font_size});
 	#
 	#	Положение текста
 		$text->translate($settings{x}, $settings{y});
 	#
 	#	Добавить параграф
 	#	https://metacpan.org/pod/PDF::API2::Content#paragraph
-	my	($overflow, $height) = $text->paragraph($string, $width, $height);
+	my	($overflow, $last_height) = $text->paragraph($string, $width, $height);
+	#
+	#	Отступ от верхнего края страницы
+	$self->{-current_y} -= $height - $last_height + 0*36;
 	
-	print STDERR "$overflow, $height\n";
+	print STDERR "$overflow, $last_height\n";
+	
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
