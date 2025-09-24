@@ -322,20 +322,11 @@ sub report
 	#	цикл по списку препаратов
 	my	$order = 1;
 	my	$text = '';
-	my	@preparation = ();
 	while (my $row = $sth->fetchrow_hashref)
 	{
 		#	первая строка группы записей
 		if ($row->{num} == 1)
 		{
-			#	Препарат
-			push @preparation,
-			[
-				$row->{'preparation_name'},
-				$row->{'preparation_info'},
-				Utils::break_line($row->{'indication_info'} || ''),
-				Utils::break_line($row->{'indication_memo'} || '')
-			];
 			#	заголовок группы записей
 			$text .= sprintf qq
 @
@@ -383,7 +374,6 @@ indication_memo: %s
 		order => $order,
 		cgi_query => $cgi_query,
 		text => $text,
-		-preparation	=> \@preparation,
 	};
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

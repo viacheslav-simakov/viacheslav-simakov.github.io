@@ -22,6 +22,6 @@ REM количество компиляций pdf-файла (required default 2)
 SET RUN_COMPILES=0
 
 rem perl "www-example.p"
-perl "telegram.p"
+perl "bot.p"
 rem **************************************************************************
 PAUSE
