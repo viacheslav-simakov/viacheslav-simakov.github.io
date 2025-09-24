@@ -261,7 +261,7 @@ sub add_table
 		}
 	}
 	#
-	#	PDF-документ
+	#	pdf-документ
 	my	$pdf = $self->{-pdf};
 	#
 	#	Открыть страницу с номером 'page_number'
@@ -271,18 +271,17 @@ sub add_table
 	#	Создать объект-таблицу
 	my	$table = PDF::Table->new();
 	#
-	#	Сгенерировать таблицу
-	#	https://metacpan.org/pod/PDF::Table#table()
-	#
-	my	($final_page, $number_of_pages, $final_y) = $table->table(
-			$pdf,			# ссылка на объект
-			$page,			# страница
-			$copy_data,		# данные таблицы
-			%settings,		# опции таблицы
+	#	Сгенерировать таблицу: https://metacpan.org/pod/PDF::Table#table()
+	#	@result = ($final_page, $number_of_pages, $final_y) после вставки таблицы
+	my	@result = $table->table(
+			$pdf,									# ссылка на объект
+			$page,									# страница
+			$copy_data,								# данные таблицы
+			%settings,								# опции таблицы
 		);
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#
 	#	Увеличить отступ от верхнего края страницы
-		$self->{-current_y} = $final_y - 36;
+		$self->{-current_y} = $result[2] - 36;
 	#
 	#	Проверка
 	if ($self->{-current_y} <= 1.5*72)
@@ -291,8 +290,8 @@ sub add_table
 		$self->add_page();
 	};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	ссылка на объект
-	return $self;
+	#	список фактических параметров таблицы
+	return @result;
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package

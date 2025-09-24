@@ -339,7 +339,12 @@ sub make_pdf
 	my	$pdf = Tele_PDF->new( $message->{from} );
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Добавить пустую страницу
+#		$pdf->{-pdf}->page();
 		$pdf->add_page();
+	#
+	#	Текущее положение на странице
+#	my	$y = 842 - 1*36;
+#	my	$y = $pdf->{-current_y};
 	#
 	#	цикл по секциям запроса
 	foreach my $name ('rheumatology', 'comorbidity', 'status', 'manual', 'probe', 'preparation')
@@ -347,31 +352,53 @@ sub make_pdf
 		#	нет выбранных данных
 		next if scalar @{ $data_query->{$name} } < 2;
 		#
+		#	параметры ($final_page, $number_of_pages, $final_y) после вставки таблицы
+		my	@final = ();
+		#
 		#	добавить таблицу
 		if ($name eq 'probe')
 		{
-			$pdf->add_table($data_query->{$name},
-				size	=> '8cm 3cm 1*',)
+			@final = $pdf->add_table($data_query->{$name},
+#				y		=> $y,
+				size	=> '8cm 3cm 1*',
+			);
 		}
 		else
 		{
-			$pdf->add_table($data_query->{$name},
-				size	=> '8cm 1*',)
+			@final = $pdf->add_table($data_query->{$name},
+#				y		=> $y,
+				size	=> '8cm 1*',
+			);
 		}
+		printf "\t$name=(%s)\n", join(', ', @final);
+=pod
+		#
+		#	Отступить вниз страницы
+		$y = $final[2] - 36;
+		#
+		#	Проверка
+		if ($y <= 1.5*72)
+		{
+			#	добавить пустую страницу
+			$pdf->{-pdf}->page();
+			#
+			#	текущее положение на странице
+			$y = 842 - 36;
+		};
+=cut
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Добавить пустую страницу
 	my	$page = $pdf->{-pdf}->page();
 	#
+	#	Текущее положение на странице
+	my	$y = 842 - 1.5*36;
+
 	#	Получаем объект текстового содержимого страницы
 	my	$text = $page->text();
-	#
+	
 	#	Устанавливаем шрифт и размер
 		$text->font($pdf->{-font_bold}, 14);
-	#
-	#	Положение на странице
-	my	$y = 842 - 36 - 14;
-	#
 	#	Печатаем текст
 		$text->translate(72, $y);
 		$text->text(decode('windows-1251',
