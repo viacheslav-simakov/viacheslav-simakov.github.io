@@ -299,8 +299,8 @@ sub send_pdf
 		});
 		#	Вывод на экран
 		printf STDERR
-			"Файл '%s' успешно отправлен! (message ID: %s)\n",
-			$pdf_file, $result->{result}->{message_id};
+			" and successed sent (message ID: %s)\n",
+			$result->{result}->{message_id};
 #		print STDERR Dumper($result);
 	};
 	#	Проверка ошибок
@@ -366,12 +366,6 @@ sub make_pdf
 			$pdf->add_table($data_query->{$name}, size => '8cm 1*');
 		}
 	}
-=pod	
-#	Создать PDF-файл
-my	$pdf_file_name = $pdf->save();
-return;
-=cut
-	
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Добавить пустую страницу
 		$pdf->add_page();
@@ -393,7 +387,7 @@ return;
 			size	=> '5cm 1*',
 		);
 		#
-		#	лабораторные исследования
+		#	Лабораторные исследования
 		if (defined $data_report->{-probe}->[$i])
 		{
 			#	Заголовок таблицы
@@ -404,7 +398,6 @@ return;
 				}
 #				('Исследование', 'Показатель', '','', 'Рекомендации')
 				('Показатель', 'от', 'факт', 'до', 'Рекомендации')
-#				('1', '2', '3', '4', '5')
 			];
 			#
 			#	Добавить таблицу
@@ -427,7 +420,7 @@ return;
 	my	$pdf_file_name = $pdf->save();
 	#
 	#	вывод на экран
-	print STDERR "\n\tCreate *PDF*-file '$pdf_file_name'\n\n";
+	print STDERR "\nCreate file '$pdf_file_name'";
 	#	имя файла
 	return $pdf_file_name;
 }

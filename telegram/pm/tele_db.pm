@@ -112,6 +112,9 @@ sub new {
 	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
 			or die $DBI::errstr;
 	#
+	#	вывод на экран
+#	printf "Connect to database '$db_file'\n";
+	#
 	#	ссылка на объект
 	my	$self =
 		{
@@ -136,7 +139,7 @@ sub DESTROY
 	$self->{-dbh}->disconnect or warn $self->{-dbh}->errstr;
 	#
 	#	вывод на экран
-	print STDERR "disconnect from data base\n";
+#	print STDERR "\t\tdisconnect from database\n";
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
