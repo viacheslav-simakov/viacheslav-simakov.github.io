@@ -41,25 +41,39 @@ sub new {
 	#
 	#	Размеры страницы (pt)
 	my	($page_width, $page_height) = ($pdf->default_page_size)[2,3];
-	#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Устанавливаем шрифт с кириллицей
 	my	$font = $pdf->font('times.ttf');
-
-
-#	Загрузка шрифта Roboto-Black
-my	$font_path = 'DejaVuSans.ttf';
-unless (-e $font_path) {
-    die "Файл шрифта $font_path не найден!\n";
-}
-
-# Установка шрифта
-
-#	$font = $pdf->ttfont($font_path);
-
-
 	#
+	#	Загрузка шрифта Roboto-Regular
+	my	$font_path = 'Roboto-Regular.ttf';
+	unless (-e $font_path)
+	{
+		#	Предупреждение!
+		warn "Файл шрифта $font_path не найден!\n";
+	}
+	else
+	{
+		#	Установка шрифта
+		$font = $pdf->ttfont($font_path);
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Жирный шрифт
 	my	$font_bold = $pdf->ttfont('timesbd.ttf');
+	#
+	#	Загрузка шрифта Roboto-Bold
+		$font_path = 'Roboto-Bold.ttf';
+	unless (-e $font_path)
+	{
+		#	Предупреждение!
+		warn "Файл шрифта $font_path не найден!\n";
+	}
+	else
+	{
+		#	Установка шрифта
+		$font_bold = $pdf->ttfont($font_path);
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
 	#	ссылка на объект
 	my	$self =

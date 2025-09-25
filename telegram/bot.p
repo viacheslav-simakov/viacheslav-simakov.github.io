@@ -366,6 +366,12 @@ sub make_pdf
 			$pdf->add_table($data_query->{$name}, size => '8cm 1*');
 		}
 	}
+=pod	
+#	Создать PDF-файл
+my	$pdf_file_name = $pdf->save();
+return;
+=cut
+	
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Добавить пустую страницу
 		$pdf->add_page();
@@ -386,6 +392,7 @@ sub make_pdf
 		$pdf->add_table($data_report->{-preparation}->[$i],
 			size	=> '5cm 1*',
 		);
+#=pod
 		#
 		#	лабораторные исследования
 		if (defined $data_report->{-probe}->[$i])
@@ -396,20 +403,26 @@ sub make_pdf
 				{
 					Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
 				}
-				('Исследование', 'Показатель', '','', 'Рекомендации')
+#				('Исследование', 'Показатель', '','', 'Рекомендации')
+				('Показатель', 'от', 'факт', 'до', 'Рекомендации')
+#				('1', '2', '3', '4', '5')
 			];
 
 			$pdf->add_table($data_report->{-probe}->[$i],
-				size		=> '5cm 1.5cm 1.5cm 1.5cm 1*',
+				size		=> '5cm 2cm 2cm 2cm 1*',
 				header_props => {
 						repeat => 0,
 				},
-				cell_props =>
-				[
-					[{},{colspan => 3},{}],
-				],
+#				cell_props =>
+#				[
+#					[{},{colspan => 3},{}],
+#				],
 			);
 		}
+		#
+		#	Увеличить отступ от верхнего края страницы
+		$pdf->{-current_y} -= 36;
+#=cut
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Создать PDF-файл

@@ -25,7 +25,9 @@ my	$pdf = PDF::API2->new();
 #
 #	Устанавливаем шрифт с кириллицей
 #
-my	$font = $pdf->ttfont('Arial.ttf');
+my	$font = $pdf->ttfont('arial.ttf');
+my	$font2 = $pdf->ttfont('Roboto-Black.ttf');
+my	$font3 = $pdf->ttfont('Roboto-Regular.ttf');
 #
 #	Добавить пустую страницу
 #
@@ -38,12 +40,13 @@ my	$page = $pdf->page();
 my	$text = $page->text();
 #
 # Set font and size
-	$text->font($font, 12);
+	$text->font($font3, 12);
 
 # Write text at specific coordinates
 #	$text->translate(50, 800);
 	$text->translate(36, 842-36);
-	$text->text('Hello, World!');
+#	$text->text('Hello, World!');
+	$text->text(decode('UTF-8','Привет, Мир!'));
 #
 # Данные таблицы
 my @data = (
