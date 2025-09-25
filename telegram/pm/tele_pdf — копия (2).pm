@@ -315,6 +315,14 @@ sub add_table
 	my	$self = shift @_;
 	#	данные таблицы
 	my	$data = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	размеры страницы (ширина, высота)
+	my	$page_width = $self->{-page_width};
+	my	$page_height = $self->{-page_height};
+	#
+	#	отступы от краёв страницы
+	my	$margin = $self->{-page_margin};
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
 	my	%settings = (
 			header_props => # Заголовок таблицы
@@ -331,36 +339,19 @@ sub add_table
 			},
 			font 		=> $self->{-font},
 			font_size	=> 12,
+			x         	=> $margin->{-left},
+			w         	=> $page_width - $margin->{-left} - $margin->{-right},
+			y			=> $self->{-current_y},
 			padding   	=> 5,
 			size		=> '8cm 1*',
 			border_w	=> 0.5,
+			next_y		=> $page_height - $margin->{-top},
+			next_h		=> $page_height - $margin->{-top} - $margin->{-bottom},
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	размеры страницы (ширина, высота)
-	my	$page_width = $self->{-page_width};
-	my	$page_height = $self->{-page_height};
-	#
-	#	отступы от краёв страницы
-	my	$margin = $self->{-page_margin};
-	#
-	#	Проверка доступного высоты таблицы
-	if ($self->{-current_y} <= 1.5*72)
-	{
-		#	добавить пустую страницу
-		$self->add_page();
-	};
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
-	%settings = (%settings,
-		x         	=> $margin->{-left},
-		w         	=> $page_width - $margin->{-left} - $margin->{-right},
-		y			=> $self->{-current_y},
-		next_y		=> $page_height - $margin->{-top},
-		next_h		=> $page_height - $margin->{-top} - $margin->{-bottom},
-	);
 	#	Высота таблицы (до конца страницы)
 		$settings{h} = $settings{y} - $margin->{-bottom};
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#
 	#	Копия данных таблицы
 	my	$copy_data;
 	#
@@ -372,7 +363,7 @@ sub add_table
 			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
 		}
 	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#
 	#	PDF-документ
 	my	$pdf = $self->{-pdf};
 	#
@@ -392,9 +383,16 @@ sub add_table
 			$copy_data,		# данные таблицы
 			%settings,		# опции таблицы
 		);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Увеличить отступ от верхнего края страницы
+		$self->{-current_y} = $final_y - 0*36;
 	#
-	#	Отступ от верхнего края страницы
-		$self->{-current_y} = $final_y;
+	#	Проверка
+	if ($self->{-current_y} <= 1.5*72)
+	{
+		#	добавить пустую страницу
+		$self->add_page();
+	};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на объект
 	return $self;
