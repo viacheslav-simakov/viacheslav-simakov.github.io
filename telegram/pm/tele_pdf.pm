@@ -43,7 +43,20 @@ sub new {
 	my	($page_width, $page_height) = ($pdf->default_page_size)[2,3];
 	#
 	#	Устанавливаем шрифт с кириллицей
-	my	$font = $pdf->ttfont('times.ttf');
+	my	$font = $pdf->font('times.ttf');
+
+
+#	Загрузка шрифта Roboto-Black
+my	$font_path = 'DejaVuSans.ttf';
+unless (-e $font_path) {
+    die "Файл шрифта $font_path не найден!\n";
+}
+
+# Установка шрифта
+
+#	$font = $pdf->ttfont($font_path);
+
+
 	#
 	#	Жирный шрифт
 	my	$font_bold = $pdf->ttfont('timesbd.ttf');
