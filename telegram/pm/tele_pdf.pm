@@ -46,7 +46,7 @@ sub new {
 	my	$font = $pdf->font('times.ttf');
 	#
 	#	Загрузка шрифта Roboto-Regular
-	my	$font_path = 'Roboto-Regular.ttf';
+	my	$font_path = 'font/Roboto-Regular.ttf';
 	unless (-e $font_path)
 	{
 		#	Предупреждение!
@@ -62,7 +62,7 @@ sub new {
 	my	$font_bold = $pdf->ttfont('timesbd.ttf');
 	#
 	#	Загрузка шрифта Roboto-Bold
-		$font_path = 'Roboto-Bold.ttf';
+		$font_path = 'font/Roboto-Bold.ttf';
 	unless (-e $font_path)
 	{
 		#	Предупреждение!
