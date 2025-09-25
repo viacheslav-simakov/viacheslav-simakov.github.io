@@ -414,7 +414,7 @@ return;
 				{
 					font		=> $pdf->{-font_italic},
 					font_size	=> 12,
-					repeat		=> 0,
+					repeat		=> 1,
 				},
 			);
 		}
