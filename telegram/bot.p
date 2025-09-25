@@ -410,8 +410,10 @@ return;
 
 			$pdf->add_table($data_report->{-probe}->[$i],
 				size		=> '5cm 2cm 2cm 2cm 1*',
-				header_props => {
-						repeat => 0,
+				header_props =>
+				{
+						font	=> $pdf->{-font_italic},
+						repeat	=> 0,
 				},
 #				cell_props =>
 #				[

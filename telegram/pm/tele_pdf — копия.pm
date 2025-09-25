@@ -44,15 +44,45 @@ sub new {
 	my	($page_width, $page_height) = ($pdf->default_page_size)[2,3];
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Устанавливаем шрифты с кириллицей
-	#	обычный шрифт
 #	my	$font = $pdf->font('times.ttf');
 	my	$font = font_ttf($pdf, 'font/Roboto-Regular.ttf');
+=pod
+	#
+	#	Загрузка шрифта Roboto-Regular
+	my	$font_path = 'font/Roboto-Regular.ttf';
+	unless (-e $font_path)
+	{
+		#	Предупреждение!
+		warn "Файл шрифта $font_path не найден!\n";
+	}
+	else
+	{
+		#	Установка шрифта
+		$font = $pdf->ttfont($font_path);
+	}
+=cut
 	#
 	#	жирный шрифт
 	my	$font_bold = font_ttf($pdf, 'font/Roboto-Bold.ttf');
 	#
 	#	курсивный шрифт
 	my	$font_italic = font_ttf($pdf, 'font/Roboto-Italic.ttf');
+=pod
+	my	$font_bold = $pdf->ttfont('timesbd.ttf');
+	#
+	#	Загрузка шрифта Roboto-Bold
+		$font_path = 'font/Roboto-Bold.ttf';
+	unless (-e $font_path)
+	{
+		#	Предупреждение!
+		warn "Файл шрифта $font_path не найден!\n";
+	}
+	else
+	{
+		#	Установка шрифта
+		$font_bold = $pdf->ttfont($font_path);
+	}
+=cut
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
 	#	ссылка на объект
@@ -62,7 +92,6 @@ sub new {
 			-pdf			=> $pdf,			# pdf-документ
 			-font			=> $font,			# шрифт
 			-font_bold		=> $font_bold,		# жирный шрифт
-			-font_italic	=> $font_italic,	# курсивный шрифт
 			-page_width		=> $page_width,		# ширина страницы
 			-page_height	=> $page_height,	# высота страницы
 			-page_margin	=>					# отступы от края страницы
