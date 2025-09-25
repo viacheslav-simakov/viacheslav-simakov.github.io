@@ -255,11 +255,14 @@ sub add_text
 	my	$self = shift @_;
 	#	строка текста
 	my	$string = shift @_;
+	#-------------------------------------------------------------------------
 	#	размеры страницы (ширина, высота)
 	my	$page_width = $self->{-page_width};
 	my	$page_height = $self->{-page_height};
+	#
 	#	отступы от краЄв страницы
 	my	$margin = $self->{-page_margin};
+	#-------------------------------------------------------------------------
 	#	параметры текста
 	my	%settings = (
 			font 		=> $self->{-font},
@@ -291,11 +294,10 @@ sub add_text
 	#	https://metacpan.org/pod/PDF::API2::Content#paragraph
 	my	($overflow, $last_height) = $text->paragraph($string, $width, $height);
 	#
-	#	ќтступ от верхнего кра€ страницы
+	#	”величить отступ от верхнего кра€ страницы
 	$self->{-current_y} -= $height - $last_height + 0*36;
 	
-	print STDERR "$overflow, $last_height\n";
-	
+#	print STDERR "$overflow, $last_height\n";
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -312,11 +314,14 @@ sub add_table
 	my	$self = shift @_;
 	#	данные таблицы
 	my	$data = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	размеры страницы (ширина, высота)
 	my	$page_width = $self->{-page_width};
 	my	$page_height = $self->{-page_height};
+	#
 	#	отступы от краЄв страницы
 	my	$margin = $self->{-page_margin};
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
 	my	%settings = (
 			header_props => # «аголовок таблицы

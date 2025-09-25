@@ -392,14 +392,13 @@ return;
 		$pdf->add_table($data_report->{-preparation}->[$i],
 			size	=> '5cm 1*',
 		);
-#=pod
 		#
 		#	лабораторные исследования
 		if (defined $data_report->{-probe}->[$i])
 		{
-#			print STDERR Dumper($data_report->{-probe}->[$i]);
-#			Заголовок таблицы
-			unshift @{ $data_report->{-probe}->[$i] }, [map
+			#	Заголовок таблицы
+			unshift @{ $data_report->{-probe}->[$i] },
+			[ map
 				{
 					Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
 				}
@@ -407,24 +406,21 @@ return;
 				('Показатель', 'от', 'факт', 'до', 'Рекомендации')
 #				('1', '2', '3', '4', '5')
 			];
-
+			#
+			#	Добавить таблицу
 			$pdf->add_table($data_report->{-probe}->[$i],
-				size		=> '5cm 2cm 2cm 2cm 1*',
-				header_props =>
+				size			=> '5cm 2cm 2cm 2cm 1*',
+				header_props	=>
 				{
-						font	=> $pdf->{-font_italic},
-						repeat	=> 0,
+					font		=> $pdf->{-font_italic},
+					font_size	=> 12,
+					repeat		=> 0,
 				},
-#				cell_props =>
-#				[
-#					[{},{colspan => 3},{}],
-#				],
 			);
 		}
 		#
 		#	Увеличить отступ от верхнего края страницы
 		$pdf->{-current_y} -= 36;
-#=cut
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Создать PDF-файл
