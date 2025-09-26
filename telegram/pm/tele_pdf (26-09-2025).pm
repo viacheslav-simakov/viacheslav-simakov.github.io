@@ -12,6 +12,9 @@ use warnings;
 #
 package Tele_PDF {
 #
+#	База данных
+use Tele_DB();
+#
 #	Создание, изменение и проверка PDF-файлов
 #	https://metacpan.org/pod/PDF::API2
 use PDF::API2;
@@ -20,19 +23,21 @@ use PDF::API2;
 #	https://metacpan.org/pod/PDF::Table
 use PDF::Table;
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Конструктор
 	---
-	$obj = Tele_PDF->new( $message );
+	$obj = Tele_PDF->new($message_from, $web_app_data);
 
-		$message	- ссылка на сообщение (хэш)	
+		$message_from	- сообщение пользователя (ссылка на хэш)
+		$web_app_data	- данные HTML-формы (ссылка на хэш)
 =cut
 sub new {
 	#	название класса
 	my	$class = shift @_;
 	#	сообщение пользователя, который сделал запрос
 	my	$from = shift @_;
+	#	база данных
+	my	$db = Tele_DB->new( shift @_ );
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Создаем PDF
 	my	$pdf = PDF::API2->new();
@@ -42,12 +47,11 @@ sub new {
 	#
 	#	Размеры страницы (pt)
 	my	($page_width, $page_height) = ($pdf->default_page_size)[2,3];
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#
 	#	Устанавливаем шрифты с кириллицей
-	#	обычный шрифт
 #	my	$font = $pdf->font('times.ttf');
-	my	$font = font_ttf($pdf, 'font/Roboto-Regular.ttf');
 #	my	$font = font_ttf($pdf, 'font/OpenSans-Regular.ttf');
+	my	$font = font_ttf($pdf, 'font/Roboto-Regular.ttf');
 	#
 	#	жирный шрифт
 	my	$font_bold = font_ttf($pdf, 'font/Roboto-Bold.ttf');
@@ -55,10 +59,10 @@ sub new {
 	#	курсивный шрифт
 	my	$font_italic = font_ttf($pdf, 'font/Roboto-Italic.ttf');
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#
-	#	ссылка на объект
+	#	данные объекта
 	my	$self =
 		{
+			-DB				=> $db,				# база данных
 			-from			=> $from,			# сообщение пользователя
 			-pdf			=> $pdf,			# pdf-документ
 			-font			=> $font,			# шрифт
@@ -77,7 +81,7 @@ sub new {
 		};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	привести ссылку к типу __PACKAGE__
-	return bless $self, $class;
+	return bless($self, $class);
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -113,32 +117,6 @@ sub font_ttf
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	TTF-шрифт
 	return $font;
-}
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-=pod
-	Сохранить файл
-	---
-	$obj->save();
-
-=cut
-sub save
-{
-	#	ссылка на объект
-	my	$self = shift @_;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Колонтитулы на странице
-		$self->page_header_footer();
-	#
-	#	имя PDF-файла
-	my	$pdf_file = sprintf '%s.pdf', $self->{-from}->{id};
-	#
-	#	Сохранить файл
-	$self->{-pdf}->saveas($pdf_file);
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	имя файла
-	return $pdf_file;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -396,6 +374,114 @@ sub add_table
 	#
 	#	Отступ от верхнего края страницы
 		$self->{-current_y} = $final_y;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ссылка на объект
+	return $self;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Сохранить файл
+	---
+	$obj->save( $pdf_file_name );
+	
+		$pdf_file_name	- имя PDF-файла
+
+=cut
+sub save
+{
+	#	ссылка на объект
+	my	$self = shift @_;
+	#	имя PDF-файла
+	my	$pdf_file_name = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#
+	#	(I) ДАННЫЕ ЗАПРОСА ПОЛЬЗОВАТЕЛЯ
+	#
+	my	$data_query = $self->{-DB}->request();
+	#
+	#	Добавить пустую страницу
+		$self->add_page();
+	#
+	#	увеличить отступ от верхнего края страницы	
+		$self->{-current_y} -= 12;
+	#
+	#	Заголовок
+		$self->add_text(Encode::decode('windows-1251',
+			'Данные запроса пользователя'),
+			font => $self->{-font_bold}, font_size => 14);
+	#
+	#	цикл по секциям запроса
+	foreach my $name ('rheumatology', 'comorbidity', 'status', 'manual', 'probe', 'preparation')
+	{
+		#	нет выбранных данных
+		next if scalar @{ $data_query->{$name} } < 2;
+		#
+		#	размеры колонок таблицы
+		my	$column_size = ($name eq 'probe') ? '8cm 3cm 1*' : '8cm 1*';
+		#
+		#	добавить таблицу
+		$self->add_table($data_query->{$name}, size => $column_size);
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#
+	#	(II) СПИСОК ПРЕПАРАТОВ РЕКОМЕНДУЕМЫХ К ПРИМЕНЕНИЮ
+	#
+	my	$data_report = $self->{-DB}->report();
+	#
+	#	Добавить пустую страницу
+		$self->add_page();
+	#
+	#	увеличить отступ от верхнего края страницы	
+		$self->{-current_y} -= 12;
+	#
+	#	Заголовок раздела
+		$self->add_text(Encode::decode('windows-1251',
+			'Список препаратов рекомендуемых к применению'),
+			font => $self->{-font_bold}, font_size => 14);
+	#
+	#	Заголовок таблицы 'Лабораторные исследования'
+	my	@probe_title = map
+		{
+			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+		}
+		('Показатель', 'от', 'факт', 'до', 'Рекомендации');
+	#
+	#	цикл по выбранным препаратам
+	for (my $i = 0; $i < scalar @{ $data_report->{-preparation} }; $i++)
+	{
+		#	добавить таблицу
+		$self->add_table($data_report->{-preparation}->[$i], size => '5cm 1*');
+		#
+		#	Лабораторные исследования
+		if (defined $data_report->{-probe}->[$i])
+		{
+			#	Заголовок таблицы
+			unshift @{ $data_report->{-probe}->[$i] }, \@probe_title;
+			#
+			#	Добавить таблицу
+			$self->add_table($data_report->{-probe}->[$i],
+				size			=> '5cm 2cm 2cm 2cm 1*',
+				header_props	=>
+				{
+					font		=> $self->{-font_italic},
+					font_size	=> 12,
+					repeat		=> 1,
+				},
+			);
+		}
+		#
+		#	Увеличить отступ от верхнего края страницы
+		$self->{-current_y} -= 36;
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Колонтитулы на странице
+		$self->page_header_footer();
+	#
+	#	Сохранить файл
+	$self->{-pdf}->saveas($pdf_file_name);
+	#
+	#	вывод на экран
+	print STDERR "Create file '$pdf_file_name'\n";
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на объект
 	return $self;
