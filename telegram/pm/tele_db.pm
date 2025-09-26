@@ -25,7 +25,7 @@ my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db' unless (-f $db_file);
 #
 #	файл база данных не найден
-	die "Cannot find file data base" unless (-f $db_file);
+	Carp::confess "Cannot find file database" unless (-f $db_file);
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
 #	папки библиотек (модулей)
@@ -73,6 +73,13 @@ my	%FORM_number =
 (
 	probe			=> 'Лабораторные исследования',
 );
+#
+#	Заголовки строк
+my	@row_title = map
+	{
+		Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+	}
+	('Препарат', 'Информация', 'Клинические показания', 'С осторожностью');
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Удалить в строке ведущие и завершающие пробелы 
@@ -323,13 +330,6 @@ sub report
 	@);
 	$sth->execute();
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Заголовки строк
-	my	$row_title = [ map
-		{
-			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
-		}
-		('Препарат', 'Информация', 'Клинические показания', 'С осторожностью')];
-	#
 	#	данные препаратов
 	my	@preparation = ();
 	#
@@ -350,8 +350,8 @@ sub report
 					sprintf('%d) %s', $order++, $row->{'preparation_name'}),
 					$row->{'preparation_info'}
 				],
-				[$row_title->[2], trim($row->{'indication_info'})],
-				[$row_title->[3], trim($row->{'indication_memo'})],
+				[$row_title[2], trim($row->{'indication_info'})],
+				[$row_title[3], trim($row->{'indication_memo'})],
 			];
 		}
 		next if

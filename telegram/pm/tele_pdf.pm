@@ -77,6 +77,7 @@ sub new {
 				-top		=> 36,
 				-bottom		=> 36,
 			},
+			-skip_y			=> 36,				# смещение к низу странице
 			-current_y		=> undef,			# отступ от верхнего края
 		};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -275,7 +276,7 @@ sub add_text
 	my	($overflow, $last_height) = $text->paragraph($string, $width, $height);
 	#
 	#	Увеличить отступ от верхнего края страницы
-	$self->{-current_y} -= $height - $last_height + 0*36;
+	$self->{-current_y} -= $height - $last_height;
 	
 #	print STDERR "$overflow, $last_height\n";
 }
@@ -471,7 +472,7 @@ sub save
 		}
 		#
 		#	Увеличить отступ от верхнего края страницы
-		$self->{-current_y} -= 36;
+		$self->{-current_y} -= $self->{-skip_y};
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Колонтитулы на странице
