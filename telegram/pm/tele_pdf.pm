@@ -44,7 +44,7 @@ sub new {
 		, @_ );
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Сообщение пользователя, который сделал запрос
-	my	$from = $args{-web_app_data};
+	my	$from = $args{-message_from};
 	#
 	#	База данных
 	my	$db = Tele_DB->new($args{-web_app_data});
@@ -490,7 +490,7 @@ sub save
 	$self->{-pdf}->saveas($pdf_file);
 	#
 	#	вывод на экран
-	print STDERR "\tCreate file '$pdf_file'\n";
+	print STDERR "Create file '$pdf_file'\n";
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	имя файла
 	return $pdf_file;

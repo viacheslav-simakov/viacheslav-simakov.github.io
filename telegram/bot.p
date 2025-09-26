@@ -312,7 +312,7 @@ sub send_pdf
 		});
 		#	Вывод на экран
 		printf STDERR
-			" and successed sent (message ID: %s)\n",
+			"Successed sent (message ID: %s) '' file\n",
 			$result->{result}->{message_id};
 #		print STDERR Dumper($result);
 	};
