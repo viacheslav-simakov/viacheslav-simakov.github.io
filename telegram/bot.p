@@ -51,6 +51,9 @@ my	$token = '8278981933:AAGOZMWywJZxlR-Vj5kwh4HeISQhwPpXuwE';
 #	Создаем объект API
 my	$api = WWW::Telegram::BotAPI->new(token => $token);
 #
+#	Обновления
+my	$updates;
+#
 #	Получаем последние обновления
 my	$offset = 0;
 #
@@ -61,15 +64,26 @@ printf STDERR
 while (1) {
 	#	задержка 1 секунда
 #	sleep(1);
-	#
-    #	Получаем обновления
-	#
-    my	$updates = $api->getUpdates(
-		{
-			offset	=> $offset,	# Смещение
-			timeout	=> 30,		# Determines the timeout in seconds for long polling
-		}
-	) or die "Ошибка при получении обновлений: $!";
+	#	Безопасная конструкция
+	eval {
+		#	Получаем обновления
+		$updates = $api->getUpdates(
+			{
+				offset	=> $offset,	# Смещение
+				timeout	=> 30,		# Determines the timeout in seconds for long polling
+			}
+		)
+	};
+	#	Проверка ошибок
+	if ($@)
+	{
+		#	информации об ошибке
+		Carp::carp "\nОшибка при получении обновлений: $@\n";
+		#
+		#	следующая итерация цикла
+		next;
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #
     #	Обрабатываем каждое обновление
 	#
@@ -92,11 +106,10 @@ while (1) {
 			#	следующее обновление
 			next;
 		}
-		#
-		#	Текст сообщения
-#        my	$msg_text = $message->{text} or undef;
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		#
         #	Обработка команд
+		#
 		if ($message->{web_app_data}->{data})
 		{
 			#	данные Web App
