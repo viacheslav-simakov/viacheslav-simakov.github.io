@@ -376,9 +376,9 @@ sub report
 	#	ссылка на хэш
 	return
 	{
-		cgi_query => $cgi_query,
-		-preparation	=> \@preparation,
-		-probe			=> \@probe,
+		cgi_query		=> $cgi_query,
+		-preparation	=> \@preparation,	# препараты
+		-probe			=> \@probe,			# лабораторные исследования
 	};
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
