@@ -468,6 +468,23 @@ sub save
 					font_size	=> 12,
 					repeat		=> 1,
 				},
+				#	
+				'cell_render_hook'  => sub
+				{
+					my	($page, $first_row, $row, $col, $x, $y, $w, $h) = @_;
+					# Do nothing except for first column (and not a header row)
+					return if ($col != 2);
+					return if ($first_row);
+					# Create link
+					my	$text = $page->text();
+					#
+					#	Устанавливаем шрифт и размер
+						$text->font($self->{-font}, 10);
+					#
+					#	Положение текста (верхний левый угол)
+						$text->position(32, $y - 12);
+						$text->text('*');
+				},
 			);
 		}
 		#
