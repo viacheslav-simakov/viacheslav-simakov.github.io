@@ -303,10 +303,8 @@ sub report
 			'Для заданных условий поиска нет рекомендуемых препаратов'));
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#
 	#	Список препаратов
 	#	https://www.sqlitetutorial.net/sqlite-count-function/
-	#
 	$sth = $dbh->prepare(qq
 	@
 		SELECT
@@ -354,6 +352,7 @@ sub report
 				[$row_title[3], trim($row->{'indication_memo'})],
 			];
 		}
+		#	нет данных лабораторных исследований
 		next if
 		(
 			!defined($row->{'probe_name'})					&& 
