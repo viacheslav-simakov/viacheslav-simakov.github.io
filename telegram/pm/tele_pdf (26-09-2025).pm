@@ -44,45 +44,16 @@ sub new {
 	my	($page_width, $page_height) = ($pdf->default_page_size)[2,3];
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Устанавливаем шрифты с кириллицей
+	#	обычный шрифт
 #	my	$font = $pdf->font('times.ttf');
 	my	$font = font_ttf($pdf, 'font/Roboto-Regular.ttf');
-=pod
-	#
-	#	Загрузка шрифта Roboto-Regular
-	my	$font_path = 'font/Roboto-Regular.ttf';
-	unless (-e $font_path)
-	{
-		#	Предупреждение!
-		warn "Файл шрифта $font_path не найден!\n";
-	}
-	else
-	{
-		#	Установка шрифта
-		$font = $pdf->ttfont($font_path);
-	}
-=cut
+#	my	$font = font_ttf($pdf, 'font/OpenSans-Regular.ttf');
 	#
 	#	жирный шрифт
 	my	$font_bold = font_ttf($pdf, 'font/Roboto-Bold.ttf');
 	#
 	#	курсивный шрифт
 	my	$font_italic = font_ttf($pdf, 'font/Roboto-Italic.ttf');
-=pod
-	my	$font_bold = $pdf->ttfont('timesbd.ttf');
-	#
-	#	Загрузка шрифта Roboto-Bold
-		$font_path = 'font/Roboto-Bold.ttf';
-	unless (-e $font_path)
-	{
-		#	Предупреждение!
-		warn "Файл шрифта $font_path не найден!\n";
-	}
-	else
-	{
-		#	Установка шрифта
-		$font_bold = $pdf->ttfont($font_path);
-	}
-=cut
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
 	#	ссылка на объект
@@ -92,6 +63,7 @@ sub new {
 			-pdf			=> $pdf,			# pdf-документ
 			-font			=> $font,			# шрифт
 			-font_bold		=> $font_bold,		# жирный шрифт
+			-font_italic	=> $font_italic,	# курсивный шрифт
 			-page_width		=> $page_width,		# ширина страницы
 			-page_height	=> $page_height,	# высота страницы
 			-page_margin	=>					# отступы от края страницы
@@ -154,6 +126,8 @@ sub save
 	#	ссылка на объект
 	my	$self = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Колонтитулы на странице
 		$self->page_header_footer();
 	#
@@ -161,7 +135,6 @@ sub save
 	my	$pdf_file = sprintf '%s.pdf', $self->{-from}->{id};
 	#
 	#	Сохранить файл
-#	$self->{-pdf}->saveas($self->{-from}->{id}.'.pdf');
 	$self->{-pdf}->saveas($pdf_file);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	имя файла
@@ -284,11 +257,14 @@ sub add_text
 	my	$self = shift @_;
 	#	строка текста
 	my	$string = shift @_;
+	#-------------------------------------------------------------------------
 	#	размеры страницы (ширина, высота)
 	my	$page_width = $self->{-page_width};
 	my	$page_height = $self->{-page_height};
+	#
 	#	отступы от краёв страницы
 	my	$margin = $self->{-page_margin};
+	#-------------------------------------------------------------------------
 	#	параметры текста
 	my	%settings = (
 			font 		=> $self->{-font},
@@ -320,11 +296,10 @@ sub add_text
 	#	https://metacpan.org/pod/PDF::API2::Content#paragraph
 	my	($overflow, $last_height) = $text->paragraph($string, $width, $height);
 	#
-	#	Отступ от верхнего края страницы
+	#	Увеличить отступ от верхнего края страницы
 	$self->{-current_y} -= $height - $last_height + 0*36;
 	
-	print STDERR "$overflow, $last_height\n";
-	
+#	print STDERR "$overflow, $last_height\n";
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -341,11 +316,6 @@ sub add_table
 	my	$self = shift @_;
 	#	данные таблицы
 	my	$data = shift @_;
-	#	размеры страницы (ширина, высота)
-	my	$page_width = $self->{-page_width};
-	my	$page_height = $self->{-page_height};
-	#	отступы от краёв страницы
-	my	$margin = $self->{-page_margin};
 	#	опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
 	my	%settings = (
 			header_props => # Заголовок таблицы
@@ -362,19 +332,36 @@ sub add_table
 			},
 			font 		=> $self->{-font},
 			font_size	=> 12,
-			x         	=> $margin->{-left},
-			w         	=> $page_width - $margin->{-left} - $margin->{-right},
-			y			=> $self->{-current_y},
 			padding   	=> 5,
 			size		=> '8cm 1*',
 			border_w	=> 0.5,
-			next_y		=> $page_height - $margin->{-top},
-			next_h		=> $page_height - $margin->{-top} - $margin->{-bottom},
 		, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	размеры страницы (ширина, высота)
+	my	$page_width = $self->{-page_width};
+	my	$page_height = $self->{-page_height};
+	#
+	#	отступы от краёв страницы
+	my	$margin = $self->{-page_margin};
+	#
+	#	?!? Проверка доступного высоты таблицы
+	if ($self->{-current_y} <= 1.5*72)
+	{
+		#	добавить пустую страницу
+		$self->add_page();
+	};
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	опции таблицы: https://metacpan.org/pod/PDF::Table#Table-settings
+	%settings = (%settings,
+		x         	=> $margin->{-left},
+		w         	=> $page_width - $margin->{-left} - $margin->{-right},
+		y			=> $self->{-current_y},
+		next_y		=> $page_height - $margin->{-top},
+		next_h		=> $page_height - $margin->{-top} - $margin->{-bottom},
+	);
 	#	Высота таблицы (до конца страницы)
 		$settings{h} = $settings{y} - $margin->{-bottom};
-	#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Копия данных таблицы
 	my	$copy_data;
 	#
@@ -386,7 +373,7 @@ sub add_table
 			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
 		}
 	}
-	#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	PDF-документ
 	my	$pdf = $self->{-pdf};
 	#
@@ -406,16 +393,9 @@ sub add_table
 			$copy_data,		# данные таблицы
 			%settings,		# опции таблицы
 		);
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Увеличить отступ от верхнего края страницы
-		$self->{-current_y} = $final_y - 0*36;
 	#
-	#	Проверка
-	if ($self->{-current_y} <= 1.5*72)
-	{
-		#	добавить пустую страницу
-		$self->add_page();
-	};
+	#	Отступ от верхнего края страницы
+		$self->{-current_y} = $final_y;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на объект
 	return $self;
@@ -424,93 +404,3 @@ sub add_table
 } ### end of package
 return 1;
 __DATA__
-
-#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-#
-#
-#	Добавить пустую страницу
-#
-my	$page = $pdf->page();
-#
-#	A4 (210mm x 297mm)
-	$page->mediabox(595, 842);  # 595 x 842 points
-#
-# Add a text object
-my	$text = $page->text();
-#
-# Set font and size
-	$text->font($font, 12);
-
-# Write text at specific coordinates
-#	$text->translate(50, 800);
-	$text->translate(36, 842-36);
-	$text->text('Hello, World!');
-#
-# Данные таблицы
-my @data = (
-    ["Sam-Иван", "25", "Москва", "Инженер"],
-    ["Мария", "30", "Санкт-Петербург", "Врач"],
-    ["Алексей", "28", "Новосибирск", "Программист"],
-    ["Ольга", "35", "Екатеринбург", "Учитель"],
-    ["Sam-Иван", "25", "Москва", "Инженер"],
-    ["Мария", "30", "Санкт-Петербург", "Врач"],
-    ["Алексей", "28", "Новосибирск", "Программист"],
-    ["Ольга", "35", "Екатеринбург", "Учитель"],
-    ["Алексей", "28", "Новосибирск", "Программист"],
-    ["Ольга", "35", "Екатеринбург", "Учитель"],
-);
-#
-#	Декодирование данных
-#
-foreach my $i (0 .. $#data)
-{
-	foreach my $j (0 .. $#{ $data[$i] })
-	{
-		$data[$i]->[$j] = decode('UTF-8', $data[$i]->[$j]);
-	}
-}
-#
-#	Создаем таблицу
-#
-my	$table = PDF::Table->new();
-#
-#	Опции таблицы
-#	https://metacpan.org/pod/PDF::Table#Table-settings
-	$table->table(
-        $pdf,
-        $page,
-		\@data,
-		header_props => {
-			font 		=> $font,
-            font_size	=> 14,
-            font_color	=> '#006666',
-            bg_color	=> 'yellow',
-            repeat		=> 1,    # 1/0 eq On/Off  if the header row should be repeated to every new page
-		},
-		font 		=> $font,
-		font_size	=> 12,
-        x         	=> 50,
-		y			=> 750,
-        w         	=> 500,
-        h   		=> 500,
-        padding   	=> 5,
-		size		=> '* 1cm 2* 4cm',
-		border_w	=> 0,
-#        background_color_odd  => "gray",
-#        background_color_even => "lightblue",
-		cell_props =>
-		[
-			[{colspan => 4}],#	Для первой строки, первой ячейки
-			[],
-			[{colspan => 4}],#	Для третьей строки, первой ячейки
-		],
-);
-#
-#	Сохраняем PDF
-#
-$pdf->saveas('russian_table2.pdf');
-
-print STDERR "Create file: 'russian_table2.pdf'\n";
-
-exit;
