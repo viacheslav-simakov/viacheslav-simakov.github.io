@@ -245,21 +245,8 @@ sub web_app_data
 		return undef;
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Äàííûå HTML-ôîğìû
-    my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
-	#
-    #	Äåêîäèğîâàíèå JSON äàííûõ HTML-ôîğìû ïîëó÷åííûõ èç Web App
-	my	$data = decode_json($web_app_data);
-	#
-	#	PDF-äîêóìåíò
-	my	$pdf = Tele_PDF->new
-		(
-			-message_from	=> $message->{from},
-			-web_app_data	=> decode_json($web_app_data),
-		);
-	#
 	#	Ñîçäàòü PDF-ôàéë
-		$pdf->save();
+		make_pdf($message);
 	#
 	#	Îòïğàâèòü ïîëüçîâàòåëş PDF-ôàéë
 		send_pdf($message);
@@ -349,11 +336,7 @@ sub make_pdf
 	my	$data_report = $req->report();
 	#
 	#	PDF-äîêóìåíò
-	my	$pdf = Tele_PDF->new
-		(
-			-message_from	=> $message->{from},
-			-web_app_data	=> decode_json($web_app_data),
-		);
+	my	$pdf = Tele_PDF->new( $message->{from} );
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Äîáàâèòü ïóñòóş ñòğàíèöó
 		$pdf->add_page();

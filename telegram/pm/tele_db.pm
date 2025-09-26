@@ -113,7 +113,7 @@ sub new {
 			or die $DBI::errstr;
 	#
 	#	вывод на экран
-#	printf "Connect to database '$db_file'\n";
+	printf "Connect to database '$db_file'\n";
 	#
 	#	ссылка на объект
 	my	$self =
@@ -139,7 +139,7 @@ sub DESTROY
 	$self->{-dbh}->disconnect or warn $self->{-dbh}->errstr;
 	#
 	#	вывод на экран
-#	print STDERR "\t\tdisconnect from database\n";
+	print STDERR "disconnect from database\n";
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
