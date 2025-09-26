@@ -26,10 +26,7 @@ use PDF::Table;
 =pod
 	Конструктор
 	---
-	$obj = Tele_PDF->new(
-			-message_from 	=> $message_from,
-			-web_app_data	=> $web_app_data,
-		);
+	$obj = Tele_PDF->new($message_from, $web_app_data);
 
 		$message_from	- сообщение пользователя (ссылка на хэш)
 		$web_app_data	- данные HTML-формы (ссылка на хэш)
@@ -37,17 +34,10 @@ use PDF::Table;
 sub new {
 	#	название класса
 	my	$class = shift @_;
-	#	параметры вызова метода
-	my	%args =	(
-			-message_from 	=> undef,	# сообщение пользователя
-			-web_app_data	=> undef,	# данные HTML-формы
-		, @_ );
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Сообщение пользователя, который сделал запрос
-	my	$from = $args{-message_from};
-	#
-	#	База данных
-	my	$db = Tele_DB->new($args{-web_app_data});
+	#	сообщение пользователя, который сделал запрос
+	my	$from = shift @_;
+	#	база данных
+	my	$db = Tele_DB->new( shift @_ );
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Создаем PDF
 	my	$pdf = PDF::API2->new();
@@ -60,8 +50,8 @@ sub new {
 	#
 	#	Устанавливаем шрифты с кириллицей
 #	my	$font = $pdf->font('times.ttf');
-	my	$font = font_ttf($pdf, 'font/Roboto-Regular.ttf');
 #	my	$font = font_ttf($pdf, 'font/OpenSans-Regular.ttf');
+	my	$font = font_ttf($pdf, 'font/Roboto-Regular.ttf');
 	#
 	#	жирный шрифт
 	my	$font_bold = font_ttf($pdf, 'font/Roboto-Bold.ttf');

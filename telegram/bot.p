@@ -248,15 +248,8 @@ sub web_app_data
 	#	Äàííûå HTML-ôîğìû
     my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
 	#
-    #	Äåêîäèğîâàíèå JSON äàííûõ HTML-ôîğìû ïîëó÷åííûõ èç Web App
-	my	$data = decode_json($web_app_data);
-	#
 	#	PDF-äîêóìåíò
-	my	$pdf = Tele_PDF->new
-		(
-			-message_from	=> $message->{from},
-			-web_app_data	=> decode_json($web_app_data),
-		);
+	my	$pdf = Tele_PDF->new($message->{from}, decode_json($web_app_data));
 	#
 	#	Ñîçäàòü PDF-ôàéë
 		$pdf->save();
