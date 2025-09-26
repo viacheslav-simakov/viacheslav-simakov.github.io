@@ -139,7 +139,7 @@ sub DESTROY
 	$self->{-dbh}->disconnect or warn $self->{-dbh}->errstr;
 	#
 	#	вывод на экран
-	print STDERR "disconnect from database\n";
+	print STDERR "Disconnect from database\n";
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod

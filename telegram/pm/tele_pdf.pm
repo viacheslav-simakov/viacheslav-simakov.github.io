@@ -382,13 +382,17 @@ sub add_table
 =pod
 	Сохранить файл
 	---
-	$obj->save();
+	$obj->save( $pdf_file_name );
+	
+		$pdf_file_name	- имя PDF-файла
 
 =cut
 sub save
 {
 	#	ссылка на объект
 	my	$self = shift @_;
+	#	имя PDF-файла
+	my	$pdf_file_name = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
 	#	(I) ДАННЫЕ ЗАПРОСА ПОЛЬЗОВАТЕЛЯ
@@ -473,17 +477,14 @@ sub save
 	#	Колонтитулы на странице
 		$self->page_header_footer();
 	#
-	#	имя PDF-файла
-	my	$pdf_file = sprintf '%s.pdf', $self->{-from}->{id};
-	#
 	#	Сохранить файл
-	$self->{-pdf}->saveas($pdf_file);
+	$self->{-pdf}->saveas($pdf_file_name);
 	#
 	#	вывод на экран
-	print STDERR "Create file '$pdf_file'\n";
+	print STDERR "Create file '$pdf_file_name'\n";
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	имя файла
-	return $pdf_file;
+	#	ссылка на объект
+	return $self;
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package

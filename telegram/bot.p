@@ -56,7 +56,7 @@ my	$offset = 0;
 #
 #	Главный цикл обработки событий бота
 printf STDERR
-	"Telegram Bot \@tele_rheumatology_bot is started at %3\$02d:%2\$02d:%1\$02d\n\n",
+	"Telegram Bot \@tele_rheumatology_bot is started at %3\$02d:%2\$02d:%1\$02d\n",
 	(localtime)[0 ... 2];
 while (1) {
 	#	задержка 1 секунда
@@ -66,8 +66,8 @@ while (1) {
 	#
     my	$updates = $api->getUpdates(
 		{
-			offset => $offset,	# Смещение
-			timeout => 30,		# Determines the timeout in seconds for long polling
+			offset	=> $offset,	# Смещение
+			timeout	=> 30,		# Determines the timeout in seconds for long polling
 		}
 	) or die "Ошибка при получении обновлений: $!";
     #
@@ -79,42 +79,38 @@ while (1) {
         $offset = $update->{update_id} + 1 if $update->{update_id} >= $offset;
 		#
 		#	Журнал
-			_logger($update);
+		logger($update);
         #
 		#	Сообщение
         my	$message = $update->{message} or next;
-        #
-		#	ID чата
-		my	$chat_id = $message->{chat}->{id} or next;
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		#	Проверка ID чата
+		unless ($message->{chat}->{id})
+		{
+			#	вывод на экран
+			Carp::carp "Ошибка! Неверный 'chat id'";
+			#	следующее обновление
+			next;
+		}
 		#
 		#	Текст сообщения
-        my	$msg_text = $message->{text} or undef;
+#        my	$msg_text = $message->{text} or undef;
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         #	Обработка команд
 		if ($message->{web_app_data}->{data})
 		{
-			#	Данные Web App
-			web_app_data($message);
-			#
-			#	Следующая итерация цикла
-			next;
+			#	данные Web App
+			user_request($message);
 		}
-        elsif ($msg_text and $msg_text =~ m{^/start}i)
+        elsif (defined($message->{text}) and $message->{text} =~ m{^/start}i)
 		{
 			#	клавиатура
 			web_app_keyboard($message);
         }
         else
 		{
-            $api->sendMessage(
-			{
-                chat_id => $message->{chat}->{id},
-				parse_mode => 'Markdown',
-                text => decode('windows-1251', sprintf(
-					"Привет *%s*!\nЯ бот \"Электронный ассистент врача-ревматолога\".\nИспользуйте /start для начала работы.",
-					encode('windows-1251', ($message->{from}->{first_name} || 'unknow')))
-				),
-            });
+			#	неизвестный запрос
+			unknow($message);
         }
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     }
@@ -123,46 +119,63 @@ while (1) {
 =pod
 	Вывод на экран
 	---
-	_logger($update)
+	logger($update)
 		
 		$update	- ссылка на обновление (хэш)
 =cut
-sub _logger
+sub logger
 {
 	#	ссылка на обновление
 	my	$update = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Журнал
-	printf STDERR "update at %3\$02d:%2\$02d:%1\$02d\n", (localtime)[0 ... 2];
+	printf STDERR "\nUpdate at %3\$02d:%2\$02d:%1\$02d\n", (localtime)[0 ... 2];
+=pod
 	printf STDERR "from_id='%s'\ttext='%s'\tweb_app_data='%s'\n%s%s\n",
 		$update->{message}->{from}->{id},
 		encode('windows-1251', $update->{message}->{text} || ''),
 		encode('windows-1251', $update->{message}->{web_app_data}->{data} || ''),
 		Dumper($update),
 		('~' x 79);
+=cut
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Кнопка
+	Неизвестное сообщение
 	---
-	_button($text, $page, $emoji)
-	
-		$text	- надпись на кнопке
-		$page	- страница
-		$emoji	- эмодзи
+	unknow($message)
+
+		$message	- ссылка на сообщение (хэш)
 =cut
-sub _button
+sub unknow
 {
-	#	название кнопки, html-страница
-	my	($text, $page, $emoji) = @_;
-	#	значок
-		$emoji = defined $emoji ? $emoji . ' ' : '';
-	#
-	#	ссылка на хэш
-	return
+	#	ссылка на сообщение
+	my	$message = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Безопасная конструкция
+	eval {
+		#	Послать сообщение боту (вывод клавиатуры)
+		$api->api_request('sendMessage',
+		{
+			chat_id		=> $message->{chat}->{id},
+			parse_mode	=> 'Markdown',
+			text		=> decode('windows-1251', sprintf(
+				"Привет _%s_!\nЯ бот *Электронный ассистент врача-ревматолога*.\n".
+				"Используйте /start для начала работы.",
+				encode('windows-1251', ($message->{from}->{first_name} || 'unknow')))
+			),
+		});
+	};
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Проверка ошибок
+	if ($@)
 	{
-		text => $emoji . decode('windows-1251', $text),
-		web_app => {url => 'https://viacheslav-simakov.github.io/med/' . $page},
+		#	информации об ошибке
+		Carp::carp "\nОшибка при отправке 'default' сообщения: $@\n";
+	}
+	else
+	{
+		printf STDERR "Unknown message! 'Default' response to Bot has been send\n";
 	}
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -178,73 +191,63 @@ sub web_app_keyboard
 	#	ссылка на сообщение
 	my	$message = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	ID чата
-    my	$chat_id = $message->{chat}->{id} || undef;
-	#
-	#	Проверка ID чата
-	unless (defined $chat_id)
-	{
-		printf STDERR "\n\t%s: Ошибка! Неверный 'chat id'\n", (caller(0))[3];
-		#
-		#	возврат из функции
-		return undef;
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Клавиатура
-	my	$keyboard = [
-		[
-			{
-				text	=> "\x{1F48A}" . decode('windows-1251',
-							'Электронный ассистент врача-ревматолога'),
-				web_app	=> {
-					url	=> 'https://viacheslav-simakov.github.io/med/med.html'
-				},
-			}
-#		_button('Электронный ассистент врача-ревматолога', 'med.html', "\x{1F48A}")
-		],
-	];
-	#-----------------------------------------------------------------
-	#	Сообщение
-	$api->api_request('sendMessage',
-	{
-		chat_id => $chat_id,
-		parse_mode => 'Markdown',
-		text => decode('windows-1251',
-			"*Электронный ассистент врача-ревматолога*\n(СГМУ имени В.И. Разумовского)"),
-		reply_markup =>
+	my	$keyboard = [[
 		{
-			keyboard => $keyboard,
-			resize_keyboard => \1,
-			one_time_keyboard => \1,
-		},
-	});
+			text	=> "\x{1F48A}" . decode('windows-1251',
+						'Электронный ассистент врача-ревматолога'),
+			web_app	=> {
+				url	=> 'https://viacheslav-simakov.github.io/med/med.html'
+			},
+		}
+	],];
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Безопасная конструкция
+	eval {
+		#	Послать сообщение боту (вывод клавиатуры)
+		$api->api_request('sendMessage',
+		{
+			chat_id => $message->{chat}->{id},
+			parse_mode => 'Markdown',
+			text => decode('windows-1251',
+				"*Электронный ассистент врача-ревматолога*\n(СГМУ имени В.И. Разумовского)"),
+			reply_markup =>
+			{
+				keyboard => $keyboard,
+				resize_keyboard => \1,
+				one_time_keyboard => \1,
+			},
+		});
+	};
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Проверка ошибок
+	if ($@)
+	{
+		#	информации об ошибке
+		Carp::carp "\nОшибка при отправке 'клавиатуры' Бота: $@\n";
+	}
+	else
+	{
+		printf STDERR "'reply mark' keyboard to Bot has been send\n";
+	}
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Обработка данных HTML-формы полученных из Web App
 	---
-	web_app_data($message)
+	user_request($message)
 	
 		$message	- ссылка на сообщение (хэш)
 
 =cut
-sub web_app_data
+sub user_request
 {
 	#	ссылка на сообщение
     my	$message = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	ID чата
-    my	$chat_id = $message->{chat}->{id};
+	#	имя PDF-файла
+	my	$pdf_file_name = sprintf '%s.pdf', $message->{chat}->{id};
 	#
-	#	Проверка ID чата
-	unless (defined $chat_id)
-	{
-		printf STDERR "\n\t%s: Ошибка! Неверный 'chat id'\n", (caller(0))[3];
-		#
-		#	возврат из функции
-		return undef;
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Данные HTML-формы
     my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
 	#
@@ -252,38 +255,35 @@ sub web_app_data
 	my	$pdf = Tele_PDF->new($message->{from}, decode_json($web_app_data));
 	#
 	#	Создать PDF-файл
-		$pdf->save();
+		$pdf->save($pdf_file_name);
 	#
 	#	Отправить пользователю PDF-файл
-		send_pdf($message);
+		send_pdf($message, $pdf_file_name);
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Отправка PDF-файла
 	---
-	send_pdf( $message )
+	send_pdf($message, $pdf_file_name)
 	
-		$message	- ссылка на сообщение (хэш)
+		$message		- ссылка на сообщение (хэш)
+		$pdf_file_name	- имя PDF-файла
 =cut
 sub send_pdf
 {
-	#	ссылка на сообщение
+	#	ID чата пользователя
     my	$message = shift @_;
+	#	имя PDF-файла
+	my	$pdf_file_name = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	ID чата
-    my	$chat_id = $message->{chat}->{id};
-	#
-	#	PDF-файл
-	my	$pdf_file = sprintf '%s.pdf', $chat_id;
-	#
-	#	Проверяем существование файла
-	unless (-e $pdf_file)
+	#	Проверка существование файла
+	unless (-e $pdf_file_name)
 	{
 		#	предупреждение!
 		Carp::carp sprintf
 			"package '%s', filename '%s', subroutine '%s':\n".
 			"PDF-file '%s' file is not exist!\n",
-			(caller(0))[0,1,3], $pdf_file;
+			(caller(0))[0,1,3], $pdf_file_name;
 		#
 		#	возврат из функции
 		return undef;
@@ -294,144 +294,25 @@ sub send_pdf
 		#	Отправляем PDF файл
 		my $result = $api->api_request('sendDocument',
 		{
-			chat_id		=> $chat_id,
+			chat_id		=> $message->{chat}->{id},
 			caption		=> decode('windows-1251','СГМУ имени В.И. Разумовского'),
 			document	=>
 			{
-				file		=> $pdf_file,
+				file		=> $pdf_file_name,
 #				filename	=> decode('windows-1251', 'Рекомендации.pdf'),
-				filename	=> $pdf_file,
+				filename	=> $pdf_file_name,
 			},
 		});
 		#	Вывод на экран
 		printf STDERR
-			"Successed sent (message ID: %s) '' file\n",
-			$result->{result}->{message_id};
+			"Send file '%s' successed (%s) into chat id='%s'\n",
+			$result->{result}->{document}->{file_name},
+			sprintf('%.1f kB', $result->{result}->{document}->{file_size}/1024),
+			$message->{chat}->{id};
 #		print STDERR Dumper($result);
 	};
 	#	Проверка ошибок
 	Carp::carp "\nОшибка при отправке файла: $@\n" if ($@);
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-=pod
-	Создать PDF-файла
-	---
-	make_pdf( $message )
-	
-		$message	- ссылка на сообщение (хэш)
-
-=cut
-sub make_pdf
-{
-	#	ссылка на сообщение
-    my	$message = shift @_;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Данные HTML-формы
-    my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
-	#
-    #	Декодирование JSON данных HTML-формы полученных из Web App
-	my	$data = decode_json($web_app_data);
-	#
-	#	ссылка на объект
-	my	$req = Tele_DB->new($data);
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Запрос пользователя
-	my	$data_query = $req->request();
-	#
-	#	Отчет по запросу пользователя
-	my	$data_report = $req->report();
-	#
-	#	PDF-документ
-	my	$pdf = Tele_PDF->new
-		(
-			-message_from	=> $message->{from},
-			-web_app_data	=> decode_json($web_app_data),
-		);
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Добавить пустую страницу
-		$pdf->add_page();
-	#
-	#	увеличить отступ от верхнего края страницы	
-		$pdf->{-current_y} -= 12;
-	#
-	#	Данные запроса пользователя
-	#
-		$pdf->add_text(decode('windows-1251',
-			'Данные запроса пользователя'),
-			font => $pdf->{-font_bold}, font_size => 14);
-	#
-	#	цикл по секциям запроса
-	foreach my $name ('rheumatology', 'comorbidity', 'status', 'manual', 'probe', 'preparation')
-	{
-		#	нет выбранных данных
-		next if scalar @{ $data_query->{$name} } < 2;
-		#
-		#	добавить таблицу
-		if ($name eq 'probe')
-		{
-			$pdf->add_table($data_query->{$name}, size => '8cm 3cm 1*');
-		}
-		else
-		{
-			$pdf->add_table($data_query->{$name}, size => '8cm 1*');
-		}
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Добавить пустую страницу
-		$pdf->add_page();
-	#
-	#	увеличить отступ от верхнего края страницы	
-		$pdf->{-current_y} -= 12;
-	#
-	#	Список препаратов рекомендуемых к применению
-	#
-	$pdf->add_text(decode('windows-1251',
-			'Список препаратов рекомендуемых к применению'),
-			font => $pdf->{-font_bold}, font_size => 14);
-	#
-	#	цикл по выбранным препаратам
-	for (my $i = 0; $i < scalar @{ $data_report->{-preparation} }; $i++)
-	{
-		#	добавить таблицу
-		$pdf->add_table($data_report->{-preparation}->[$i],
-			size	=> '5cm 1*',
-		);
-		#
-		#	Лабораторные исследования
-		if (defined $data_report->{-probe}->[$i])
-		{
-			#	Заголовок таблицы
-			unshift @{ $data_report->{-probe}->[$i] },
-			[ map
-				{
-					Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
-				}
-#				('Исследование', 'Показатель', '','', 'Рекомендации')
-				('Показатель', 'от', 'факт', 'до', 'Рекомендации')
-			];
-			#
-			#	Добавить таблицу
-			$pdf->add_table($data_report->{-probe}->[$i],
-				size			=> '5cm 2cm 2cm 2cm 1*',
-				header_props	=>
-				{
-					font		=> $pdf->{-font_italic},
-					font_size	=> 12,
-					repeat		=> 1,
-				},
-			);
-		}
-		#
-		#	Увеличить отступ от верхнего края страницы
-		$pdf->{-current_y} -= 36;
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Создать PDF-файл
-	my	$pdf_file_name = $pdf->save();
-	#
-	#	вывод на экран
-	print STDERR "\nCreate file '$pdf_file_name'";
-	#	имя файла
-	return $pdf_file_name;
-}
 __DATA__
