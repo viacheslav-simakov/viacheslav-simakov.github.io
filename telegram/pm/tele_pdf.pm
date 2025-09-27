@@ -472,18 +472,18 @@ sub save
 				'cell_render_hook'  => sub
 				{
 					my	($page, $first_row, $row, $col, $x, $y, $w, $h) = @_;
-					# Do nothing except for first column (and not a header row)
-					return if ($col != 2);
-					return if ($first_row);
-					# Create link
+					#	Do nothing except for first column (and not a header row)
+					return if ($first_row) or ($col != 1);
+					#	Create link
 					my	$text = $page->text();
 					#
 					#	Устанавливаем шрифт и размер
 						$text->font($self->{-font}, 10);
 					#
 					#	Положение текста (верхний левый угол)
-						$text->translate(32, $y - 12);
-						$text->text(sprintf('%d', $row));
+#						$text->translate(32, $y + $h);
+						$text->position(32, $y + 0.5*$h);
+						$text->text(sprintf('* %d', $row));
 				},
 			);
 		}
