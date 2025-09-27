@@ -184,6 +184,10 @@ sub page_header_footer {
 			$text->text($header);
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	Нижний колонтитул (footer)
+			$text->translate($margin->{-left}, 0.5*$margin->{-bottom});
+			$text->text($time_stamp);
+		#
+		#	номер страницы
 		my	$footer = Encode::decode('windows-1251', "Страница $i из $total_pages");
 		#
 		#	Вычисляем ширину текста
