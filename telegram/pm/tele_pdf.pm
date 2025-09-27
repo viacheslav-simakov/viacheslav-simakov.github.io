@@ -458,6 +458,9 @@ sub save
 		{
 			#	Заголовок таблицы
 			unshift @{ $data_report->{-probe}->[$i] }, \@probe_title;
+			
+#			my	@data = map { Encode::decode('UTF-8', $_) } @{ $data_report->{-probe}->[$i] };
+			my	$data = $data_report->{-probe}->[$i];
 			#
 			#	Добавить таблицу
 			$self->add_table($data_report->{-probe}->[$i],
@@ -471,9 +474,10 @@ sub save
 				#	
 				'cell_render_hook'  => sub
 				{
+					#	параметры вызова функции
 					my	($page, $first_row, $row, $col, $x, $y, $w, $h) = @_;
 					#	Do nothing except for first column (and not a header row)
-					return if ($first_row) or ($col != 1);
+					return if ($first_row) or ($col != 1) or ($data->[$row]->[2] eq '');
 					#	Create link
 					my	$text = $page->text();
 					#
@@ -483,7 +487,7 @@ sub save
 					#	Положение текста (верхний левый угол)
 #						$text->translate(32, $y + $h);
 						$text->position(32, $y + 0.5*$h);
-						$text->text(sprintf('* %d', $row));
+						$text->text(sprintf('%d=%s', $row, $data->[$row]->[2]));
 				},
 			);
 		}
