@@ -482,8 +482,8 @@ sub save
 						$text->font($self->{-font}, 10);
 					#
 					#	Положение текста (верхний левый угол)
-						$text->position(32, $y - 12);
-						$text->text('*');
+						$text->translate(32, $y - 12);
+						$text->text(sprintf('%d', $row));
 				},
 			);
 		}
