@@ -525,10 +525,11 @@ sub save
 					my	($page, $first_row, $row, $col, $x, $y, $w, $h) = @_;
 					#
 					#	Do nothing except for first column (and not a header row)
-					return if ($first_row) or ($col != 0);# or ($data->[$row]->[2] eq '');
+#					return if ($first_row) or ($col != 0);# or ($data->[$row]->[2] eq '');
+					return if ($first_row);
+					return if defined($data->[$row]->[2]) and ($data->[$row]->[2] eq '');
 					#	Получаем объект для рисования графики
 					_draw_arrow($page->gfx, $x, $y, $w, $h)
-					
 				},
 			);
 		}
