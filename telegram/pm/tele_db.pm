@@ -33,7 +33,7 @@ my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
 #
 #	Утилиты
-use Utils();
+#use Utils();
 #
 #	Формирование ОТЧЕТОВ из базы данных
 #

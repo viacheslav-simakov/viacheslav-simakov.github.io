@@ -385,47 +385,12 @@ sub add_table
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Рисовать стрелку: https://metacpan.org/pod/PDF::API2::Content#PATH-CONSTRUCTION-(DRAWING)
-	---
-	_draw_arrow($gfx, $x, $y, $w, $h)
-	
-		$gfx	- объект для рисования графики
+
 =cut
-sub _draw_arrow
+sub _probe_alert
 {
-	#	объект для рисования графики
-	my	$gfx = shift @_;
-	#	область для рисования
-	my	($x, $y, $w, $h) = @_;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Толщина линии
-	$gfx->linewidth(0.5);
-	#	Цвет линии
-	$gfx->strokecolor('black');
-	#	цвет заливки
-	$gfx->fill_color('#FF7074');
-	#	стиль соединения, который будет использоваться на углах пути
-	$gfx->line_join('round');
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	$x -= 12;
-	$y += 4;
-	$h -= 8;
-	#
-	#	начало пути
-	$gfx->move($x, $y + $h/2);
-	$gfx->line($x - $h/2, $y);
-	#
-	#	рисовать фигуру
-	$gfx->hline($x - 32);
-	$gfx->vline($y + $h);
-	$gfx->hline($x - $h/2);
-	$gfx->close();
-	#
-	#	Заполнить и обвести текущий контур
-	$gfx->paint;
-	#
-	#	Восстановить цвет
-	$gfx->fill_color('black');
+	
+	
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -526,8 +491,7 @@ sub save
 					my	($page, $first_row, $row, $col, $x, $y, $w, $h) = @_;
 					#
 					#	Do nothing except for first column (and not a header row)
-					return if ($first_row) or ($col != 0) or ($data->[$row]->[2] eq '');
-=pod
+					return if ($first_row) or ($col != 1) or ($data->[$row]->[2] eq '');
 					#
 					#	Create text
 					my	$text = $page->text();
@@ -547,10 +511,6 @@ sub save
 							$y + $h - 4 - 14);
 #						$text->text(sprintf('# %d=%s', $row, $data->[$row]->[2]));
 						$text->text('#');
-=cut
-					#	Получаем объект для рисования графики
-					_draw_arrow($page->gfx, $x, $y, $w, $h)
-					
 				},
 			);
 		}
