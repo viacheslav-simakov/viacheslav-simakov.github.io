@@ -306,6 +306,7 @@ sub add_table
 				font 			=> $self->{-font_bold},
 				font_size		=> 12,
 				font_color		=> 'black',
+#				bg_color		=> '#D4EBF2',
 				bg_color		=> '#f8f4e8',
 				valign			=> 'middle',
 				padding_top		=> 7,
@@ -343,7 +344,6 @@ sub add_table
 	);
 	#	Высота таблицы (до конца страницы)
 		$settings{h} = $settings{y} - $margin->{-bottom};
-=pod
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Копия данных таблицы
 	my	$copy_data;
@@ -356,7 +356,6 @@ sub add_table
 			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
 		}
 	}
-=cut
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	PDF-документ
 	my	$pdf = $self->{-pdf};
@@ -368,14 +367,13 @@ sub add_table
 	#	Создать объект-таблицу
 	my	$table = PDF::Table->new();
 	#
-	#	Генерировать таблицу
+	#	Сгенерировать таблицу
 	#	https://metacpan.org/pod/PDF::Table#table()
 	#
 	my	($final_page, $number_of_pages, $final_y) = $table->table(
 			$pdf,			# ссылка на объект
 			$page,			# страница
-#			$copy_data,		# данные таблицы
-			$data,			# данные таблицы
+			$copy_data,		# данные таблицы
 			%settings,		# опции таблицы
 		);
 	#
@@ -473,7 +471,6 @@ sub save
 		#	добавить таблицу
 		$self->add_table($data_query->{$name}, size => $column_size);
 	}
-
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
 	#	(II) СПИСОК ПРЕПАРАТОВ РЕКОМЕНДУЕМЫХ К ПРИМЕНЕНИЮ
@@ -492,7 +489,10 @@ sub save
 			font => $self->{-font_bold}, font_size => 14);
 	#
 	#	Заголовок таблицы 'Лабораторные исследования'
-	my	@probe_title = map { Encode::decode('windows-1251', $_) }
+	my	@probe_title = map
+		{
+			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+		}
 		('Показатель', 'от', 'факт', 'до', 'Рекомендации');
 	#
 	#	цикл по выбранным препаратам
@@ -507,6 +507,7 @@ sub save
 			#	Заголовок таблицы
 			unshift @{ $data_report->{-probe}->[$i] }, \@probe_title;
 			
+#			my	@data = map { Encode::decode('UTF-8', $_) } @{ $data_report->{-probe}->[$i] };
 			my	$data = $data_report->{-probe}->[$i];
 			#
 			#	Добавить таблицу
@@ -526,6 +527,27 @@ sub save
 					#
 					#	Do nothing except for first column (and not a header row)
 					return if ($first_row) or ($col != 0) or ($data->[$row]->[2] eq '');
+=pod
+					#
+					#	Create text
+					my	$text = $page->text();
+					#
+					#	Устанавливаем шрифт и размер
+						$text->font($self->{-font_bold}, 14);
+					#
+					#	маркер
+					my	$mark = '#';
+					#
+					#	Вычисляем ширину текста
+					my	$text_width = $text->text_width($mark);
+					#
+					#	Положение текста (верхний левый угол)
+						$text->position(
+							$self->{-page_margin}->{-left} - $text_width - 8,
+							$y + $h - 4 - 14);
+#						$text->text(sprintf('# %d=%s', $row, $data->[$row]->[2]));
+						$text->text('#');
+=cut
 					#	Получаем объект для рисования графики
 					_draw_arrow($page->gfx, $x, $y, $w, $h)
 					
