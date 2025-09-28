@@ -409,7 +409,7 @@ sub _draw_arrow
 	#	стиль соединения, который будет использоваться на углах пути
 	$gfx->line_join('round');
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	$x -= 12;
+	$x -= 24;
 	$y += 4;
 	$h -= 8;
 	#
@@ -525,7 +525,7 @@ sub save
 					my	($page, $first_row, $row, $col, $x, $y, $w, $h) = @_;
 					#
 					#	Do nothing except for first column (and not a header row)
-					return if ($first_row) or ($col != 0) or ($data->[$row]->[2] eq '');
+					return if ($first_row) or ($col != 0);# or ($data->[$row]->[2] eq '');
 					#	Получаем объект для рисования графики
 					_draw_arrow($page->gfx, $x, $y, $w, $h)
 					
