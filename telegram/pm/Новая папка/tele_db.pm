@@ -12,6 +12,9 @@ use warnings;
 #	Альтернатива 'warn' и 'die' для модулей
 #	https://perldoc.perl.org/Carp
 use Carp();
+#	Декодирование символов
+#	https://perldoc.perl.org/Encode
+use Encode();
 #	JSON (JavaScript Object Notation) кодирование/декодирование
 #	https://metacpan.org/pod/JSON
 use	JSON;
@@ -31,9 +34,6 @@ my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 #	папки библиотек (модулей)
 #	'.' = текущая папка!
 use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
-#
-#	Утилиты
-#use Utils();
 #
 #	Формирование ОТЧЕТОВ из базы данных
 #
@@ -77,7 +77,8 @@ my	%FORM_number =
 #	Заголовки строк
 my	@row_title = map
 	{
-		Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+#		Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
+		Encode::decode('windows-1251', $_)
 	}
 	('Препарат', 'Информация', 'Клинические показания', 'С осторожностью');
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -102,6 +103,28 @@ sub trim
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвратить строку
     return $string;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Удалить в строке ведущие и завершающие пробелы 
+	---
+	$hash_ref = decode_utf8( \%hash );
+	
+		%hash	- хэш записи базы данных
+=cut
+sub decode_utf8
+{
+    my	$hash_ref = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	цикл по ключам хэша
+	foreach (keys %{ $hash_ref })
+	{
+		#	декодировать строку из "UTF-8"
+		$hash_ref->{$_} = trim(Encode::decode('UTF-8', $hash_ref->{$_}));
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ссылка на хэш
+	return $hash_ref;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -173,7 +196,7 @@ sub request {
 	#	цикл по группам флажков (checkbox)
 	foreach my $name (keys %FORM_checkbox)
 	{
-		#	ID флажков html-формы
+		#	ID флажков HTML-формы
 		my	$id = join(',', @{ $query->{$name} });
 		#
 		#	Таблица базы данных
@@ -189,15 +212,15 @@ sub request {
 		$sth->execute;
 		#
 		#	Заголовок данных
-		my	@data = ([map
-			{
-				Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
-			}
+		my	@data = ([map { Encode::decode('windows-1251', $_) }
 			($FORM_checkbox{$name}, 'Информация')]);
 		#
 		#	цикл по выбранным записям
 		while (my $row = $sth->fetchrow_hashref)
 		{
+			#	декодировать из "UTF-8"
+			$row = decode_utf8($row);
+			#	добавить в список
 			push @data, [$row->{name}, trim($row->{info})];
 		}
 		#
@@ -211,7 +234,7 @@ sub request {
 		#	хэш строк ввода (id, значение)
 		my	%value = map { $_->{id} => $_->{val} } @{ $query->{$name} };
 		#
-		#	ID строк ввода html-формы
+		#	ID строк ввода HTML-формы
 		my	$id = join(',', sort keys %value);
 		#
 		#	Таблица базы данных
@@ -227,15 +250,15 @@ sub request {
 		$sth->execute;
 		#
 		#	Заголовок данных
-		my	@data = ([map
-			{
-				Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
-			}
+		my	@data = ([map { Encode::decode('windows-1251', $_) }
 			($FORM_number{$name}, 'Результат', 'Информация')]);
 		#
 		#	цикл по выбранным записям
 		while (my $row = $sth->fetchrow_hashref)
 		{
+			#	декодирование из "UTF-8"
+			$row = decode_utf8($row);
+			#	добавить в список
 			push @data, [$row->{name}, $value{$row->{id}}, trim($row->{info})];
 		}
 		#
@@ -299,8 +322,8 @@ sub report
 	#	нет рекомендаций?
 	if ( $sth->fetchrow_hashref()->{rows} == 0 )
 	{
-		return Encode::encode('UTF-8', Encode::decode('windows-1251',
-			'Для заданных условий поиска нет рекомендуемых препаратов'));
+		return Encode::decode('windows-1251',
+			'Для заданных условий поиска нет рекомендуемых препаратов');
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Список препаратов
@@ -338,6 +361,9 @@ sub report
 	my	$order = 1;
 	while (my $row = $sth->fetchrow_hashref)
 	{
+		#	декодирование из "UTF-8"
+		$row = decode_utf8($row);
+		#
 		#	первая строка группы записей
 		if ($row->{num} == 1)
 		{
@@ -348,27 +374,27 @@ sub report
 					sprintf('%d) %s', $order++, $row->{'preparation_name'}),
 					$row->{'preparation_info'}
 				],
-				[$row_title[2], trim($row->{'indication_info'})],
-				[$row_title[3], trim($row->{'indication_memo'})],
+				[$row_title[2], $row->{'indication_info'}],
+				[$row_title[3], $row->{'indication_memo'}],
 			];
 		}
 		#	нет данных лабораторных исследований
 		next if
 		(
-			!defined($row->{'probe_name'})					&& 
-			!defined($row->{'probe_min'})					&&
-			!defined($row->{'probe_value'})					&&
-			!defined($row->{'probe_max'})					&&
-			!defined($row->{'prescription_instruction'})
+			($row->{'probe_name'}				eq '') && 
+			($row->{'probe_min'}				eq '') &&
+			($row->{'probe_value'}				eq '') &&
+			($row->{'probe_max'}				eq '') &&
+			($row->{'prescription_instruction'}	eq '')
 		);
 		#	данные группы записей
 		push @{ $probe[$#preparation] },
 		[
-			trim($row->{'probe_name'}),
-			trim($row->{'probe_min'}),
-			trim($row->{'probe_value'}),
-			trim($row->{'probe_max'}),
-			trim($row->{'prescription_instruction'})
+			$row->{'probe_name'},
+			$row->{'probe_min'},
+			$row->{'probe_value'},
+			$row->{'probe_max'},
+			$row->{'prescription_instruction'}
 		];
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

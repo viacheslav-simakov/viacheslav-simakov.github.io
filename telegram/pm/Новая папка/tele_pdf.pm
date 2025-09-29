@@ -306,7 +306,6 @@ sub add_table
 				font 			=> $self->{-font_bold},
 				font_size		=> 12,
 				font_color		=> 'black',
-#				bg_color		=> '#D4EBF2',
 				bg_color		=> '#f8f4e8',
 				valign			=> 'middle',
 				padding_top		=> 7,
@@ -344,6 +343,7 @@ sub add_table
 	);
 	#	Высота таблицы (до конца страницы)
 		$settings{h} = $settings{y} - $margin->{-bottom};
+=pod
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Копия данных таблицы
 	my	$copy_data;
@@ -356,6 +356,7 @@ sub add_table
 			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
 		}
 	}
+=cut
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	PDF-документ
 	my	$pdf = $self->{-pdf};
@@ -367,13 +368,14 @@ sub add_table
 	#	Создать объект-таблицу
 	my	$table = PDF::Table->new();
 	#
-	#	Сгенерировать таблицу
+	#	Генерировать таблицу
 	#	https://metacpan.org/pod/PDF::Table#table()
 	#
 	my	($final_page, $number_of_pages, $final_y) = $table->table(
 			$pdf,			# ссылка на объект
 			$page,			# страница
-			$copy_data,		# данные таблицы
+#			$copy_data,		# данные таблицы
+			$data,			# данные таблицы
 			%settings,		# опции таблицы
 		);
 	#
@@ -407,7 +409,7 @@ sub _draw_arrow
 	#	стиль соединения, который будет использоваться на углах пути
 	$gfx->line_join('round');
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	$x -= 12;
+	$x -= 24;
 	$y += 4;
 	$h -= 8;
 	#
@@ -415,7 +417,7 @@ sub _draw_arrow
 	$gfx->move($x, $y + $h/2);
 	#
 	#	рисовать фигуру
-	$gfx->line($x - $h/2, $y);
+	$gfx->line($x - $h/2, $y);	
 	$gfx->hline($x - 32);
 	$gfx->vline($y + $h);
 	$gfx->hline($x - $h/2);
@@ -471,6 +473,7 @@ sub save
 		#	добавить таблицу
 		$self->add_table($data_query->{$name}, size => $column_size);
 	}
+
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
 	#	(II) СПИСОК ПРЕПАРАТОВ РЕКОМЕНДУЕМЫХ К ПРИМЕНЕНИЮ
@@ -489,10 +492,7 @@ sub save
 			font => $self->{-font_bold}, font_size => 14);
 	#
 	#	Заголовок таблицы 'Лабораторные исследования'
-	my	@probe_title = map
-		{
-			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
-		}
+	my	@probe_title = map { Encode::decode('windows-1251', $_) }
 		('Показатель', 'от', 'факт', 'до', 'Рекомендации');
 	#
 	#	цикл по выбранным препаратам
@@ -501,17 +501,28 @@ sub save
 		#	добавить таблицу
 		$self->add_table($data_report->{-preparation}->[$i], size => '5cm 1*');
 		#
-		#	Лабораторные исследования
+		#	"Лабораторные исследования"
 		if (defined $data_report->{-probe}->[$i])
 		{
 			#	Заголовок таблицы
-			unshift @{ $data_report->{-probe}->[$i] }, \@probe_title;
+			my	@table_data = (\@probe_title);
 			#
-			#	Ссылка на данные
-			my	$data = $data_report->{-probe}->[$i];
+			#	Данные таблицы
+			my	$probe_data = $data_report->{-probe}->[$i];
+			#
+			#	Копирование данных
+			foreach my $row (@{ $probe_data })
+			{
+				#	Копируем внутренний список
+				my	@copy_row = @{ $row };
+				#
+				#	Добавить в конец списка
+				push @table_data, \@copy_row;
+			}
 			#
 			#	Добавить таблицу
-			$self->add_table($data_report->{-probe}->[$i],
+#			$self->add_table($data_report->{-probe}->[$i],
+			$self->add_table(\@table_data,
 				size			=> '5cm 2cm 2cm 2cm 1*',
 				header_props	=>
 				{
@@ -526,9 +537,28 @@ sub save
 					my	($page, $first_row, $row, $col, $x, $y, $w, $h) = @_;
 					#
 					#	Do nothing except for first column (and not a header row)
-					return if ($first_row) or ($col != 0) or ($data->[$row]->[2] eq '');
+#					return if ($first_row) or ($col != 0) or ($probe_data->[$row]->[2] eq '');
+					return if ($first_row) or ($col != 2);
 					#
-					#	Рисования графики
+					#	Неопределенное значение
+					return if (!defined $probe_data->[$row]->[$col] );
+					#
+					#	Пустое значение
+					return if ($probe_data->[$row]->[$col] ne '20');
+
+#					print STDERR Data::Dumper::Dumper($probe_data->[$row]->[2]);
+					printf STDERR "probe val = %s (%s,%s)\n",
+						$probe_data->[$row]->[$col], $x, $y;
+
+#					return if ($table_data[0]->[2] eq '');
+#					print STDERR Data::Dumper::Dumper(\@table_data);
+#					print STDERR Data::Dumper::Dumper($table_data[0]);
+#					exit;
+#					return if ($table_data[$row-1]->[2] eq '');
+#					return if ($first_row);
+#					return if defined($data->[$row]->[2]) and ($data->[$row]->[2] eq '');
+					#
+					#	Рисования на полях страницы
 					_draw_arrow($page->gfx, $x, $y, $w, $h)
 				},
 			);

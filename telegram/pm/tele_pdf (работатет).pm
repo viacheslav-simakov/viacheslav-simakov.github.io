@@ -413,9 +413,9 @@ sub _draw_arrow
 	#
 	#	начало пути
 	$gfx->move($x, $y + $h/2);
+	$gfx->line($x - $h/2, $y);
 	#
 	#	рисовать фигуру
-	$gfx->line($x - $h/2, $y);
 	$gfx->hline($x - 32);
 	$gfx->vline($y + $h);
 	$gfx->hline($x - $h/2);
@@ -506,8 +506,8 @@ sub save
 		{
 			#	Заголовок таблицы
 			unshift @{ $data_report->{-probe}->[$i] }, \@probe_title;
-			#
-			#	Ссылка на данные
+			
+#			my	@data = map { Encode::decode('UTF-8', $_) } @{ $data_report->{-probe}->[$i] };
 			my	$data = $data_report->{-probe}->[$i];
 			#
 			#	Добавить таблицу
@@ -527,9 +527,30 @@ sub save
 					#
 					#	Do nothing except for first column (and not a header row)
 					return if ($first_row) or ($col != 0) or ($data->[$row]->[2] eq '');
+=pod
 					#
-					#	Рисования графики
+					#	Create text
+					my	$text = $page->text();
+					#
+					#	Устанавливаем шрифт и размер
+						$text->font($self->{-font_bold}, 14);
+					#
+					#	маркер
+					my	$mark = '#';
+					#
+					#	Вычисляем ширину текста
+					my	$text_width = $text->text_width($mark);
+					#
+					#	Положение текста (верхний левый угол)
+						$text->position(
+							$self->{-page_margin}->{-left} - $text_width - 8,
+							$y + $h - 4 - 14);
+#						$text->text(sprintf('# %d=%s', $row, $data->[$row]->[2]));
+						$text->text('#');
+=cut
+					#	Получаем объект для рисования графики
 					_draw_arrow($page->gfx, $x, $y, $w, $h)
+					
 				},
 			);
 		}
