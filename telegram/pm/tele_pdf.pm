@@ -353,7 +353,7 @@ sub add_table
 	{
 		foreach my $j (0 .. $#{ $data->[$i] })
 		{
-			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j]);
+			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j] || '');
 		}
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -15,6 +15,9 @@ use Carp();
 #	JSON (JavaScript Object Notation) кодирование/декодирование
 #	https://metacpan.org/pod/JSON
 use	JSON;
+#	Декодирование символов
+#	https://perldoc.perl.org/Encode
+use Encode qw(decode);
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
 #	SQLite:	https://www.techonthenet.com/sqlite/index.php
@@ -31,9 +34,6 @@ my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 #	папки библиотек (модулей)
 #	'.' = текущая папка!
 use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
-#
-#	Утилиты
-#use Utils();
 #
 #	Формирование ОТЧЕТОВ из базы данных
 #
@@ -92,7 +92,7 @@ sub trim
     my	$string = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Проверка строки
-	return '' unless defined($string);
+	return '' if !defined($string);
 	#
 	#	Удалить ведущие пробелы
     $string =~ s/^\s+//;
@@ -102,6 +102,28 @@ sub trim
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвратить строку
     return $string;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Декодировать значения хэш
+	---
+	$hash_ref = decode_utf8( \%hash );
+	
+		%hash	- хэш записи базы данных
+=cut
+sub decode_utf8
+{
+    my	$hash_ref = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	цикл по ключам хэша
+	foreach (keys %{ $hash_ref })
+	{
+		#	декодировать строку из "UTF-8"
+		$hash_ref->{$_} = decode('UTF-8', trim($hash_ref->{$_}));
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ссылка на хэш
+	return $hash_ref;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
