@@ -318,7 +318,7 @@ sub send_pdf
 		});
 		#	Âûâîä íà ıêğàí
 		printf STDERR
-			"Send file '%s' successed (%s) into chat id='%s'\n",
+			"Send file '%s' (%s) into chat id='%s' successed\n",
 			$result->{result}->{document}->{file_name},
 			sprintf('%.1f kB', $result->{result}->{document}->{file_size}/1024),
 			$message->{chat}->{id};

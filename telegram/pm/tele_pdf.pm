@@ -353,7 +353,8 @@ sub add_table
 	{
 		foreach my $j (0 .. $#{ $data->[$i] })
 		{
-			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j] || '');
+#			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j] || '');
+			$copy_data->[$i]->[$j] = $data->[$i]->[$j] || '';
 		}
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -489,10 +490,7 @@ sub save
 			font => $self->{-font_bold}, font_size => 14);
 	#
 	#	Заголовок таблицы 'Лабораторные исследования'
-	my	@probe_title = map
-		{
-			Encode::encode('UTF-8', Encode::decode('windows-1251', $_))
-		}
+	my	@probe_title = map { Encode::decode('windows-1251', $_) }
 		('Показатель', 'от', 'факт', 'до', 'Рекомендации');
 	#
 	#	цикл по выбранным препаратам
@@ -531,7 +529,10 @@ sub save
 					#	Рисования графики
 					_draw_arrow($page->gfx, $x, $y, $w, $h)
 				},
+#				'cell_props' => $data_report->{-cell_props}->[$i],
 			);
+			print Data::Dumper::Dumper($data_report->{-cell_props}->[$i]);
+			exit;
 		}
 		#
 		#	Увеличить отступ от верхнего края страницы
@@ -542,7 +543,7 @@ sub save
 		$self->page_header_footer();
 	#
 	#	Сохранить файл
-	$self->{-pdf}->saveas($pdf_file_name);
+		$self->{-pdf}->saveas($pdf_file_name);
 	#
 	#	вывод на экран
 	print STDERR "Create file '$pdf_file_name'\n";
