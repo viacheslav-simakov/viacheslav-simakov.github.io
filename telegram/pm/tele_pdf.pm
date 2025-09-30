@@ -253,9 +253,7 @@ sub page_header_footer {
 			my	$width = ($self->{-page_width} - $margin->{-left} - $margin->{-right})*3/4;
 			#
 			#	координаты (x,y)
-#			my	$x = $margin->{-left} + $width;
 			my	$x = $self->{-page_width} - $margin->{-right};
-#			my	$y = $self->{-page_height} - $margin->{-top};
 			my	$y = $self->{-page_height} - 22;
 			#
 			#	Положение текста
@@ -277,9 +275,6 @@ sub page_header_footer {
 		#
 		#	номер страницы
 		my	$footer = Encode::decode('windows-1251', "Страница $i из $total_pages");
-		#
-		#	Вычисляем ширину текста
-#			$text_width = $text->text_width($footer);
 		#
 		#	Вычисляем позицию 'x' для выравнивания по правому краю
 			$x = $self->{-page_width} - $text->text_width($footer) - $margin->{-right};
