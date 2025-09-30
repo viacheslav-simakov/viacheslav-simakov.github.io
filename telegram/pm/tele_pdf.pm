@@ -12,9 +12,9 @@ use warnings;
 #
 package Tele_PDF {
 #
-#	Постоянные пакета
+#	Логотип https://sgmu.ru/
 #	<svg width="130" height="50" xmlns="http://www.w3.org/2000/svg">
-my $svg_string = <<'SVG';
+my $SVG_string = <<'SVG';
 <svg xmlns="http://www.w3.org/2000/svg">
 <path d="M31.711 23.866c0 4.436-1.778 8.47-4.643 11.394C24.203 38.184 20.25 40 15.905 40c-4.096 0-7.842-1.614-10.659-4.25A16.251 16.251 0 01.16 25.265C.159 16.851.056 8.415 0 0h19.108c3.264 0 6.25 1.286 8.495 3.386a12.957 12.957 0 014.06 8.355l.046 12.124.002.002zm-5.343 10.68a15.236 15.236 0 004.354-10.68h.002l-.048-12.04a11.94 11.94 0 00-3.737-7.7c-2.068-1.933-4.82-3.116-7.83-3.116H.991l.152 24.169a15.233 15.233 0 004.767 9.83c2.64 2.469 6.151 3.98 9.993 3.98 4.074 0 7.778-1.702 10.464-4.443z"
 fill="#8F1432"/>
@@ -91,7 +91,7 @@ sub new {
 			{
 				-left		=> 72,
 				-right		=> 36,
-				-top		=> 58,
+				-top		=> 60,
 				-bottom		=> 36,
 			},
 			-skip_y			=> 36,				# смещение к низу странице
@@ -177,7 +177,10 @@ sub page_header_footer {
 	#
 	#	Ссылка на массив, содержащий хэши, описывающие объекты XObject
 	#	https://metacpan.org/pod/SVGPDF#OUTPUT
-	my	$xof = $svg->process(\$svg_string);
+	my	$xof = $svg->process(\$SVG_string);
+	#
+	#	координаты на странице
+	my	($x, $y);
 	#
 	#	цикл по номерам страниц
 	for (my $i = 1; $i <= $total_pages; $i++)
@@ -187,15 +190,14 @@ sub page_header_footer {
 		#
 		#	SVG-область
 		{
-#			$page->bbox(0, 0, 595, 842);
-			#
 			#	графический объект
 			my	$gfx = $page->gfx;
 			#
 			#	Левый верхний угол положения на странице
 			my	$x = $margin->{-left};
 			my	$y = $self->{-page_height};
-
+			#
+			#	цикл по списку XObject's
 			foreach (@$xof)
 			{
 				#	XObject
@@ -208,7 +210,7 @@ sub page_header_footer {
 				my	$h = $bb[3];
 				#
 				#	Добавить графический объект
-				$gfx->object($xo, $x, $y - $h - 8);
+				$gfx->object($xo, $x, $y - $h - 10);
 				#
 				#	увеличение отступа от верхнего края страницы
 				$y -= $h;
@@ -222,14 +224,7 @@ sub page_header_footer {
 			$text->font($self->{-font}, 10);
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	Верхний колонтитул (header)
-		my	($x, $y);
 =pod
-		my	$header = Encode::decode('windows-1251',
-				"Саратовский государственный медицинский университет\nимени В.И. Разумовского");
-		my	$header = Encode::decode('windows-1251',
-				sprintf 'Пользователь "%s" (%s)',
-				$self->{-from}->{username} || 'unknow', $self->{-from}->{id});
-
 		#	x-позиция
 		my	$x = $margin->{-left};
 		#	y-позиция
@@ -238,50 +233,60 @@ sub page_header_footer {
 		#	позиция текста
 			$text->translate($x, $y);
 			$text->text($sgmu);
-=cut
+
 		#
 		#	Дата + Время
 		my	$text_width = $text->text_width($time_stamp);
 		#
-		#	Вычисляем позицию x для выравнивания по правому краю
+		#	Вычисляем позицию (x,y) для выравнивания по правому краю
 			$x = $self->{-page_width} - $text_width - $margin->{-right};
+			$y = $self->{-page_height} - $margin->{-top} + 10;
 		#
 		#	позиция текста
 			$text->translate($x, $y);
 			$text->text($time_stamp);
+=cut			
+		#
+		#	Положение текста (верхний левый угол)
+		{
+			#	ширина
+			my	$width = ($self->{-page_width} - $margin->{-left} - $margin->{-right})*3/4;
+			#
+			#	координаты (x,y)
+#			my	$x = $margin->{-left} + $width;
+			my	$x = $self->{-page_width} - $margin->{-right};
+#			my	$y = $self->{-page_height} - $margin->{-top};
+			my	$y = $self->{-page_height} - 22;
+			#
+			#	Положение текста
+				$text->translate($x, $y);
+			#
+			#	Добавить параграф
+			#	https://metacpan.org/pod/PDF::API2::Content#paragraph
+				$text->paragraph(Encode::decode('windows-1251', sprintf(
+					"Электронный ассистент врача-ревматолога\n".
+					"по выбору генно-инженерной и таргетной терапии\n%s",
+					$time_stamp)),
+					$width, $margin->{-top},
+					align => 'right');
+		}
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	Нижний колонтитул (footer)
 			$text->translate($margin->{-left}, 0.5*$margin->{-bottom});
 			$text->text($user_info);
-=pod
-			$text->translate($margin->{-left}, 0.5*$margin->{-bottom});
-			$text->text($time_stamp);
-=cut
 		#
 		#	номер страницы
 		my	$footer = Encode::decode('windows-1251', "Страница $i из $total_pages");
 		#
 		#	Вычисляем ширину текста
-			$text_width = $text->text_width($footer);
+#			$text_width = $text->text_width($footer);
 		#
 		#	Вычисляем позицию 'x' для выравнивания по правому краю
-			$x = $self->{-page_width} - $text_width - $margin->{-right};
+			$x = $self->{-page_width} - $text->text_width($footer) - $margin->{-right};
 		#
 		#	позиция текста
 			$text->translate($x, 0.5*$margin->{-bottom});
 			$text->text($footer);
-		#
-		#	URL
-		my	$annot = $page->annotation();
-			$annot->url(
-				sprintf('https://web.telegram.org/k/#(%s)', $self->{-from}->{id}),
-				-rect => [
-					$margin->{-left},
-					$margin->{-bottom},
-					$self->{-page_width} - $margin->{-right},
-					4
-				]
-			);
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на объект
