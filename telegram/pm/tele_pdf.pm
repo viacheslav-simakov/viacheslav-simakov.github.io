@@ -457,7 +457,7 @@ sub save
 	#
 	#	Заголовок
 		$self->add_text(Encode::decode('windows-1251',
-			'Данные запроса пользователя'),
+			"Данные запроса пользователя\nпример"),
 			font => $self->{-font_bold}, font_size => 14);
 	#
 	#	цикл по секциям запроса
@@ -508,6 +508,24 @@ sub save
 			#	Ссылка на данные
 			my	$data = $data_report->{-probe}->[$i];
 			#
+			#	Подсветка ячеек
+			my	$cell_props = [];
+			foreach my $row (1 .. $#{ $data})
+			{
+				#	нет значения?
+				next if $data->[$row]->[2] eq '';
+				#
+				#	цвет ячеек
+				$cell_props->[$row] =
+				[
+					{bg_color => '#FFCCCC'},
+					{},
+					{bg_color => '#FFCCCC'},
+					{},
+					{bg_color => '#FFCCCC'},
+				];
+			}
+			#
 			#	Добавить таблицу
 			$self->add_table($data_report->{-probe}->[$i],
 				size			=> '5cm 2cm 2cm 2cm 1*',
@@ -529,10 +547,8 @@ sub save
 					#	Рисования графики
 					_draw_arrow($page->gfx, $x, $y, $w, $h)
 				},
-#				'cell_props' => $data_report->{-cell_props}->[$i],
+				'cell_props' => $cell_props,
 			);
-			print Data::Dumper::Dumper($data_report->{-cell_props}->[$i]);
-			exit;
 		}
 		#
 		#	Увеличить отступ от верхнего края страницы

@@ -363,8 +363,6 @@ sub report
 	#	данные лабораторных исследований
 	my	@probe = ();
 	#
-	my	@cell_props;
-	#
 	#	цикл по списку препаратов
 	my	$order = 1;
 	while (my $row = $sth->fetchrow_hashref)
@@ -398,19 +396,6 @@ sub report
 			$row->{'probe_max'},
 			$row->{'prescription_instruction'},
 		];
-		#
-		#	Подсветка ячеек
-		if ($row->{'probe_value'} ne '')
-		{
-			push @{ $cell_props[$#preparation]->[$#probe] }, 
-			[
-				{bg_color => '#CCCC00'},
-				{},
-				{bg_color => '#CCCC00'},
-				{},
-				{bg_color => '#CCCC00'},
-			];
-		}
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
@@ -419,7 +404,6 @@ sub report
 		cgi_query		=> $cgi_query,
 		-preparation	=> \@preparation,	# препараты
 		-probe			=> \@probe,			# лабораторные исследования
-		-cell_props		=> \@cell_props,
 	};
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
