@@ -43,10 +43,10 @@ use SVGPDF;
 =pod
 	Конструктор
 	---
-	$obj = Tele_PDF->new($message_from, $web_app_data);
+	$obj = Tele_PDF->new(\%message_from, \%web_app_data);
 
-		$message_from	- сообщение пользователя (ссылка на хэш)
-		$web_app_data	- данные HTML-формы (ссылка на хэш)
+		%message_from	- сообщение пользователя
+		%web_app_data	- данные HTML-формы
 =cut
 sub new {
 	#	название класса
@@ -539,8 +539,12 @@ sub save
 		$self->{-current_y} -= 12;
 	#
 	#	Заголовок
-		$self->add_text(Encode::decode('windows-1251',
-			"Данные запроса пользователя\nпример"),
+		$self->add_text(
+				Encode::decode('windows-1251', 'Запрос пользователя ').
+				($self->{-from}->{username} || 'unknow') . "\n".
+				Encode::decode('windows-1251', 'Организация: ').
+				$self->{-from}->{-organization}
+			,
 			font => $self->{-font_bold}, font_size => 14);
 	#
 	#	цикл по секциям запроса

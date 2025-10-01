@@ -78,7 +78,7 @@ while (1) {
 	if ($@)
 	{
 		#	информации об ошибке
-		Carp::carp "\nОшибка при получении обновлений: $@\n";
+		Carp::carp "\nОшибка при получении обновлений: $@\n\n";
 		#
 		#	следующая итерация цикла
 		next;
@@ -263,6 +263,9 @@ sub user_request
 	#
 	#	Данные HTML-формы
     my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
+		
+		$message->{from}->{-organization} =
+			decode('windows-1251', 'Областная клиническая больница (ОКБ)');
 	#
 	#	PDF-документ
 	my	$pdf = Tele_PDF->new($message->{from}, decode_json($web_app_data));
