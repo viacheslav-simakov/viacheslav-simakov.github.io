@@ -35,6 +35,10 @@ use WWW::Telegram::BotAPI;
 #	папки библиотек (модулей)
 #	'.' = текущая папка!
 use lib ('pm');
+
+
+users();
+exit;
 #
 #	База данных
 #use tele_db();
@@ -329,6 +333,46 @@ sub send_pdf
 	};
 	#	Проверка ошибок
 	Carp::carp "\nОшибка при отправке файла: $@\n" if ($@);
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Список пользователей
+	---
+	\%user = users()
+	
+=cut
+sub users
+{
+	#	открыть базу данных
+	my	$dbh = DBI->connect("dbi:SQLite:dbname=bot.db","","")
+			or die $DBI::errstr;
+	#
+	#	SQL-запрос
+	my	$sth = $dbh->prepare('SELECT * FROM "user"')
+			or Carp::confess "Ошибка запроса к таблице пользователей";
+		$sth->execute;
+	#
+	#	Список пользователей
+	my	%user;
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+		#	цикл по ключам хэша
+		foreach (keys %{ $row })
+		{
+			#	декодировать строку из "UTF-8"
+			$row->{$_} = decode('UTF-8', $row->{$_});
+		}
+		#	Telegram-ID
+		my	$telegram_id = delete $row->{telegram_id};
+		#
+		#	Добавить пользователя в хэш
+		$user{ $telegram_id } = $row;
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ссылка на хэш
+	return \%user;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 __DATA__
