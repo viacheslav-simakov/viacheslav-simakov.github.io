@@ -396,8 +396,10 @@ sub add_text
 	my	($overflow, $last_height) = $text->paragraph($string, $width, $height);
 	#
 	#	”величить отступ от верхнего кра€ страницы
-	$self->{-current_y} -= $height - $last_height;
-	
+		$self->{-current_y} -= $height - $last_height;
+	#
+	#	÷вет текста (по умолчанию)
+		$text->fill_color('black');
 #	print STDERR "$overflow, $last_height\n";
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
