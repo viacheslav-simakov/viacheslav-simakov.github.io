@@ -43,16 +43,16 @@ use SVGPDF;
 =pod
 	Конструктор
 	---
-	$obj = Tele_PDF->new(\%message_from, \%web_app_data);
+	$obj = Tele_PDF->new(\%user, \%web_app_data);
 
-		%message_from	- сообщение пользователя
+		%user			- данные пользователя
 		%web_app_data	- данные HTML-формы
 =cut
 sub new {
 	#	название класса
 	my	$class = shift @_;
-	#	сообщение пользователя, который сделал запрос
-	my	$from = shift @_;
+	#	данные пользователя
+	my	$user = shift @_;
 	#	база данных
 	my	$db = Tele_DB->new( shift @_ );
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,7 +80,7 @@ sub new {
 	my	$self =
 		{
 			-DB				=> $db,				# база данных
-			-from			=> $from,			# сообщение пользователя
+			-from			=> $user,			# пользователь
 			-pdf			=> $pdf,			# pdf-документ
 			-font			=> $font,			# шрифт
 			-font_bold		=> $font_bold,		# жирный шрифт
@@ -155,9 +155,7 @@ sub page_header_footer {
 			$mday, $mon+1, $year+1900, $hour, $min, $sec;
 	#
 	#	Пользователь
-	my	$user_info = Encode::decode('windows-1251',
-			sprintf 'Пользователь (%s) "%s"',
-			$self->{-from}->{id}, $self->{-from}->{username} || 'unknow');
+	my	$user_info = sprintf 'Telegram id (%s)', $self->{-user}->{telegram_id};
 	#
 	#	Логотип https://sgmu.ru/
 	my	$sgmu = Encode::decode('windows-1251',
