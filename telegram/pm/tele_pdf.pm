@@ -516,25 +516,8 @@ sub request_pdf
 	#
 	#	увеличить отступ от верхнего края страницы	
 		$self->{-current_y} -= 12;
-=pod
 	#
-	#	Новый объект-текст
-	my	$text = $self->{-pdf}->text();
-	#
-	#	Шрифт
-		$text->font($self->{-font}, 14);
-		
-	my	$string = Encode::decode('windows-1251', 'Запрос пользователя ');	
-	#
-	#	Ширина текста
-	my	$text_width = $text->text_width($string);
-	#
-	#	Положение текста
-		$text->translate($self->{-page_margin}->{-left}, $self->{-current_y});
-		$text->text($string);
-=cut
-	#
-	#	Заголовок
+	#	Таблица !!!
 		$self->add_text(
 				Encode::decode('windows-1251', 'Запрос пользователя ').
 				$self->{-user}->{user_name} . "\n".
@@ -542,7 +525,7 @@ sub request_pdf
 				$self->{-user}->{organization}
 			,
 			font => $self->{-font_bold}, font_size => 14);
-	#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	цикл по секциям запроса
 	foreach my $name ('rheumatology', 'comorbidity', 'status', 'manual', 'probe', 'preparation')
 	{
@@ -675,7 +658,7 @@ sub save
 	#
 	#	(I) ДАННЫЕ ЗАПРОСА ПОЛЬЗОВАТЕЛЯ
 	#
-		$self->request_pdf;
+		$self->request_pdf();
 	#
 	#	(II) СПИСОК ПРЕПАРАТОВ РЕКОМЕНДУЕМЫХ К ПРИМЕНЕНИЮ
 	#
