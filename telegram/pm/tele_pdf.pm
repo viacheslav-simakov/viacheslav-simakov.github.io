@@ -506,10 +506,10 @@ sub add_table
 =pod
 	Äàííûå çàïğîñà ïîëüçîâàòåëÿ
 	---
-	$obj->request_pdf();
+	$obj->make_request();
 	
 =cut
-sub request_pdf
+sub make_request
 {
 	#	ññûëêà íà îáúåêò
 	my	$self = shift @_;
@@ -587,10 +587,10 @@ sub request_pdf
 =pod
 	Ñïèñîê ïğåïàğàòîâ ğåêîìåíäóåìûõ ê ïğèìåíåíèş
 	---
-	$obj->report_pdf();
+	$obj->make_report();
 	
 =cut
-sub report_pdf
+sub make_report
 {
 	#	ññûëêà íà îáúåêò
 	my	$self = shift @_;
@@ -715,11 +715,11 @@ sub save
 	#
 	#	(I) ÄÀÍÍÛÅ ÇÀÏĞÎÑÀ ÏÎËÜÇÎÂÀÒÅËß
 	#
-		$self->request_pdf();
+		$self->make_request();
 	#
 	#	(II) ÑÏÈÑÎÊ ÏĞÅÏÀĞÀÒÎÂ ĞÅÊÎÌÅÍÄÓÅÌÛÕ Ê ÏĞÈÌÅÍÅÍÈŞ
 	#
-		$self->report_pdf();
+		$self->make_report();
 	#
 	#	Êîëîíòèòóëû íà ñòğàíèöå
 		$self->page_header_footer();
