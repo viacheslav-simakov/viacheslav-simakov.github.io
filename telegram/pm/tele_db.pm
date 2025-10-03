@@ -329,11 +329,8 @@ sub report
 		$sth->execute();
 	#
 	#	нет рекомендаций?
-	if ( $sth->fetchrow_hashref()->{rows} == 0 )
-	{
-		return Encode::decode('windows-1251',
-			'ƒл€ заданных условий поиска нет рекомендуемых препаратов');
-	}
+	#
+	return undef if $sth->fetchrow_hashref()->{rows} == 0;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	—писок препаратов
 	#	https://www.sqlitetutorial.net/sqlite-count-function/

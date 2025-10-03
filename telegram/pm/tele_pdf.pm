@@ -366,6 +366,7 @@ sub add_text
 			font_size	=> 12,
 			x         	=> $margin->{-left},
 			y			=> $self->{-current_y},
+			fill_color	=> 'black',
 	, @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Ширина текста (до правого края страницы)
@@ -383,6 +384,9 @@ sub add_text
 	#
 	#	Устанавливаем шрифт и размер
 		$text->font($settings{font}, $settings{font_size});
+	#
+	#	Цвет текста
+		$text->fill_color($settings{fill_color});
 	#
 	#	Положение текста (верхний левый угол)
 		$text->translate($settings{x}, $settings{y});
@@ -564,6 +568,22 @@ sub report_pdf
 	#
 	#	увеличить отступ от верхнего края страницы	
 		$self->{-current_y} -= 12;
+	#
+	#	нет рекомендаций?
+	if (!defined $data_report)
+	{
+		#	вставить текст
+		$self->add_text(
+			Encode::decode('windows-1251',
+			'Для заданных условий поиска нет рекомендуемых препаратов'),
+			y			=> $self->{-current_y} - 24,
+			font		=> $self->{-font_bold},
+			font_size	=> 14,
+			fill_color	=> 'red',
+		);
+		#	возврат из функции
+		return $self;
+	}
 	#
 	#	Заголовок раздела
 		$self->add_text(Encode::decode('windows-1251',
