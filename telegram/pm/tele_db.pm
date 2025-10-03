@@ -165,12 +165,14 @@ sub DESTROY
 	#	ссылка на объект
 	my	$self = shift @_;
 	#-------------------------------------------------------------------------
+	#	Файл базы данных
+	my	$db_filename = $self->{-dbh}->sqlite_db_filename;
+	#
 	#	закрыть базу данных
-	$self->{-dbh}->disconnect or warn $self->{-dbh}->errstr;
+	$self->{-dbh}->disconnect or Carp::carp $DBI::errstr;
 	#
 	#	вывод на экран
-	printf STDERR "Disconnect from database '%s'\n",
-		$self->{-dbh}->sqlite_db_filename;
+	printf STDERR "Disconnect from database '%s'\n", $db_filename;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
