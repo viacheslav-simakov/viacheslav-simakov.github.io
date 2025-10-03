@@ -523,7 +523,41 @@ sub request_pdf
 	#	увеличить отступ от верхнего края страницы	
 		$self->{-current_y} -= 12;
 	#
-	#	Таблица !!!
+	#	Заголовок
+		$self->add_text(
+			Encode::decode('windows-1251', 'Данные запроса'),
+			font => $self->{-font_bold}, font_size => 14);
+	#
+	#	Таблица
+		$self->add_table([
+			[
+				Encode::decode('windows-1251', 'Пользователь:'),
+				$self->{-user}->{user_name},
+			],[
+				Encode::decode('windows-1251', 'Организация:'),
+				$self->{-user}->{organization},
+			]],
+			#	Заголовок таблицы
+			header_props =>
+			{
+				font_color	=> 'black',
+				bg_color	=> 'white',
+			},
+			#	Свойства столбцов
+			column_props	=> [
+				{},
+				{font => $self->{-font_bold}},
+			],
+			size			=> '3.2cm 1*',
+			border_w		=> 0,
+			padding			=> 4,
+			padding_top		=> 0,
+			padding_left	=> 0,
+		);
+	#
+	#	увеличить отступ от верхнего края страницы	
+		$self->{-current_y} -= 12;
+=pod	
 		$self->add_text(
 				Encode::decode('windows-1251', 'Запрос пользователя ').
 				$self->{-user}->{user_name} . "\n".
@@ -531,6 +565,7 @@ sub request_pdf
 				$self->{-user}->{organization}
 			,
 			font => $self->{-font_bold}, font_size => 14);
+=cut
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	цикл по секциям запроса
 	foreach my $name ('rheumatology', 'comorbidity', 'status', 'manual', 'probe', 'preparation')
