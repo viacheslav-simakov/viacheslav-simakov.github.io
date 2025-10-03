@@ -364,14 +364,11 @@ sub users
 			#	декодировать строку из "UTF-8"
 			$row->{$_} = decode('UTF-8', $row->{$_});
 		}
-		#	Telegram-ID
-		my	$telegram_id = delete $row->{telegram_id};
-		#
 		#	Добавить пользователя в хэш
-		$user{ $telegram_id } = $row;
+		$user{ $row->{telegram_id} } = $row;
 	}
 	#	Закрыть базу данных
-	$dbh->disconnect or Carp::carp $dbh->errstr;
+	$dbh->disconnect or Carp::carp $DBI::errstr;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
 	return \%user;

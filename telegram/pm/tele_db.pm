@@ -140,7 +140,7 @@ sub new {
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	открыть базу данных
 	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
-			or die $DBI::errstr;
+			or Carp::confess $DBI::errstr;
 	#
 	#	вывод на экран
 	printf "Connect to database '$db_file'\n";
