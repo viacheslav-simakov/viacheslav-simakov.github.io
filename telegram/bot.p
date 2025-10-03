@@ -36,12 +36,8 @@ use WWW::Telegram::BotAPI;
 #	'.' = текущая папка!
 use lib ('pm');
 
-
-users();
-exit;
-#
-#	База данных
-#use tele_db();
+#users();
+#exit;
 #
 #	pdf-документы
 use Tele_PDF();
@@ -60,8 +56,10 @@ my	$updates;
 #
 #	Получаем последние обновления
 my	$offset = 0;
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #	Главный цикл обработки событий бота
+#
 printf STDERR
 	"Telegram Bot \@tele_rheumatology_bot is started at %3\$02d:%2\$02d:%1\$02d\n",
 	(localtime)[0 ... 2];
@@ -343,18 +341,20 @@ sub send_pdf
 =cut
 sub users
 {
+	#	Список пользователей
+	my	%user = ();
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	открыть базу данных
 	my	$dbh = DBI->connect("dbi:SQLite:dbname=bot.db","","")
-			or die $DBI::errstr;
+			or Carp::confess $DBI::errstr;
 	#
 	#	SQL-запрос
 	my	$sth = $dbh->prepare('SELECT * FROM "user"')
 			or Carp::confess "Ошибка запроса к таблице пользователей";
+	#
+	#	Выполнить запрос к таблице
 		$sth->execute;
-	#
-	#	Список пользователей
-	my	%user;
-	#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
@@ -370,6 +370,8 @@ sub users
 		#	Добавить пользователя в хэш
 		$user{ $telegram_id } = $row;
 	}
+	#	Закрыть базу данных
+	$dbh->disconnect or Carp::carp $dbh->errstr;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
 	return \%user;

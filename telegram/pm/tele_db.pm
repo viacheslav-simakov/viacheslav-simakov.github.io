@@ -169,7 +169,8 @@ sub DESTROY
 	$self->{-dbh}->disconnect or warn $self->{-dbh}->errstr;
 	#
 	#	вывод на экран
-	print STDERR "Disconnect from database\n";
+	printf STDERR "Disconnect from database '%s'\n",
+		$self->{-dbh}->sqlite_db_filename;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
