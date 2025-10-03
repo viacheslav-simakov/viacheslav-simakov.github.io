@@ -675,12 +675,135 @@ sub save
 	#
 	#	(I) ДАННЫЕ ЗАПРОСА ПОЛЬЗОВАТЕЛЯ
 	#
-		$self->request_pdf;
+	my	$data_query = $self->{-DB}->request();
+	#
+	#	Добавить пустую страницу
+		$self->add_page();
+	#
+	#	увеличить отступ от верхнего края страницы	
+		$self->{-current_y} -= 12;
+=pod
+	#
+	#	Новый объект-текст
+	my	$text = $self->{-pdf}->text();
+	#
+	#	Шрифт
+		$text->font($self->{-font}, 14);
+		
+	my	$string = Encode::decode('windows-1251', 'Запрос пользователя ');	
+	#
+	#	Ширина текста
+	my	$text_width = $text->text_width($string);
+	#
+	#	Положение текста
+		$text->translate($self->{-page_margin}->{-left}, $self->{-current_y});
+		$text->text($string);
+=cut
+	#
+	#	Заголовок
+		$self->add_text(
+				Encode::decode('windows-1251', 'Запрос пользователя ').
+				$self->{-user}->{user_name} . "\n".
+				Encode::decode('windows-1251', 'Организация: ').
+				$self->{-user}->{organization}
+			,
+			font => $self->{-font_bold}, font_size => 14);
+	#
+	#	цикл по секциям запроса
+	foreach my $name ('rheumatology', 'comorbidity', 'status', 'manual', 'probe', 'preparation')
+	{
+		#	нет выбранных данных
+		next if scalar @{ $data_query->{$name} } < 2;
+		#
+		#	размеры колонок таблицы
+		my	$column_size = ($name eq 'probe') ? '8cm 3cm 1*' : '8cm 1*';
+		#
+		#	добавить таблицу
+		$self->add_table($data_query->{$name}, size => $column_size);
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#
 	#	(II) СПИСОК ПРЕПАРАТОВ РЕКОМЕНДУЕМЫХ К ПРИМЕНЕНИЮ
 	#
-		$self->report_pdf();
+	my	$data_report = $self->{-DB}->report();
 	#
+	#	Добавить пустую страницу
+		$self->add_page();
+	#
+	#	увеличить отступ от верхнего края страницы	
+		$self->{-current_y} -= 12;
+	#
+	#	Заголовок раздела
+		$self->add_text(Encode::decode('windows-1251',
+			'Список препаратов рекомендуемых к применению'),
+			font => $self->{-font_bold}, font_size => 14);
+	#
+	#	Заголовок таблицы 'Лабораторные исследования'
+	my	@probe_title = map { Encode::decode('windows-1251', $_) }
+		('Показатель', 'от', 'факт', 'до', 'Рекомендации');
+	#
+	#	цикл по выбранным препаратам
+	for (my $i = 0; $i < scalar @{ $data_report->{-preparation} }; $i++)
+	{
+		#	добавить таблицу
+		$self->add_table($data_report->{-preparation}->[$i], size => '5cm 1*');
+		#
+		#	Лабораторные исследования
+		if (defined $data_report->{-probe}->[$i])
+		{
+			#	Заголовок таблицы
+			unshift @{ $data_report->{-probe}->[$i] }, \@probe_title;
+			#
+			#	Ссылка на данные
+			my	$data = $data_report->{-probe}->[$i];
+			#
+			#	Подсветка ячеек
+			my	$cell_props = [];
+			foreach my $row (1 .. $#{ $data})
+			{
+				#	нет значения?
+				next if $data->[$row]->[2] eq '';
+				#
+				#	цвет ячеек
+				$cell_props->[$row] =
+				[
+					{bg_color => '#FFCCCC'},
+					{},
+					{bg_color => '#FFCCCC'},
+					{},
+					{bg_color => '#FFCCCC'},
+				];
+			}
+			#
+			#	Добавить таблицу
+			$self->add_table($data_report->{-probe}->[$i],
+				size			=> '5cm 2cm 2cm 2cm 1*',
+				header_props	=>
+				{
+					font		=> $self->{-font_italic},
+					font_size	=> 12,
+					repeat		=> 1,
+				},
+				#	
+				'cell_render_hook'  => sub
+				{
+					#	параметры вызова функции
+					my	($page, $first_row, $row, $col, $x, $y, $w, $h) = @_;
+					#
+					#	Do nothing except for first column (and not a header row)
+					return if ($first_row) or ($col != 0) or ($data->[$row]->[2] eq '');
+					#
+					#	Рисования графики
+					_draw_arrow($page->gfx, $x, $y, $w, $h)
+				},
+				'cell_props' => $cell_props,
+			);
+		}
+		#
+		#	Увеличить отступ от верхнего края страницы
+		$self->{-current_y} -= $self->{-skip_y};
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Колонтитулы на странице
 		$self->page_header_footer();
 	#

@@ -266,12 +266,12 @@ sub user_request
 	#
 	#	Данные HTML-формы
     my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
-		
-		$message->{from}->{-organization} =
-			decode('windows-1251', 'Областная клиническая больница (ОКБ)');
 	#
 	#	PDF-документ
-	my	$pdf = Tele_PDF->new($message->{from}, decode_json($web_app_data));
+	my	$pdf = Tele_PDF->new(
+			$user->{$message->{chat}->{id}},
+			decode_json($web_app_data)
+		);
 	#
 	#	Создать PDF-файл
 		$pdf->save($pdf_file_name);
@@ -370,6 +370,9 @@ sub users_authorized
 	}
 	#	Закрыть базу данных
 	$dbh->disconnect or Carp::carp $DBI::errstr;
+	#
+	#	Вывод на экран
+	print STDERR "Loading authorized users from 'bot.db' is completed\n";
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
 	return \%user;
