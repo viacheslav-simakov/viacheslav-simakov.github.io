@@ -127,6 +127,11 @@ while (1) {
 			#	клавиатура
 			web_app_keyboard($message);
         }
+		elsif (defined($message->{text}) and $message->{text} =~ m{^/db_copy}i)
+		{
+			#	копирование базы данных
+			system('perl', 'make_html.pl') or Carp::confess;
+		}
         else
 		{
 			#	неизвестный запрос
