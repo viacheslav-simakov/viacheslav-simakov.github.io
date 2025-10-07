@@ -75,6 +75,7 @@ my	%FORM_number =
 );
 #
 #	Заголовки строк
+#my	@row_title = map { Encode::decode('windows-1251', $_) } (
 my	@row_title = map { decode_win($_) } (
 		'Препарат',
 		'Информация',
@@ -232,6 +233,7 @@ sub request {
 		$sth->execute;
 		#
 		#	Заголовок данных
+#		my	@data = ([map { Encode::decode('windows-1251', $_) }
 		my	@data = ([map { decode_win($_) }
 			($FORM_checkbox{$name}, 'Информация')]);
 		#
@@ -273,6 +275,7 @@ sub request {
 		$sth->execute;
 		#
 		#	Заголовок данных
+#		my	@data = ([map {	Encode::decode('windows-1251', $_) }
 		my	@data = ([map {	decode_win($_) }
 			($FORM_number{$name}, 'Результат', 'Информация')]);
 		#

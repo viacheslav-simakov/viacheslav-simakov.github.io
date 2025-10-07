@@ -304,8 +304,7 @@ sub page_header_footer {
 			#
 			#	Добавить параграф
 			#	https://metacpan.org/pod/PDF::API2::Content#paragraph
-			#
-				$text->paragraph(Tele_DB::decode_win(sprintf(
+				$text->paragraph(Encode::decode('windows-1251', sprintf(
 					"Электронный ассистент врача-ревматолога\n".
 					"по выбору генно-инженерной и таргетной терапии\n%s",
 					$time_stamp)),
@@ -318,7 +317,7 @@ sub page_header_footer {
 			$text->text($user_info);
 		#
 		#	номер страницы
-		my	$footer = Tele_DB::decode_win("Страница $i из $total_pages");
+		my	$footer = Encode::decode('windows-1251', "Страница $i из $total_pages");
 		#
 		#	Вычисляем позицию 'x' для выравнивания по правому краю
 			$x = $self->{-page_width} - $text->text_width($footer) - $margin->{-right};
@@ -540,16 +539,16 @@ sub make_request
 	#
 	#	Заголовок
 		$self->add_text(
-			Tele_DB::decode_win('Данные запроса'),
+			Encode::decode('windows-1251', 'Данные запроса'),
 			font => $self->{-font_bold}, font_size => 14);
 	#
 	#	Таблица
 		$self->add_table([
 			[
-				Tele_DB::decode_win('Пользователь:'),
+				Encode::decode('windows-1251', 'Пользователь:'),
 				$self->{-user}->{user_name},
 			],[
-				Tele_DB::decode_win('Организация:'),
+				Encode::decode('windows-1251', 'Организация:'),
 				$self->{-user}->{organization},
 			]],
 			#	Заголовок таблицы
@@ -572,6 +571,15 @@ sub make_request
 	#
 	#	увеличить отступ от верхнего края страницы	
 		$self->{-current_y} -= 12;
+=pod	
+		$self->add_text(
+				Encode::decode('windows-1251', 'Запрос пользователя ').
+				$self->{-user}->{user_name} . "\n".
+				Encode::decode('windows-1251', 'Организация: ').
+				$self->{-user}->{organization}
+			,
+			font => $self->{-font_bold}, font_size => 14);
+=cut
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	цикл по секциям запроса
 	foreach my $name ('rheumatology', 'comorbidity', 'status', 'manual', 'probe', 'preparation')
@@ -617,6 +625,7 @@ sub make_report
 	{
 		#	вставить текст
 		$self->add_text(
+#			Encode::decode('windows-1251',
 			Tele_DB::decode_win(
 			'Для заданных условий поиска нет рекомендуемых препаратов'),
 			y			=> $self->{-current_y} - 24,
@@ -629,12 +638,12 @@ sub make_report
 	}
 	#
 	#	Заголовок раздела
-		$self->add_text(Tele_DB::decode_win(
+		$self->add_text(Encode::decode('windows-1251',
 			'Список препаратов рекомендуемых к применению'),
 			font => $self->{-font_bold}, font_size => 14);
 	#
 	#	Заголовок таблицы 'Лабораторные исследования'
-	my	@probe_title = map { Tele_DB::decode_win($_) }
+	my	@probe_title = map { Encode::decode('windows-1251', $_) }
 		('Показатель', 'от', 'факт', 'до', 'Рекомендации');
 	#
 	#	цикл по выбранным препаратам
