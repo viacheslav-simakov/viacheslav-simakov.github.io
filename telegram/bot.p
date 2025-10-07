@@ -174,14 +174,6 @@ sub logger
 		@);
 		$sth->execute($telegram_id, encode_json($message), encode_json($result))
 			or Carp::carp $DBI::errstr;
-=pod
-	printf STDERR "from_id='%s'\ttext='%s'\tweb_app_data='%s'\n%s%s\n",
-		$update->{message}->{from}->{id},
-		encode('windows-1251', $update->{message}->{text} || ''),
-		encode('windows-1251', $update->{message}->{web_app_data}->{data} || ''),
-		Dumper($update),
-		('~' x 79);
-=cut
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -201,8 +193,9 @@ sub send_error
 		#	Послать сообщение admin
 		$api->api_request('sendMessage',
 		{
-			chat_id		=> '5483130027',							# Симаков
-			text		=> sprintf("package = '%s', line = %d\n%s",	# Информация
+			chat_id		=> '5483130027',# Симаков
+			parse_mode	=> 'Markdown',
+			text		=> sprintf("*ERROR*\npackage = '%s', line = %d\n%s",
 				(caller(1))[1,2], $error),
 		})
 	};
@@ -366,7 +359,7 @@ sub user_request
 		send_error($@);
 		#
 		#	вывод на экран
-		Carp::carp $@;
+		Carp::carp "Error file '$pdf_file_name' created: $@";
 	}
 	else
 	{
