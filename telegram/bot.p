@@ -153,8 +153,13 @@ sub logger
 	#	ссылка на обновление
 	my	$update = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	telegram_id пользователя
+	my	$telegram_id = $update->{message}->{chat}->{id};
+	#
 	#	Журнал
-	printf STDERR "\nUpdate at %3\$02d:%2\$02d:%1\$02d\n", (localtime)[0 ... 2];
+	printf STDERR "\nUpdate at %3\$02d:%2\$02d:%1\$02d (%4\$s)\n",
+		(localtime)[0 ... 2],
+		encode('windows-1251', $user->{$telegram_id}->{user_name});
 	#
 	#	Запись в базу данных
 	my	$sth = $log_dbh->prepare(qq
@@ -162,7 +167,7 @@ sub logger
 			INSERT INTO "logger" (telegram_id, message)
 			VALUES (?, ?)
 		@);
-		$sth->execute($update->{message}->{from}->{id}, encode_json($update));
+		$sth->execute($telegram_id, encode_json($update));
 =pod
 	printf STDERR "from_id='%s'\ttext='%s'\tweb_app_data='%s'\n%s%s\n",
 		$update->{message}->{from}->{id},
