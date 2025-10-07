@@ -158,7 +158,7 @@ sub new {
 			or Carp::confess $DBI::errstr;
 	#
 	#	вывод на экран
-	printf "Connect to database '$db_file'\n";
+	printf STDERR "Connect to database '$db_file'\n";
 	#
 	#	ссылка на объект
 	my	$self =
