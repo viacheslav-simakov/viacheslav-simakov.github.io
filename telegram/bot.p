@@ -110,7 +110,7 @@ while (1) {
 		if (!exists $user->{ $message->{chat}->{id} })
 		{
 			#	вывод на экран
-			Carp::carp "Access denied";
+			Carp::carp "Access denied\n";
 			#	следующее обновление
 			next;
 		}
@@ -164,10 +164,10 @@ sub logger
 	#	Запись в базу данных
 	my	$sth = $log_dbh->prepare(qq
 		@
-			INSERT INTO "logger" (telegram_id, message)
-			VALUES (?, ?)
+			INSERT INTO "logger" (telegram_id, message) VALUES (?, ?)
 		@);
-		$sth->execute($telegram_id, encode_json($update));
+		$sth->execute($telegram_id, encode_json($update))
+			or Carp::carp $DBI::errstr;
 =pod
 	printf STDERR "from_id='%s'\ttext='%s'\tweb_app_data='%s'\n%s%s\n",
 		$update->{message}->{from}->{id},

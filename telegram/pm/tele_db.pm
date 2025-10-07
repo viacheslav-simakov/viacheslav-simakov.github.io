@@ -58,7 +58,7 @@ my	%TABLE =
 	probe			=> 'probe',
 );
 #
-#	флажки html-формы
+#	флажки HTML-формы
 my	%FORM_checkbox =
 (
 	rheumatology	=> 'Основное заболевание',
@@ -68,7 +68,7 @@ my	%FORM_checkbox =
 	preparation		=> 'Препараты',
 );
 #
-#	строки ввода html-формы
+#	строки ввода HTML-формы
 my	%FORM_number =
 (
 	probe			=> 'Лабораторные исследования',
