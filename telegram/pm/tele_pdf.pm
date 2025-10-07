@@ -182,6 +182,24 @@ sub _draw_arrow
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
+	Метка времени: https://perldoc.perl.org/functions/localtime
+	---
+	$date_time = time_stamp();
+	
+=cut
+sub time_stamp
+{
+	#	Местное время
+	my	($sec, $min, $hour, $mday, $mon, $year) = localtime;
+	#
+	#	Метка времени (DD-MM-YYYY hh:mm:ss)
+	#
+	return sprintf("%02d-%02d-%04d %02d:%02d:%02d",
+			$mday, $mon+1, $year+1900,
+			$hour, $min, $sec);
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
 	Функция для добавления колонтитулов
 	---
 	$obj->page_header_footer();
@@ -191,12 +209,8 @@ sub page_header_footer {
 	#	ссылка на объект
 	my	$self = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	местное время: https://perldoc.perl.org/functions/localtime
-	my	($sec, $min, $hour, $mday, $mon, $year) = localtime;
-	#
-	#	TimeStamp
-	my	$time_stamp = sprintf "%02d-%02d-%04d %02d:%02d:%02d",
-			$mday, $mon+1, $year+1900, $hour, $min, $sec;
+	#	Метка времени (DD-MM-YYYY hh:mm:ss)
+	my	$time_stamp = time_stamp();
 	#
 	#	Пользователь
 	my	$user_info = sprintf 'Telegram id (%s)', $self->{-user}->{telegram_id};

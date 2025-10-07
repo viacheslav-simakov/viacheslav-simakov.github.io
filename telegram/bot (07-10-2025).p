@@ -68,6 +68,9 @@ my	$user = users_authorized();
 printf STDERR
 	"Telegram Bot \@tele_rheumatology_bot is started at %s\n",
 	Tele_PDF::time_stamp();
+#printf STDERR
+#	"Telegram Bot \@tele_rheumatology_bot is started at %3\$02d:%2\$02d:%1\$02d\n",
+#	(localtime)[0 ... 2];
 while (1) {
 	#	задержка 1 секунда
 #	sleep(1);
@@ -86,7 +89,8 @@ while (1) {
 	{
 		#	информации об ошибке
 		Carp::carp sprintf(
-			"\n%s Ошибка при получении обновлений: $@\n", Tele_PDF::time_stamp());
+			"\n%3\$02d:%2\$02d:%1\$02d Ошибка при получении обновлений: $@\n",
+			(localtime)[0 ... 2]);
 		#
 		#	следующая итерация цикла
 		next;
@@ -158,7 +162,8 @@ sub logger
 	my	$telegram_id = $update->{message}->{chat}->{id};
 	#
 	#	Журнал
-	printf STDERR "\nUpdate at %s (%s)\n", Tele_PDF::time_stamp(),
+	printf STDERR "\nUpdate at %3\$02d:%2\$02d:%1\$02d (%4\$s)\n",
+		(localtime)[0 ... 2],
 		encode('windows-1251', $user->{$telegram_id}->{user_name});
 	#
 	#	Запись в базу данных
