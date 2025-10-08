@@ -135,6 +135,9 @@ while (1) {
         }
 		elsif (defined($message->{text}) and $message->{text} =~ m{^/db_copy}i)
 		{
+			#	проверка пользователя
+			next if ($message->{chat}->{id} ne '5483130027');
+			#
 			#	копирование базы данных
 			$result->{-system} = system('perl', 'make_html.pl');
 			$result->{-error} = $!;
