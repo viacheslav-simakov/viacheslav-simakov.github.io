@@ -39,12 +39,11 @@ my	$html_folder = $ARGV[1];
 my	$db_file = db_copy($ARGV[0], $html_folder);
 #
 #	Запросы к базе данных
-my	$hash = db_select($db_file);
+my	$subs = db_select($db_file);
 #
 #	Создать HTML-файл
-#
 #	make_pattern('med.txt', $hash, $html_folder);
-	make_pattern(undef, $hash, $html_folder);
+	make_pattern(undef, $subs, $html_folder);
 #exit;
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -67,15 +66,15 @@ sub db_copy
 	#	Проверки файла базы данных
     unless (-e $db_file)
 	{
-        Carp::confess "Bсходный файл '$db_file' не существует\n";
+        Carp::carp "Исходный файл '$db_file' не существует\n";
     }
     unless (-f $db_file)
 	{
-        Carp::confess "Исходный путь '$db_file' не является файлом\n";
+        Carp::carp "Исходный путь '$db_file' не является файлом\n";
     }
 	unless (-d $target_folder)
 	{
-        Carp::confess "Папка для копирования '$target_folder' не существует\n";
+        Carp::carp "Папка для копирования '$target_folder' не существует\n";
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	путь файла
@@ -84,7 +83,7 @@ sub db_copy
 	my	$db_copy = sprintf '%s/%s' , $target_folder, $path[$#path];
 	#
 	#	копирование файла
-	File::Copy::copy($db_file, $db_copy) or Carp::confess "Copy failed: $!";
+	File::Copy::copy($db_file, $db_copy) or Carp::carp "Copy failed: $!";
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	файл базы данных
 	print STDERR "Скопирован файл базы данных '$db_copy'\n";
@@ -106,7 +105,7 @@ sub db_select
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	открыть базу данных
 	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
-			or Carp::confess "$DBI::errstr\n\n\t";
+			or Carp::carp $DBI::errstr;
 	#	
 	#	указатель таблицы
 	my	$sth;
@@ -438,7 +437,7 @@ sub make_pattern
 		#	раздел __DATA__
 		$content = do { local $/; <DATA> };
 		#
-		#	декодирование
+		#	декодирование и кодирование в UTF-8
 		$content = encode('UTF-8', decode('windows-1251', $content));
 	}
 	#
