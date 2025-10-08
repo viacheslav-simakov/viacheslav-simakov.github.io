@@ -65,8 +65,7 @@ my	$user = users_authorized();
 #
 #	Главный цикл обработки событий бота
 #
-printf STDERR
-	"Telegram Bot \@tele_rheumatology_bot is started at %s\n",
+printf STDERR "Telegram Bot \@tele_rheumatology_bot is started at %s\n",
 	Tele_PDF::time_stamp();
 while (1) {
 	#	задержка 1 секунда
@@ -99,21 +98,27 @@ while (1) {
 	{
 		#	Увеличиваем смещение
         $offset = $update->{update_id} + 1 if $update->{update_id} >= $offset;
-		#
-		#	Журнал
-		logger($update);
         #
 		#	Сообщение
         my	$message = $update->{message} or next;
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		#	Проверка ID чата
+		#	Проверка ID пользователя
 		if (!exists $user->{ $message->{chat}->{id} })
 		{
+			#	информация об ошибке
+			send_error(sprintf 'Access denied for id=(%s)', $message->{chat}->{id} || 'unknow');
+			#
 			#	вывод на экран
 			Carp::carp "Access denied\n";
 			#	следующее обновление
 			next;
 		}
+		#	Вывод на экран
+		printf STDERR "\nUpdate at %s (%s)\n", Tele_PDF::time_stamp(),
+			encode('windows-1251', $user->{$message->{chat}->{id}}->{user_name});
+		#
+		#	Результат обработки сообщения
+		my	$result = {};
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#
         #	Обработка команд
@@ -121,12 +126,12 @@ while (1) {
 		if ($message->{web_app_data}->{data})
 		{
 			#	данные Web App
-			user_request($message);
+			$result = user_request($message);
 		}
         elsif (defined($message->{text}) and $message->{text} =~ m{^/start}i)
 		{
 			#	клавиатура
-			web_app_keyboard($message);
+			$result = web_app_keyboard($message);
         }
 		elsif (defined($message->{text}) and $message->{text} =~ m{^/db_copy}i)
 		{
@@ -136,46 +141,75 @@ while (1) {
         else
 		{
 			#	неизвестный запрос
-			unknow($message);
+			$result = unknow($message);
         }
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		#	запись в журнал
+		logger($message, $result);
     }
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Вывод на экран
 	---
-	logger($update)
+	logger(\%message, \%result)
 		
-		$update	- ссылка на обновление (хэш)
+		%message	- сообщение (хэш)
+		%result		- результат обработки сообщения (хэш)
 =cut
 sub logger
 {
-	#	ссылка на обновление
-	my	$update = shift @_;
+	#	сообщение (ссылка на хэш)
+	my	$message = shift @_;
+	#	результат обработки сообщения
+	my	$result = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	telegram_id пользователя
-	my	$telegram_id = $update->{message}->{chat}->{id};
-	#
-	#	Журнал
-	printf STDERR "\nUpdate at %s (%s)\n", Tele_PDF::time_stamp(),
-		encode('windows-1251', $user->{$telegram_id}->{user_name});
+	my	$telegram_id = $message->{chat}->{id};
 	#
 	#	Запись в базу данных
 	my	$sth = $log_dbh->prepare(qq
 		@
-			INSERT INTO "logger" (telegram_id, message) VALUES (?, ?)
+			INSERT INTO "logger" (telegram_id, message, result) VALUES (?, ?, ?)
 		@);
-		$sth->execute($telegram_id, encode_json($update))
+		$sth->execute($telegram_id, encode_json($message), encode_json($result))
 			or Carp::carp $DBI::errstr;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	printf STDERR "from_id='%s'\ttext='%s'\tweb_app_data='%s'\n%s%s\n",
-		$update->{message}->{from}->{id},
-		encode('windows-1251', $update->{message}->{text} || ''),
-		encode('windows-1251', $update->{message}->{web_app_data}->{data} || ''),
-		Dumper($update),
-		('~' x 79);
+	Сообщение об ошибке
+	---
+	admin($error)
+
+		$error	- сообщение об ошибке
 =cut
+sub send_error
+{
+	#	сообщение об ошибке
+	my	$error = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Безопасная конструкция
+	eval {
+		#	Послать сообщение admin
+		$api->api_request('sendMessage',
+		{
+			chat_id		=> '5483130027',# Симаков
+			parse_mode	=> 'Markdown',
+			text		=> sprintf("*ERROR*\npackage = '%s', line = %d\n%s",
+				(caller(1))[1,2], $error),
+		})
+	};
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Проверка ошибок
+	if ($@)
+	{
+		#	информации об ошибке
+		Carp::carp "\nОшибка при отправке 'error' сообщения: $@\n";
+	}
+	else
+	{
+		printf STDERR "'Error' message to Admin has been send\n";
+	}
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -187,13 +221,15 @@ sub logger
 =cut
 sub unknow
 {
-	#	ссылка на сообщение
+	#	сообщение (ссылка на хэш)
 	my	$message = shift @_;
+	#	результат
+	my	$result;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
 	eval {
 		#	Послать сообщение боту (вывод клавиатуры)
-		$api->api_request('sendMessage',
+		$result = $api->api_request('sendMessage',
 		{
 			chat_id		=> $message->{chat}->{id},
 			parse_mode	=> 'Markdown',
@@ -208,26 +244,34 @@ sub unknow
 	#	Проверка ошибок
 	if ($@)
 	{
-		#	информации об ошибке
+		#	информация об ошибке
+		send_error($@);
+		#
+		#	вывод на экран
 		Carp::carp "\nОшибка при отправке 'default' сообщения: $@\n";
 	}
 	else
 	{
 		printf STDERR "Unknown message! 'Default' response to Bot has been send\n";
 	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	возвращаемое значение
+	return $result;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Вывод клавиатуры на экран
 	---
-	web_app_keyboard($message)
+	web_app_keyboard( \%message )
 		
-		$message	- ссылка на сообщение (хэш)
+		%message	- сообщение (хэш)
 =cut
 sub web_app_keyboard
 {
-	#	ссылка на сообщение
+	#	сообщение (ссылка на хэш)
 	my	$message = shift @_;
+	#	результат
+	my	$result;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Клавиатура
 	my	$keyboard = [[
@@ -243,7 +287,7 @@ sub web_app_keyboard
 	#	Безопасная конструкция
 	eval {
 		#	Послать сообщение боту (вывод клавиатуры)
-		$api->api_request('sendMessage',
+		$result = $api->api_request('sendMessage',
 		{
 			chat_id => $message->{chat}->{id},
 			parse_mode => 'Markdown',
@@ -257,31 +301,38 @@ sub web_app_keyboard
 			},
 		});
 	};
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Проверка ошибок
 	if ($@)
 	{
-		#	информации об ошибке
+		#	информация об ошибке
+		send_error($@);
+		#
+		#	вывод на экран
 		Carp::carp "\nОшибка при отправке 'клавиатуры' Бота: $@\n";
 	}
 	else
 	{
 		printf STDERR "'reply mark' keyboard to Bot has been send\n";
 	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	возвращаемое значение
+	return $result;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Обработка данных HTML-формы полученных из Web App
 	---
-	user_request($message)
+	user_request( \%message )
 	
-		$message	- ссылка на сообщение (хэш)
+		%message	- сообщение (хэш)
 
 =cut
 sub user_request
 {
-	#	ссылка на сообщение
+	#	сообщение (ссылка на хэш)
     my	$message = shift @_;
+	#	результат
+	my	$result;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	имя PDF-файла
 	my	$pdf_file_name = sprintf '%s.pdf', $message->{chat}->{id};
@@ -295,27 +346,47 @@ sub user_request
 			decode_json($web_app_data)
 		);
 	#
-	#	Создать PDF-файл
+	#	Безопасная конструкция
+	eval
+	{
+		#	Создать PDF-файл
 		$pdf->save($pdf_file_name);
-	#
-	#	Отправить пользователю PDF-файл
-		send_pdf($message, $pdf_file_name);
+	};
+	#	Проверка ошибок
+	if ($@)
+	{
+		#	послать информацию об ошибке
+		send_error($@);
+		#
+		#	вывод на экран
+		Carp::carp "Error file '$pdf_file_name' created: $@";
+	}
+	else
+	{
+		#	Отправить пользователю PDF-файл
+		$result = send_pdf($message, $pdf_file_name);
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	возвращаемое значение
+	return $result;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Отправка PDF-файла
 	---
-	send_pdf($message, $pdf_file_name)
+	send_pdf(\%message, $pdf_file_name)
 	
-		$message		- ссылка на сообщение (хэш)
+		%message		- сообщение (хэш)
 		$pdf_file_name	- имя PDF-файла
 =cut
 sub send_pdf
 {
-	#	ID чата пользователя
+	#	сообщение (ссылка на хэш)
     my	$message = shift @_;
 	#	имя PDF-файла
 	my	$pdf_file_name = shift @_;
+	#	результат
+	my	$result;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Проверка существование файла
 	unless (-e $pdf_file_name)
@@ -331,9 +402,10 @@ sub send_pdf
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
-	eval {
+	eval
+	{
 		#	Отправляем PDF файл
-		my	$result = $api->api_request('sendDocument',
+		$result = $api->api_request('sendDocument',
 		{
 			chat_id		=> $message->{chat}->{id},
 			caption		=> decode('windows-1251','СГМУ имени В.И. Разумовского'),
@@ -350,10 +422,19 @@ sub send_pdf
 			$result->{result}->{document}->{file_name},
 			sprintf('%.1f kB', $result->{result}->{document}->{file_size}/1024),
 			$message->{chat}->{id};
-#		print STDERR Dumper($result);
 	};
 	#	Проверка ошибок
-	Carp::carp "\nОшибка при отправке файла: $@\n" if ($@);
+	if ($@)
+	{
+		#	информация об ошибке
+		send_error($@);
+		#
+		#	вывод на экран
+		Carp::carp "\nОшибка при отправке файла: $@\n" 
+	};
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	возвращаемое значение
+	return $result;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
