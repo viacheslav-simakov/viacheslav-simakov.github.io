@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Электронный ассистент</title>
+<title>Р­Р»РµРєС‚СЂРѕРЅРЅС‹Р№ Р°СЃСЃРёСЃС‚РµРЅС‚</title>
 <!--meta http-equiv="content-type" content="text/html; charset=utf-8"/-->
 <!--
-	Файл стилей
+	Р¤Р°Р№Р» СЃС‚РёР»РµР№
 	https://developer.mozilla.org/en-US/docs/Web/CSS
 -->
 <link href="med.css" rel="stylesheet" type="text/css"/>
@@ -24,12 +24,12 @@
 <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
 
 <style>
-/*	Скрыть вкладки, радиокнопки */
+/*	РЎРєСЂС‹С‚СЊ РІРєР»Р°РґРєРё, СЂР°РґРёРѕРєРЅРѕРїРєРё */
 div.tab-content, input[type=radio]
 {
 	display:	none;
 }
-/*	Показать содержимое вкладок */
+/*	РџРѕРєР°Р·Р°С‚СЊ СЃРѕРґРµСЂР¶РёРјРѕРµ РІРєР»Р°РґРѕРє */
 #radio-rheumatology:checked ~	#req-form #rheumatology,
 #radio-preparation:checked ~	#req-form #preparation,
 #radio-comorbidity:checked ~ 	#req-form #comorbidity,
@@ -39,7 +39,7 @@ div.tab-content, input[type=radio]
 {
 	display:	block;
 }
-/*	Подсветка выбора пользователя */
+/*	РџРѕРґСЃРІРµС‚РєР° РІС‹Р±РѕСЂР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ */
 #radio-rheumatology:checked ~	#userDialog #label-rheumatology,
 #radio-preparation:checked ~	#userDialog #label-preparation,
 #radio-comorbidity:checked ~ 	#userDialog #label-comorbidity,
@@ -54,12 +54,12 @@ div.tab-content, input[type=radio]
 </head>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-	ОСНОВНОЕ СОДЕРЖАНИЕ
+	РћРЎРќРћР’РќРћР• РЎРћР”Р•Р Р–РђРќРР•
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <body>
 <!--
-	Радиокнопки меню
+	Р Р°РґРёРѕРєРЅРѕРїРєРё РјРµРЅСЋ
 -->
 	<input type="radio" id="radio-rheumatology"	name="tab-group" checked>
 	<input type="radio" id="radio-preparation"	name="tab-group">
@@ -69,46 +69,46 @@ div.tab-content, input[type=radio]
 	<input type="radio" id="radio-probe"		name="tab-group">
 	<input type="radio" id="radio-prescription"	name="tab-group">
 <!--
-	Меню
+	РњРµРЅСЋ
 -->
 <div id="showMenu" class="header-fixed">
 	<div class="title-icon">rheumatology</div>
-	<div class="title-text">Основное заболевание</div>
+	<div class="title-text">РћСЃРЅРѕРІРЅРѕРµ Р·Р°Р±РѕР»РµРІР°РЅРёРµ</div>
 </div>
 <!--
-	Диалоговое окно
+	Р”РёР°Р»РѕРіРѕРІРѕРµ РѕРєРЅРѕ
 -->
 <dialog id="userDialog">
-	<!-- :: ВЫБОР ОПЦИЙ :: -------------------------------------------------------->
+	<!-- :: Р’Р«Р‘РћР  РћРџР¦РР™ :: -------------------------------------------------------->
 	<div class="menu">
-		<!-- Заболевания -->
+		<!-- Р—Р°Р±РѕР»РµРІР°РЅРёСЏ -->
 		<label id="label-rheumatology" for="radio-rheumatology">
-			<span>rheumatology</span><div>Основное заболевание</div></label>
+			<span>rheumatology</span><div>РћСЃРЅРѕРІРЅРѕРµ Р·Р°Р±РѕР»РµРІР°РЅРёРµ</div></label>
 
-		<!-- Сопутствующие заболевания -->
+		<!-- РЎРѕРїСѓС‚СЃС‚РІСѓСЋС‰РёРµ Р·Р°Р±РѕР»РµРІР°РЅРёСЏ -->
 		<label id="label-comorbidity" for="radio-comorbidity">
-			<span>person_cancel</span><div>Сопутствующие заболевания</div></label>
+			<span>person_cancel</span><div>РЎРѕРїСѓС‚СЃС‚РІСѓСЋС‰РёРµ Р·Р°Р±РѕР»РµРІР°РЅРёСЏ</div></label>
 	
-		<!-- Сопутствующие состояния -->
+		<!-- РЎРѕРїСѓС‚СЃС‚РІСѓСЋС‰РёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ -->
 		<label id="label-status" for="radio-status">
-			<span>person_alert</span><div>Сопутствующие состояния</div></label>
+			<span>person_alert</span><div>РЎРѕРїСѓС‚СЃС‚РІСѓСЋС‰РёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ</div></label>
 
-		<!-- Сопутствующие отклонения -->
+		<!-- РЎРѕРїСѓС‚СЃС‚РІСѓСЋС‰РёРµ РѕС‚РєР»РѕРЅРµРЅРёСЏ -->
 		<label id="label-deviation" for="radio-deviation">
-			<span>instant_mix</span><div>Лабораторные показатели</div></label>
+			<span>instant_mix</span><div>Р›Р°Р±РѕСЂР°С‚РѕСЂРЅС‹Рµ РїРѕРєР°Р·Р°С‚РµР»Рё</div></label>
 		
-		<!-- Лабораторные показатели -->
+		<!-- Р›Р°Р±РѕСЂР°С‚РѕСЂРЅС‹Рµ РїРѕРєР°Р·Р°С‚РµР»Рё -->
 		<label id="label-probe" for="radio-probe">
-			<span>biotech</span><div>Лабораторные исследования</div></label>
+			<span>biotech</span><div>Р›Р°Р±РѕСЂР°С‚РѕСЂРЅС‹Рµ РёСЃСЃР»РµРґРѕРІР°РЅРёСЏ</div></label>
 
-		<!-- Препараты -->
+		<!-- РџСЂРµРїР°СЂР°С‚С‹ -->
 		<label id="label-preparation" for="radio-preparation">
-			<span>pill</span><div>Препараты</div></label>
+			<span>pill</span><div>РџСЂРµРїР°СЂР°С‚С‹</div></label>
 	</div>
 </dialog>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-	Основное заболевание
+	РћСЃРЅРѕРІРЅРѕРµ Р·Р°Р±РѕР»РµРІР°РЅРёРµ
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <form id="req-form">
@@ -338,7 +338,7 @@ div.tab-content, input[type=radio]
 </div>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-	Сопутствующие заболевания
+	РЎРѕРїСѓС‚СЃС‚РІСѓСЋС‰РёРµ Р·Р°Р±РѕР»РµРІР°РЅРёСЏ
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <div id="comorbidity" class="tab-content">
@@ -703,7 +703,7 @@ div.tab-content, input[type=radio]
 </div>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-	Сопутствующие состояния
+	РЎРѕРїСѓС‚СЃС‚РІСѓСЋС‰РёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <div id="status" class="tab-content">
@@ -1034,7 +1034,7 @@ div.tab-content, input[type=radio]
 </div>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-	Лабораторные показатели (выбор из списка)
+	Р›Р°Р±РѕСЂР°С‚РѕСЂРЅС‹Рµ РїРѕРєР°Р·Р°С‚РµР»Рё (РІС‹Р±РѕСЂ РёР· СЃРїРёСЃРєР°)
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <div id="deviation" class="tab-content">
@@ -1280,7 +1280,7 @@ div.tab-content, input[type=radio]
 </div>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-	Лабораторные исследования
+	Р›Р°Р±РѕСЂР°С‚РѕСЂРЅС‹Рµ РёСЃСЃР»РµРґРѕРІР°РЅРёСЏ
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <div id="probe" class="tab-content">
@@ -1448,7 +1448,7 @@ div.tab-content, input[type=radio]
 </div>
 <!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-	Препараты
+	РџСЂРµРїР°СЂР°С‚С‹
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
 <div id="preparation" class="tab-content">
@@ -2042,75 +2042,75 @@ div.tab-content, input[type=radio]
 <script>
 	//	Web-API
 	let tg = window.Telegram.WebApp;
-	//	Инициализируем WebApp
+	//	РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј WebApp
 		tg.ready();
-	//	во весь экран
+	//	РІРѕ РІРµСЃСЊ СЌРєСЂР°РЅ
 		tg.expand();
-	//	Получаем информацию о пользователе
+	//	РџРѕР»СѓС‡Р°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ
 	const user = tg.initDataUnsafe.user;
-	//	Наименования секций (разделов) HTML-страницы
+	//	РќР°РёРјРµРЅРѕРІР°РЅРёСЏ СЃРµРєС†РёР№ (СЂР°Р·РґРµР»РѕРІ) HTML-СЃС‚СЂР°РЅРёС†С‹
 	const section = ["rheumatology","preparation","comorbidity","status","manual"];
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//
-	//	Главная кнопка
+	//	Р“Р»Р°РІРЅР°СЏ РєРЅРѕРїРєР°
 	//
-	tg.MainButton.setText("Рекомендации").show();
+	tg.MainButton.setText("Р РµРєРѕРјРµРЅРґР°С†РёРё").show();
 	//	Add an event listener for when the SettingButton is clicked
 	tg.onEvent('mainButtonClicked', () => {
 		//
-		//	Данные для отправки в Telegram Bot
+		//	Р”Р°РЅРЅС‹Рµ РґР»СЏ РѕС‚РїСЂР°РІРєРё РІ Telegram Bot
 		let dataToSend = {};
 		//
-		//	Цикл по названию секций, содержащих флажки (checkbox)
+		//	Р¦РёРєР» РїРѕ РЅР°Р·РІР°РЅРёСЋ СЃРµРєС†РёР№, СЃРѕРґРµСЂР¶Р°С‰РёС… С„Р»Р°Р¶РєРё (checkbox)
 		for (let i = 0; i < section.length; i++) {
 			//
-			//	Селекторы: https://learn.javascript.ru/css-selectors
+			//	РЎРµР»РµРєС‚РѕСЂС‹: https://learn.javascript.ru/css-selectors
 			//
 			let elem = document.querySelectorAll("input[name^='" + section[i] + "#']");
 			//
-			//	Массив ID значений флажков (checkbox)
+			//	РњР°СЃСЃРёРІ ID Р·РЅР°С‡РµРЅРёР№ С„Р»Р°Р¶РєРѕРІ (checkbox)
 			let id = [];
 			//
-			//	цикл по всем элементам списка
+			//	С†РёРєР» РїРѕ РІСЃРµРј СЌР»РµРјРµРЅС‚Р°Рј СЃРїРёСЃРєР°
 			for (let j = 0; j < elem.length; j++) {
 				//
-				//	Пропустить оставшуюся часть тела цикла
+				//	РџСЂРѕРїСѓСЃС‚РёС‚СЊ РѕСЃС‚Р°РІС€СѓСЋСЃСЏ С‡Р°СЃС‚СЊ С‚РµР»Р° С†РёРєР»Р°
 				if (elem[j].checked === false) continue;
 				//
-				//	Добавить в массив
+				//	Р”РѕР±Р°РІРёС‚СЊ РІ РјР°СЃСЃРёРІ
 				id.push(elem[j].name.split("#")[1]);
 			}
-			//	Список ID флажков
+			//	РЎРїРёСЃРѕРє ID С„Р»Р°Р¶РєРѕРІ
 			dataToSend[section[i]] = id;
 		}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//	Коллекция полей ввода (input)
-		//	Селекторы: https://learn.javascript.ru/css-selectors
+		//	РљРѕР»Р»РµРєС†РёСЏ РїРѕР»РµР№ РІРІРѕРґР° (input)
+		//	РЎРµР»РµРєС‚РѕСЂС‹: https://learn.javascript.ru/css-selectors
 		let elem = document.querySelectorAll("input[name^='probe#']");
 		//
-		//	Массив объектов (полей ввода)
+		//	РњР°СЃСЃРёРІ РѕР±СЉРµРєС‚РѕРІ (РїРѕР»РµР№ РІРІРѕРґР°)
 		let probe = [];
 		//
-		//	цикл по всем элементам списка
+		//	С†РёРєР» РїРѕ РІСЃРµРј СЌР»РµРјРµРЅС‚Р°Рј СЃРїРёСЃРєР°
 		for (let j = 0; j < elem.length; j++) {
 			//
-			//	Пропустить оставшуюся часть тела цикла
+			//	РџСЂРѕРїСѓСЃС‚РёС‚СЊ РѕСЃС‚Р°РІС€СѓСЋСЃСЏ С‡Р°СЃС‚СЊ С‚РµР»Р° С†РёРєР»Р°
 			if (elem[j].value == "") continue;
 			//
-			//	Добавить в массив
+			//	Р”РѕР±Р°РІРёС‚СЊ РІ РјР°СЃСЃРёРІ
 			probe.push(
 			{
 				id:		elem[j].name.split("#")[1],
 				val:	elem[j].value
 			});
 		}
-		//	Список объектов
+		//	РЎРїРёСЃРѕРє РѕР±СЉРµРєС‚РѕРІ
 		dataToSend["probe"] = probe;
 		//
-		//	Преобразуем массив объектов в строку JSON
+		//	РџСЂРµРѕР±СЂР°Р·СѓРµРј РјР°СЃСЃРёРІ РѕР±СЉРµРєС‚РѕРІ РІ СЃС‚СЂРѕРєСѓ JSON
 		const jsonString = JSON.stringify(dataToSend);
 		
-//		alert("Main button clicked!\nКоличество символов: " + jsonString.length);
+//		alert("Main button clicked!\nРљРѕР»РёС‡РµСЃС‚РІРѕ СЃРёРјРІРѕР»РѕРІ: " + jsonString.length);
 		//
 		// Send the data to the bot
 		tg.sendData(jsonString);
@@ -2120,12 +2120,12 @@ div.tab-content, input[type=radio]
 	});
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//
-	//	Вторичная кнопка
+	//	Р’С‚РѕСЂРёС‡РЅР°СЏ РєРЅРѕРїРєР°
 	//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
-	//	tg.SecondaryButton.setText("Назад").show();
+	//	tg.SecondaryButton.setText("РќР°Р·Р°Рґ").show();
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	//
-	//	Кнопка "Установки"
+	//	РљРЅРѕРїРєР° "РЈСЃС‚Р°РЅРѕРІРєРё"
 	tg.SettingsButton.show();
 	//	Add an event listener for when the SettingButton is clicked
 	tg.onEvent('settingsButtonClicked', () => {
@@ -2136,30 +2136,30 @@ div.tab-content, input[type=radio]
 </script>
 <!--##########################################################################
 
-	Хранилище устройства (DeviceStorage)
+	РҐСЂР°РЅРёР»РёС‰Рµ СѓСЃС‚СЂРѕР№СЃС‚РІР° (DeviceStorage)
 	https://core.telegram.org/bots/webapps#devicestorage
 
 ###########################################################################-->
 <script>
-	//	Локальное хранилище данных
+	//	Р›РѕРєР°Р»СЊРЅРѕРµ С…СЂР°РЅРёР»РёС‰Рµ РґР°РЅРЅС‹С…
 	let ds = tg.DeviceStorage;
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//	Цикл по названию секций, содержащих checkbox
+	//	Р¦РёРєР» РїРѕ РЅР°Р·РІР°РЅРёСЋ СЃРµРєС†РёР№, СЃРѕРґРµСЂР¶Р°С‰РёС… checkbox
 	for (let i = 0; i < section.length; i++) {
 		//
-		//	Коллекция флажков в секции:	https://learn.javascript.ru/css-selectors
+		//	РљРѕР»Р»РµРєС†РёСЏ С„Р»Р°Р¶РєРѕРІ РІ СЃРµРєС†РёРё:	https://learn.javascript.ru/css-selectors
 		let elem = document.querySelectorAll("input[name^='" + section[i] + "#']");
 		//
-		//	Цикл по всем флажкам (checkbox) из секции
+		//	Р¦РёРєР» РїРѕ РІСЃРµРј С„Р»Р°Р¶РєР°Рј (checkbox) РёР· СЃРµРєС†РёРё
 		for (let j = 0; j < elem.length; j++) {
 			//
-			//	Восстановить значение флажка
+			//	Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ Р·РЅР°С‡РµРЅРёРµ С„Р»Р°Р¶РєР°
 			ds.getItem(JSON.stringify(elem[j].name), (error, result) => {
 				//
-				//	Нет информации в хранилище?
+				//	РќРµС‚ РёРЅС„РѕСЂРјР°С†РёРё РІ С…СЂР°РЅРёР»РёС‰Рµ?
 				if (result !== null) {
 					//
-					//	Присвоить значение флажку
+					//	РџСЂРёСЃРІРѕРёС‚СЊ Р·РЅР°С‡РµРЅРёРµ С„Р»Р°Р¶РєСѓ
 					elem[j].checked = JSON.parse(result);
 				}
 				else {
@@ -2167,10 +2167,10 @@ div.tab-content, input[type=radio]
 				}
 			});
 			//
-			//	Обработчик событий для каждого флажка
+			//	РћР±СЂР°Р±РѕС‚С‡РёРє СЃРѕР±С‹С‚РёР№ РґР»СЏ РєР°Р¶РґРѕРіРѕ С„Р»Р°Р¶РєР°
 			elem[j].addEventListener('click', function(event) {
 				//
-				//	Записать в хранилище устройства
+				//	Р—Р°РїРёСЃР°С‚СЊ РІ С…СЂР°РЅРёР»РёС‰Рµ СѓСЃС‚СЂРѕР№СЃС‚РІР°
 				ds.setItem(
 					JSON.stringify(elem[j].name),
 					JSON.stringify(elem[j].checked));
@@ -2178,20 +2178,20 @@ div.tab-content, input[type=radio]
 		}
 	};
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//	Коллекция строк полей ввода (input)
+	//	РљРѕР»Р»РµРєС†РёСЏ СЃС‚СЂРѕРє РїРѕР»РµР№ РІРІРѕРґР° (input)
 	//	https://learn.javascript.ru/css-selectors
 	let probe = document.querySelectorAll("input[name^='probe#']");
 	//
-	//	Цикл по всем полям ввода
+	//	Р¦РёРєР» РїРѕ РІСЃРµРј РїРѕР»СЏРј РІРІРѕРґР°
 	for (let j = 0; j < probe.length; j++) {
 		//
-		//	Восстановить значение поля ввода
+		//	Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ Р·РЅР°С‡РµРЅРёРµ РїРѕР»СЏ РІРІРѕРґР°
 		ds.getItem(JSON.stringify(probe[j].name), (error, result) => {
 			//
-			//	нет записи в хранилище?
+			//	РЅРµС‚ Р·Р°РїРёСЃРё РІ С…СЂР°РЅРёР»РёС‰Рµ?
 			if (result !== null) {
 				//
-				//	Присвоить значение
+				//	РџСЂРёСЃРІРѕРёС‚СЊ Р·РЅР°С‡РµРЅРёРµ
 				probe[j].value = JSON.parse(result);
 			}
 			else {
@@ -2199,10 +2199,10 @@ div.tab-content, input[type=radio]
 			}
 		});
 		//
-		//	Обработчик событий для каждого поля ввода
+		//	РћР±СЂР°Р±РѕС‚С‡РёРє СЃРѕР±С‹С‚РёР№ РґР»СЏ РєР°Р¶РґРѕРіРѕ РїРѕР»СЏ РІРІРѕРґР°
 		probe[j].addEventListener('change', function(event) {
 			//
-			//	Записать в хранилище устройства
+			//	Р—Р°РїРёСЃР°С‚СЊ РІ С…СЂР°РЅРёР»РёС‰Рµ СѓСЃС‚СЂРѕР№СЃС‚РІР°
 			ds.setItem(
 				JSON.stringify(probe[j].name),
 				JSON.stringify(probe[j].value));
@@ -2211,7 +2211,7 @@ div.tab-content, input[type=radio]
 </script>
 <!--##########################################################################
 
-	Окно диалога (меню выбора вкладки)
+	РћРєРЅРѕ РґРёР°Р»РѕРіР° (РјРµРЅСЋ РІС‹Р±РѕСЂР° РІРєР»Р°РґРєРё)
 	https://developer.mozilla.org/ru/docs/Web/HTML/Reference/Elements/dialog
 
 ###########################################################################-->
@@ -2223,41 +2223,41 @@ div.tab-content, input[type=radio]
 	// "Show the dialog" button opens the <dialog> modally
 	showMenu.addEventListener("click", () => {
 		//
-		//	Показать окно
+		//	РџРѕРєР°Р·Р°С‚СЊ РѕРєРЅРѕ
 		userDialog.showModal();
 		//
-		//	Скрыть Главную кнопку
+		//	РЎРєСЂС‹С‚СЊ Р“Р»Р°РІРЅСѓСЋ РєРЅРѕРїРєСѓ
 		tg.MainButton.hide();
 	});
 	//
-	//	цикл по всем пунктам меню
+	//	С†РёРєР» РїРѕ РІСЃРµРј РїСѓРЅРєС‚Р°Рј РјРµРЅСЋ
 	for (let i = 0; i < itemMenu.length; i++) {
 		//
-		// Добавляем прослушиватель для закрытия при клике
+		// Р”РѕР±Р°РІР»СЏРµРј РїСЂРѕСЃР»СѓС€РёРІР°С‚РµР»СЊ РґР»СЏ Р·Р°РєСЂС‹С‚РёСЏ РїСЂРё РєР»РёРєРµ
 		itemMenu[i].addEventListener("click", () => {
 			//
-			//	Закрываем диалог
+			//	Р—Р°РєСЂС‹РІР°РµРј РґРёР°Р»РѕРі
 			userDialog.close();
 			//
-			//	Изменить значок
+			//	РР·РјРµРЅРёС‚СЊ Р·РЅР°С‡РѕРє
 			showMenu.querySelector(".title-icon").textContent =
 				itemMenu[i].querySelector("span").textContent;
 			//
-			//	Изменить название
+			//	РР·РјРµРЅРёС‚СЊ РЅР°Р·РІР°РЅРёРµ
 			showMenu.querySelector(".title-text").textContent =
 				itemMenu[i].querySelector("div").textContent;
 			//
-			//	Показать Главную кнопку
+			//	РџРѕРєР°Р·Р°С‚СЊ Р“Р»Р°РІРЅСѓСЋ РєРЅРѕРїРєСѓ
 			tg.MainButton.show();
 		});
 	}
-	// Добавляем прослушиватель для закрытия при клике вне диалога
+	// Р”РѕР±Р°РІР»СЏРµРј РїСЂРѕСЃР»СѓС€РёРІР°С‚РµР»СЊ РґР»СЏ Р·Р°РєСЂС‹С‚РёСЏ РїСЂРё РєР»РёРєРµ РІРЅРµ РґРёР°Р»РѕРіР°
 	document.addEventListener('click', function(event) {
 //		alert("Ok");
 		console.log(userDialog.open);
-		// Проверяем, кликнули ли по самому диалогу или его содержимому
+		// РџСЂРѕРІРµСЂСЏРµРј, РєР»РёРєРЅСѓР»Рё Р»Рё РїРѕ СЃР°РјРѕРјСѓ РґРёР°Р»РѕРіСѓ РёР»Рё РµРіРѕ СЃРѕРґРµСЂР¶РёРјРѕРјСѓ
 		if (!userDialog.contains(event.target) && userDialog.open) {
-//			userDialog.close(); // Закрываем диалог
+//			userDialog.close(); // Р—Р°РєСЂС‹РІР°РµРј РґРёР°Р»РѕРі
 		}
 	});
 </script>

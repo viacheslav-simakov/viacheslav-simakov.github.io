@@ -7,6 +7,10 @@ use strict;
 #	https://perldoc.perl.org/warnings
 use warnings;
 #
+#	Декодирование символов
+#	https://perldoc.perl.org/Encode
+use Encode;
+#
 #	Альтернативный warn и die для модулей
 #	https://perldoc.perl.org/Carp
 use Carp();
@@ -417,6 +421,9 @@ sub make_pattern
 	{
 		#	раздел __DATA__
 		$content = do { local $/; <DATA> };
+		#
+		#	декодирование
+		$content = encode('UTF-8', decode('windows-1251', $content));
 	}
 	#
 	#	Модификация шаблона
