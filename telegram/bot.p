@@ -164,7 +164,7 @@ while (1) {
 			{
 				#	копирование базы данных
 				my	$err = system('perl',
-					'make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
+					'pl/make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
 				#
 				#	информация об ошибке
 				send_error(decode('windows-1251',
