@@ -31,312 +31,22 @@ use Utils();
 use DBI;
 #
 #	Папка для сохранения HTML-файла
-my	$html_folder = 'C:\Git-Hub\viacheslav-simakov.github.io\med';
+#my	$html_folder = 'C:\Git-Hub\viacheslav-simakov.github.io\med';
+my	$html_folder = $ARGV[1];
 #
 #	Копирование файла базы данных
-my	$db_file = db_copy('C:\Apache24\sql\med.db', $html_folder);
+#my	$db_file = db_copy('C:\Apache24\sql\med.db', $html_folder);
+my	$db_file = db_copy($ARGV[0], $html_folder);
 #
-#	открыть базу данных
-my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
-		or Carp::confess "$DBI::errstr\n\n\t";
-#	
-#	указатель таблицы
-my	$sth;
-#
-#	Хэш для замены
-my	$hash;
-#
-#	Данные таблицы
-my	$data;
-##############################################################################
-#
-#	"Препараты"
-#
-$data = '';
-#
-#	SQL-запрос
-$sth = $dbh->prepare(qq
-@
-	SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
-	FROM "preparation"
-	WHERE id IN (
-		SELECT preparation FROM "indication"
-	)
-	ORDER BY num
-@);
-$sth->execute();
-#
-#	цикл по выбранным записям
-while (my $row = $sth->fetchrow_hashref)
-{
-#	информация
-$row->{info} ||= 'нет информации';
-#	строка таблицы
-$data .= sprintf qq
-@
-<div class="flex-box">
-	<input type="checkbox" name="preparation#%1\$d" class="item-checkbox"
-		id="preparation-label-%1\$d"/>
-	<div class="item-order">
-		%2\$d
-	</div>
-	<div class="item-content">
-		<details>
-			<summary>%3\$s</summary>
-			<p>%4\$s</p>
-		</details>
-	</div>
-	<div class="item-input">
-		<label for="preparation-label-%1\$d" class="item-label"></label>
-	</div>
-</div>
-@,
-$row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
-}
-#	Хэш для замены
-$hash->{'--preparation--'} = $data;
-##############################################################################
-#
-#	"Заболевания"
-#
-$data = '';
-#
-#	SQL-запрос
-$sth = $dbh->prepare(qq
-@
-	SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
-	FROM "rheumatology"
-	WHERE id IN (
-		SELECT rheumatology FROM "indication"
-	)
-	ORDER BY num
-@);
-$sth->execute();
-#
-#	цикл по выбранным записям
-while (my $row = $sth->fetchrow_hashref)
-{
-#	информация
-$row->{info} ||= 'нет информации';
-#	строка таблицы
-$data .= sprintf qq
-@
-<div class="flex-box">
-	<input type="checkbox" name="rheumatology#%1\$d" class="item-checkbox"
-		id="rheumatology-label-%1\$d"/>
-	<div class="item-order">
-		%2\$d
-	</div>
-	<div class="item-content">
-		<details>
-			<summary>%3\$s</summary>
-			<p>%4\$s</p>
-		</details>
-	</div>
-	<div class="item-input">
-		<label for="rheumatology-label-%1\$d" class="item-label"></label>
-	</div>
-</div>
-@,
-$row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
-}
-#	Хэш для замены
-$hash->{'--rheumatology--'} = $data;
-##############################################################################
-#
-#	"Сопутствующие заболевания"
-#
-$data = '';
-#
-#	SQL-запрос
-$sth = $dbh->prepare(qq
-@
-	SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
-	FROM "comorbidity"
-	WHERE id IN (
-		SELECT comorbidity FROM "contra-indication-comorbidity"
-	)
-	ORDER BY num
-@);
-$sth->execute();
-#
-#	цикл по выбранным записям
-while (my $row = $sth->fetchrow_hashref)
-{
-#	информация
-$row->{info} ||= 'нет информации';
-#	строка таблицы
-$data .= sprintf qq
-@
-<div class="flex-box">
-	<input type="checkbox" name="comorbidity#%1\$d" class="item-checkbox"
-		id="comorbidity-label-%1\$d"/>
-	<div class="item-order">
-		%2\$d
-	</div>
-	<div class="item-content">
-		<details>
-			<summary>%3\$s</summary>
-			<p>%4\$s</p>
-		</details>
-	</div>
-	<div class="item-input">
-		<label for="comorbidity-label-%1\$d" class="item-label"></label>
-	</div>
-</div>
-@,
-$row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
-}
-#	Хэш для замены
-$hash->{'--comorbidity--'} = $data;
-##############################################################################
-#
-#	"Сопутствующие состояния"
-#
-$data = '';
-#
-#	SQL-запрос
-$sth = $dbh->prepare(qq
-@
-	SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
-	FROM "status"
-	WHERE id IN (
-		SELECT status FROM "contra-indication-status"
-	)
-	ORDER BY num
-@);
-$sth->execute();
-#
-#	цикл по выбранным записям
-while (my $row = $sth->fetchrow_hashref)
-{
-#	информация
-$row->{info} ||= 'нет информации';
-#	строка таблицы
-$data .= sprintf qq
-@
-<div class="flex-box">
-	<input type="checkbox" name="status#%1\$d" class="item-checkbox"
-		id="status-label-%1\$d"/>
-	<div class="item-order">
-		%2\$d
-	</div>
-	<div class="item-content">
-		<details>
-			<summary>%3\$s</summary>
-			<p>%4\$s</p>
-		</details>
-	</div>
-	<div class="item-input">
-		<label for="status-label-%1\$d" class="item-label"></label>
-	</div>
-</div>
-@,
-$row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
-}
-#	Хэш для замены
-$hash->{'--status--'} = $data;
-##############################################################################
-#
-#	"Лабораторные показатели (выбор из списка)"
-#
-$data = '';
-#
-#	SQL-запрос
-$sth = $dbh->prepare(qq
-@
-	SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
-	FROM "probe-manual"
-	WHERE id IN (
-		SELECT "probe-manual" FROM "contra-indication-probe-manual"
-	)
-	ORDER BY num
-@);
-$sth->execute();
-#	тело таблицы
-my	$probe_manual = '';
-#	цикл по выбранным записям
-while (my $row = $sth->fetchrow_hashref)
-{
-#	информация
-$row->{info} ||= 'нет информации';
-#	строка таблицы
-$data .= sprintf qq
-@
-<div class="flex-box">
-	<input type="checkbox" name="manual#%1\$d" class="item-checkbox"
-		id="manual-label-%1\$d"/>
-	<div class="item-order">
-		%2\$d
-	</div>
-	<div class="item-content">
-		<details>
-			<summary>%3\$s</summary>
-			<p>%4\$s</p>
-		</details>
-	</div>
-	<div class="item-input">
-		<label for="manual-label-%1\$d" class="item-label"></label>
-	</div>
-</div>
-@,
-$row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
-}
-#	Хэш для замены
-$hash->{'--probe-manual--'} = $data;
-##############################################################################
-#
-#	"Лабораторные исследования (численные значения)"
-#
-$data = '';
-#
-#	SQL-запрос
-$sth = $dbh->prepare(qq
-@
-	SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
-	FROM "probe"
-	WHERE id IN (
-		SELECT probe FROM "prescription"
-	)
-	ORDER BY num
-@);
-$sth->execute();
-#
-#	цикл по выбранным записям
-while (my $row = $sth->fetchrow_hashref)
-{
-#	информация
-$row->{info} ||= 'нет информации';
-#	строка таблицы
-$data .= sprintf qq
-@
-<div class="flex-box">
-	<div class="item-order">
-		%2\$d
-	</div>
-	<div class="item-content">
-		<details>
-			<summary>%3\$s</summary>
-			<p>%4\$s</p>
-		</details>
-	</div>
-	<div class="item-input">
-		<input type="number" class="probe-number" name="probe#%1\$d"
-			step="0.1" min="0" max="100"/>
-	</div>
-</div>
-@,
-$row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
-}
-#	Хэш для замены
-$hash->{'--probe--'} = $data;
+#	Запросы к базе данных
+my	$hash = db_select($db_file);
 #
 #	Создать HTML-файл
 #
 #	make_pattern('med.txt', $hash, $html_folder);
 	make_pattern(undef, $hash, $html_folder);
 #exit;
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Копировать файл базы данных
 	---
@@ -380,6 +90,312 @@ sub db_copy
 	print STDERR "Скопирован файл базы данных '$db_copy'\n";
 	return $db_copy;
 }
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Данные таблиц
+	---
+	\%subs = db_select($db_file)
+	
+		$db_file	- файл базы данных
+		%subs		- хэш замены в шаблоне
+=cut
+sub db_select
+{
+	#	имя файла базы данных
+	my	$db_file = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	открыть базу данных
+	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
+			or Carp::confess "$DBI::errstr\n\n\t";
+	#	
+	#	указатель таблицы
+	my	$sth;
+	#
+	#	Хэш для замены
+	my	$hash;
+	#
+	#	Данные таблицы
+	my	$data;
+	##########################################################################
+	#
+	#	"Препараты"
+	#
+	$data = '';
+	#
+	#	SQL-запрос
+	$sth = $dbh->prepare(qq
+	@
+		SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
+		FROM "preparation"
+		WHERE id IN (
+			SELECT preparation FROM "indication"
+		)
+		ORDER BY num
+	@);
+	$sth->execute();
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+	#	информация
+	$row->{info} ||= 'нет информации';
+	#	строка таблицы
+	$data .= sprintf qq
+@
+<div class="flex-box">
+	<input type="checkbox" name="preparation#%1\$d" class="item-checkbox"
+		id="preparation-label-%1\$d"/>
+	<div class="item-order">
+		%2\$d
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>%3\$s</summary>
+			<p>%4\$s</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-%1\$d" class="item-label"></label>
+	</div>
+</div>
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
+	}
+	#	Хэш для замены
+	$hash->{'--preparation--'} = $data;
+	##############################################################################
+	#
+	#	"Заболевания"
+	#
+	$data = '';
+	#
+	#	SQL-запрос
+	$sth = $dbh->prepare(qq
+	@
+		SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
+		FROM "rheumatology"
+		WHERE id IN (
+			SELECT rheumatology FROM "indication"
+		)
+		ORDER BY num
+	@);
+	$sth->execute();
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+	#	информация
+	$row->{info} ||= 'нет информации';
+	#	строка таблицы
+	$data .= sprintf qq
+@
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#%1\$d" class="item-checkbox"
+		id="rheumatology-label-%1\$d"/>
+	<div class="item-order">
+		%2\$d
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>%3\$s</summary>
+			<p>%4\$s</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-%1\$d" class="item-label"></label>
+	</div>
+</div>
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
+	}
+	#	Хэш для замены
+	$hash->{'--rheumatology--'} = $data;
+	##############################################################################
+	#
+	#	"Сопутствующие заболевания"
+	#
+	$data = '';
+	#
+	#	SQL-запрос
+	$sth = $dbh->prepare(qq
+	@
+		SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
+		FROM "comorbidity"
+		WHERE id IN (
+			SELECT comorbidity FROM "contra-indication-comorbidity"
+		)
+		ORDER BY num
+	@);
+	$sth->execute();
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+	#	информация
+	$row->{info} ||= 'нет информации';
+	#	строка таблицы
+	$data .= sprintf qq
+@
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#%1\$d" class="item-checkbox"
+		id="comorbidity-label-%1\$d"/>
+	<div class="item-order">
+		%2\$d
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>%3\$s</summary>
+			<p>%4\$s</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-%1\$d" class="item-label"></label>
+	</div>
+</div>
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
+	}
+	#	Хэш для замены
+	$hash->{'--comorbidity--'} = $data;
+	##############################################################################
+	#
+	#	"Сопутствующие состояния"
+	#
+	$data = '';
+	#
+	#	SQL-запрос
+	$sth = $dbh->prepare(qq
+	@
+		SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
+		FROM "status"
+		WHERE id IN (
+			SELECT status FROM "contra-indication-status"
+		)
+		ORDER BY num
+	@);
+	$sth->execute();
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+	#	информация
+	$row->{info} ||= 'нет информации';
+	#	строка таблицы
+	$data .= sprintf qq
+@
+<div class="flex-box">
+	<input type="checkbox" name="status#%1\$d" class="item-checkbox"
+		id="status-label-%1\$d"/>
+	<div class="item-order">
+		%2\$d
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>%3\$s</summary>
+			<p>%4\$s</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-%1\$d" class="item-label"></label>
+	</div>
+</div>
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
+	}
+	#	Хэш для замены
+	$hash->{'--status--'} = $data;
+	##############################################################################
+	#
+	#	"Лабораторные показатели (выбор из списка)"
+	#
+	$data = '';
+	#
+	#	SQL-запрос
+	$sth = $dbh->prepare(qq
+	@
+		SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
+		FROM "probe-manual"
+		WHERE id IN (
+			SELECT "probe-manual" FROM "contra-indication-probe-manual"
+		)
+		ORDER BY num
+	@);
+	$sth->execute();
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+	#	информация
+	$row->{info} ||= 'нет информации';
+	#	строка таблицы
+	$data .= sprintf qq
+@
+<div class="flex-box">
+	<input type="checkbox" name="manual#%1\$d" class="item-checkbox"
+		id="manual-label-%1\$d"/>
+	<div class="item-order">
+		%2\$d
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>%3\$s</summary>
+			<p>%4\$s</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-%1\$d" class="item-label"></label>
+	</div>
+</div>
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
+	}
+	#	Хэш для замены
+	$hash->{'--probe-manual--'} = $data;
+	##############################################################################
+	#
+	#	"Лабораторные исследования (численные значения)"
+	#
+	$data = '';
+	#
+	#	SQL-запрос
+	$sth = $dbh->prepare(qq
+	@
+		SELECT id,name,info,ROW_NUMBER() OVER(ORDER BY "name_lc") AS num
+		FROM "probe"
+		WHERE id IN (
+			SELECT probe FROM "prescription"
+		)
+		ORDER BY num
+	@);
+	$sth->execute();
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+	#	информация
+	$row->{info} ||= 'нет информации';
+	#	строка таблицы
+	$data .= sprintf qq
+@
+<div class="flex-box">
+	<div class="item-order">
+		%2\$d
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>%3\$s</summary>
+			<p>%4\$s</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#%1\$d"
+			step="0.1" min="0" max="100"/>
+	</div>
+</div>
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
+	}
+	#	Хэш для замены
+	$hash->{'--probe--'} = $data;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ссылка на хэш
+	return $hash;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Шаблон HTML
 	---
@@ -445,6 +461,7 @@ sub make_pattern
 	#	Вывод на экран
 	print STDERR "Создан HTML-файл '$html_file'\n";
 }
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 __DATA__
 <!DOCTYPE html>
 <html lang="ru-RU">

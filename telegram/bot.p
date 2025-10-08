@@ -84,10 +84,9 @@ while (1) {
 	if ($@)
 	{
 		#	информации об ошибке
-		Carp::carp sprintf(
-			"\n%s Ошибка при получении обновлений: $@\n", Tele_PDF::time_stamp());
-		#
-		#	следующая итерация цикла
+		Carp::carp sprintf("\n%s Ошибка при получении обновлений: $@\n",
+			Tele_PDF::time_stamp());
+		#	следующее обновление
 		next;
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -128,26 +127,35 @@ while (1) {
 			#	данные Web App
 			$result = user_request($message);
 		}
-        elsif (defined($message->{text}) and $message->{text} =~ m{^/start}i)
+		elsif (!defined $message->{text})
+		{
+			#	отсутствует текст сообщения
+			next;
+		}
+        elsif ($message->{text} =~ m{^/start}i)
 		{
 			#	клавиатура
 			$result = web_app_keyboard($message);
         }
-		elsif (($message->{chat}->{id} eq '5483130027') and defined($message->{text}))
+		elsif ($message->{chat}->{id} eq '5483130027')
 		{
 			#	отправить базу данных
 			if ($message->{text} =~ m{^/db_send}i)
 			{
 				#	файл журнала
-				send_pdf($message, 'log.db');
+				send_file($message, 'log.db');
 				#
 				#	пользователи
-				send_pdf($message, 'bot.db');
+				send_file($message, 'bot.db');
 			}
 			elsif ($message->{text} =~ m{^/db_copy}i)
 			{
 				#	копирование базы данных
-				$result->{-system} = system('perl', 'make_html.pl');
+				$result->{-system} = system('perl',
+					'make_html.pl',
+					'C:\Apache24\sql\med.db',
+					'C:\Git-Hub\viacheslav-simakov.github.io\med');
+				#	информация об ошибке
 				$result->{-error} = $!;
 				$result->{-db_copy} = decode('windows-1251','Копирование базы данных');
 			}
@@ -193,7 +201,7 @@ sub logger
 =pod
 	Сообщение об ошибке
 	---
-	admin($error)
+	send_error($error)
 
 		$error	- сообщение об ошибке
 =cut
@@ -260,7 +268,6 @@ sub unknow
 	{
 		#	информация об ошибке
 		send_error($@);
-		#
 		#	вывод на экран
 		Carp::carp "\nОшибка при отправке 'default' сообщения: $@\n";
 	}
@@ -320,7 +327,6 @@ sub web_app_keyboard
 	{
 		#	информация об ошибке
 		send_error($@);
-		#
 		#	вывод на экран
 		Carp::carp "\nОшибка при отправке 'клавиатуры' Бота: $@\n";
 	}
@@ -359,7 +365,7 @@ sub user_request
 			$user->{$message->{chat}->{id}},
 			decode_json($web_app_data)
 		);
-	#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
 	eval
 	{
@@ -371,14 +377,13 @@ sub user_request
 	{
 		#	послать информацию об ошибке
 		send_error($@);
-		#
 		#	вывод на экран
 		Carp::carp "Error file '$pdf_file_name' created: $@";
 	}
 	else
 	{
 		#	Отправить пользователю PDF-файл
-		$result = send_pdf($message, $pdf_file_name);
+		$result = send_file($message, $pdf_file_name);
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
@@ -386,30 +391,30 @@ sub user_request
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Отправка PDF-файла
+	Отправить файл
 	---
-	send_pdf(\%message, $pdf_file_name)
+	send_file(\%message, $file_name)
 	
-		%message		- сообщение (хэш)
-		$pdf_file_name	- имя PDF-файла
+		%message	- сообщение (хэш)
+		$file_name	- имя файла (в текущей папке)
 =cut
-sub send_pdf
+sub send_file
 {
 	#	сообщение (ссылка на хэш)
     my	$message = shift @_;
 	#	имя PDF-файла
-	my	$pdf_file_name = shift @_;
+	my	$file_name = shift @_;
 	#	результат
 	my	$result;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Проверка существование файла
-	unless (-e $pdf_file_name)
+	unless (-e $file_name)
 	{
 		#	предупреждение!
 		Carp::carp sprintf
 			"package '%s', filename '%s', subroutine '%s':\n".
-			"PDF-file '%s' file is not exist!\n",
-			(caller(0))[0,1,3], $pdf_file_name;
+			"file '%s' is not exist!\n",
+			(caller(0))[0,1,3], $file_name;
 		#
 		#	возврат из функции
 		return undef;
@@ -425,9 +430,9 @@ sub send_pdf
 			caption		=> decode('windows-1251','СГМУ имени В.И. Разумовского'),
 			document	=>
 			{
-				file		=> $pdf_file_name,
+				file		=> $file_name,
 #				filename	=> decode('windows-1251', 'Рекомендации.pdf'),
-				filename	=> $pdf_file_name,
+				filename	=> $file_name,
 			},
 		});
 		#	Вывод на экран
@@ -442,7 +447,6 @@ sub send_pdf
 	{
 		#	информация об ошибке
 		send_error($@);
-		#
 		#	вывод на экран
 		Carp::carp "\nОшибка при отправке файла: $@\n" 
 	};
