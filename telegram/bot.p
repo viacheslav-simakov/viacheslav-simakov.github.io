@@ -251,7 +251,7 @@ sub send_error
 	}
 	else
 	{
-		printf STDERR "'Error' message to Admin has been send\n";
+		printf STDERR "Message to Superuser has been send\n";
 	}
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
