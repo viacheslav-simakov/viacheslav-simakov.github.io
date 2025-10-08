@@ -133,15 +133,24 @@ while (1) {
 			#	клавиатура
 			$result = web_app_keyboard($message);
         }
-		elsif (defined($message->{text}) and $message->{text} =~ m{^/db_copy}i)
+		elsif (($message->{chat}->{id} eq '5483130027') and defined($message->{text}))
 		{
-			#	проверка пользовател€
-			next if ($message->{chat}->{id} ne '5483130027');
-			#
-			#	копирование базы данных
-			$result->{-system} = system('perl', 'make_html.pl');
-			$result->{-error} = $!;
-			$result->{-db_copy} = decode('windows-1251',' опирование базы данных');
+			#	отправить базу данных
+			if ($message->{text} =~ m{^/db_send}i)
+			{
+				#	файл журнала
+				send_pdf($message, 'log.db');
+				#
+				#	пользователи
+				send_pdf($message, 'bot.db');
+			}
+			elsif ($message->{text} =~ m{^/db_copy}i)
+			{
+				#	копирование базы данных
+				$result->{-system} = system('perl', 'make_html.pl');
+				$result->{-error} = $!;
+				$result->{-db_copy} = decode('windows-1251',' опирование базы данных');
+			}
 		}
         else
 		{
