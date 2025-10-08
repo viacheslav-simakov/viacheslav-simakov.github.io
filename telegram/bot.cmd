@@ -10,18 +10,11 @@ rem
 rem **************************************************************************
 REM текуща€ папка
 SET ROOT_FOLDER=%CD%\..
-REM папка с шаблонами
-SET TEMPLATE_FOLDER=%CD%\TeX-template
-REM папка с задани€ми
-SET OUTPUT_FOLDER=%CD%\~TeX-output
 REM папка с файлами баз данных
-SET DB_FOLDER=%CD%\databases
-REM количество вариантов заданий (required default 1)
-SET MAKE_SAMPLES=1
-REM количество компил€ций pdf-файла (required default 2)
-SET RUN_COMPILES=0
-
-rem perl "www-example.p"
+SET DB_FILE=C:\Apache24\sql\med.db
+REM папка с HTML-файлом
+SET HTML_FOLDER=%CD%\..\med
+REM запуск Telegram Bot
 perl "bot.p"
 rem **************************************************************************
 PAUSE

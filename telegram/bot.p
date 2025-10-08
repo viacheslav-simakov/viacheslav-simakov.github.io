@@ -39,7 +39,19 @@ use lib ('pm');
 #
 #	pdf-документы
 use Tele_PDF();
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#	проверка доступности файлов и папок
+#
+unless (-e $ENV{'DB_FILE'})
+{
+	Carp::confess "Файл '$ENV{'DB_FILE'}' базы данных не существует\n";
+}
+unless (-d $ENV{'HTML_FOLDER'})
+{
+	Carp::confess "Папка '$ENV{'HTML_FOLDER'}' для копирования не существует\n";
+}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #	открыть базу данных
 my	$log_dbh = DBI->connect("dbi:SQLite:dbname=log.db","","")
 		or Carp::confess $DBI::errstr;
@@ -151,13 +163,15 @@ while (1) {
 			elsif ($message->{text} =~ m{^/db_copy}i)
 			{
 				#	копирование базы данных
-				$result->{-system} = system('perl',
-					'make_html.pl',
-					'C:\Apache24\sql\med.db',
-					'C:\Git-Hub\viacheslav-simakov.github.io\med');
+				my	$err = system('perl',
+					'make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
+				#
 				#	информация об ошибке
-				$result->{-error} = $!;
-				$result->{-db_copy} = decode('windows-1251','Копирование базы данных');
+				send_error(decode('windows-1251',
+					"*Копирование базы данных*\nerrno=($err)\n"), $!);
+				#
+				#	послать файл базы данных
+				send_file($message, $ENV{'DB_FILE'});
 			}
 		}
         else
@@ -201,14 +215,22 @@ sub logger
 =pod
 	Сообщение об ошибке
 	---
-	send_error($error)
+	send_error($error, $debug)
 
 		$error	- сообщение об ошибке
+		$debug	- отладочная информация
 =cut
 sub send_error
 {
 	#	сообщение об ошибке
 	my	$error = shift @_;
+	#	отладочная информация
+	my	$debug = shift @_;
+	if (!defined $debug)
+	{
+		$debug = sprintf(
+			"*ERROR*\npackage = '%s', line = %d", (caller(1))[1,2])
+	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
 	eval {
@@ -217,8 +239,7 @@ sub send_error
 		{
 			chat_id		=> '5483130027',# Симаков
 			parse_mode	=> 'Markdown',
-			text		=> sprintf("*ERROR*\npackage = '%s', line = %d\n%s",
-				(caller(1))[1,2], $error),
+			text		=> sprintf("%s\n%s", $debug, $error),
 		})
 	};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
