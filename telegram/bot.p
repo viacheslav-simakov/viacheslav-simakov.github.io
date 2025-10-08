@@ -136,7 +136,9 @@ while (1) {
 		elsif (defined($message->{text}) and $message->{text} =~ m{^/db_copy}i)
 		{
 			#	копирование базы данных
-			system('perl', 'make_html.pl') or Carp::confess;
+			$result->{-system} = system('perl', 'make_html.pl');
+			$result->{-error} = $!;
+			$result->{-db_copy} = decode('windows-1251',' опирование базы данных');
 		}
         else
 		{
