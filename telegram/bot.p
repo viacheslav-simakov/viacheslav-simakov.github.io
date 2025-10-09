@@ -166,80 +166,6 @@ while (1) {
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Администрирование
-	---
-	admin($message)
-	
-		$message	- ссылка на сообщение (хэш)
-=cut
-sub admin
-{
-	#	сообщение (ссылка на хэш)
-	my	$message = shift @_;
-	#	проверка прав администратора
-	return undef if
-		($message->{chat}->{id} ne '5483130027') || !defined($message->{text});
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	результат
-	my	$result = {-admin => $message->{text}};
-	#
-	#	Ответ Администратору
-	if ($message->{text} =~ m{^/db send}i)
-	{
-		#	файл журнала
-		send_file($message, 'log.db');
-		#
-		#	пользователи
-		send_file($message, 'bot.db');
-	}
-	elsif ($message->{text} =~ m{^/db copy}i)
-	{
-		#	копирование базы данных
-		my	$err = system('perl',
-			'pl/make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
-		#
-		#	информация
-		send_error(decode('windows-1251',
-			"*Копирование базы данных*\nerrno=($err)\n"), $!);
-		#
-		#	послать файл базы данных
-		send_file($message, $ENV{'DB_FILE'});
-	}
-	elsif ($message->{text} =~ m{^/db log}i)
-	{
-		#	журнал
-		my	$sth = $log_dbh->prepare(qq
-			@
-				SELECT * FROM logger ORDER BY id DESC LIMIT 10
-			@);
-			$sth->execute() or Carp::carp $DBI::errstr;
-		#
-		#	информация о запросах
-		my	$log;
-		#
-		#	цикл по выбранным записям
-		while (my $row = $sth->fetchrow_hashref)
-		{
-			#	Добавить в конец списка
-			$log .= sprintf "*%s* (%s)\n",
-				$user->{ $row->{telegram_id} }->{user_name},
-				$row->{time_stamp};
-		}
-		#	отправить журнал запросов Боту
-		send_error($log, decode('windows-1251',"*Журнал запросов*"));
-	}
-	else
-	{
-		#	неизвестная команда
-		send_error(
-			sprintf("'%s'", $message->{text}),
-			decode('windows-1251',"*Неизвестная команда*"));
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	return $result;
-}
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-=pod
 	Вывод на экран
 	---
 	logger(\%message, \%result)
@@ -577,6 +503,81 @@ sub users_authorized
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
 	return \%user;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Администрирование
+	---
+	admin($message)
+	
+		$message	- ссылка на сообщение (хэш)
+=cut
+sub admin
+{
+	#	сообщение (ссылка на хэш)
+	my	$message = shift @_;
+	#	проверка прав администратора
+	return undef if
+		($message->{chat}->{id} ne '5483130027') || !defined($message->{text});
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	результат
+	my	$result = {-admin => $message->{text}};
+	#
+	#	Ответ Администратору
+	if ($message->{text} =~ m{^/db send}i)
+	{
+		#	файл журнала
+		send_file($message, 'log.db');
+		#
+		#	пользователи
+		send_file($message, 'bot.db');
+	}
+	elsif ($message->{text} =~ m{^/db copy}i)
+	{
+		#	копирование базы данных
+		my	$err = system('perl',
+			'pl/make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
+		#
+		#	информация
+		send_error(decode('windows-1251',
+			"*Копирование базы данных*\nerrno=($err)\n"), $!);
+		#
+		#	послать файл базы данных
+		send_file($message, $ENV{'DB_FILE'});
+	}
+	elsif ($message->{text} =~ m{^/db log}i)
+	{
+		#	Последние 10 записей в журнале запросов
+		my	$sth = $log_dbh->prepare(qq
+			@
+				SELECT * FROM logger ORDER BY id DESC LIMIT 10
+			@);
+			$sth->execute() or Carp::carp $DBI::errstr;
+		#
+		#	информация о запросах
+		my	$log;
+		#
+		#	цикл по выбранным записям
+		while (my $row = $sth->fetchrow_hashref)
+		{
+			#	Добавить в конец списка
+			$log .= sprintf "*%s* (%s)\n",
+				$user->{ $row->{telegram_id} }->{user_name},
+				$row->{time_stamp};
+		}
+		#
+		#	отправить журнал запросов Боту
+		send_error($log, decode('windows-1251',"_Журнал запросов_"));
+	}
+	else
+	{
+		#	неизвестная команда
+		send_error(
+			sprintf("'%s'", $message->{text}),
+			decode('windows-1251',"*Неизвестная команда*"));
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	return $result;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 __DATA__
