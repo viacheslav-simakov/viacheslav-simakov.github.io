@@ -569,12 +569,31 @@ sub admin
 		#	отправить журнал запросов Боту
 		send_error($log, decode('windows-1251',"_Журнал запросов_"));
 	}
+	elsif ($message->{text} =~ m{^/db clear}i)
+	{
+		#	очистить журнал запросов (кроме 10 последних записей)
+		$log_dbh->do(qq
+			@
+				DELETE FROM logger
+				WHERE rowid NOT IN (
+					SELECT rowid FROM logger
+					ORDER BY rowid DESC 
+					LIMIT 10
+				)
+			@)
+			or Carp::carp $DBI::errstr;
+	}
 	else
 	{
 		#	неизвестная команда
 		send_error(
-			sprintf("'%s'", $message->{text}),
-			decode('windows-1251',"*Неизвестная команда*"));
+			decode('windows-1251',
+				"`/db copy ` - копирование базы данных\n".
+				"`/db send ` - получить файл журнала\n".
+				"`/db log  ` - последние 10 записей в журнале запросов\n\n".
+				"`/db clear` - ")."\x{274C} ".
+			decode('windows-1251', "очистить журнал запросов"),
+			decode('windows-1251',"*Список команд*"));
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	return $result;
