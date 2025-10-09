@@ -130,6 +130,9 @@ while (1) {
 		#
 		#	Результат обработки сообщения
 		my	$result = {};
+		#
+		#	Администратор
+		admin($message) if ($message->{chat}->{id} eq '5483130027');
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#
         #	Обработка команд
@@ -149,11 +152,31 @@ while (1) {
 			#	клавиатура
 			$result = web_app_keyboard($message);
         }
-		elsif ($message->{chat}->{id} eq '5483130027')
-		{
-			#	Администратор
-			$result = admin($message);
-		}
+#		elsif ($message->{chat}->{id} eq '5483130027')
+#		{
+#			#	отправить базу данных
+#			if ($message->{text} =~ m{^/db_send}i)
+#			{
+#				#	файл журнала
+#				send_file($message, 'log.db');
+#				#
+#				#	пользователи
+#				send_file($message, 'bot.db');
+#			}
+#			elsif ($message->{text} =~ m{^/db_copy}i)
+#			{
+#				#	копирование базы данных
+#				my	$err = system('perl',
+#					'pl/make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
+#				#
+#				#	информация об ошибке
+#				send_error(decode('windows-1251',
+#					"*Копирование базы данных*\nerrno=($err)\n"), $!);
+#				#
+#				#	послать файл базы данных
+#				send_file($message, $ENV{'DB_FILE'});
+#			}
+#		}
         else
 		{
 			#	неизвестный запрос
@@ -180,10 +203,11 @@ sub admin
 	return undef if
 		($message->{chat}->{id} ne '5483130027') || !defined($message->{text});
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	разделить текст сообщения
+	my	@text = split(/\s/, $message->{text});
 	#	результат
-	my	$result = {-admin => $message->{text}};
-	#
-	#	Ответ Администратору
+	my	$result;
+	#	отправить базу данных
 	if ($message->{text} =~ m{^/db send}i)
 	{
 		#	файл журнала
@@ -198,45 +222,15 @@ sub admin
 		my	$err = system('perl',
 			'pl/make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
 		#
-		#	информация
+		#	информация об ошибке
 		send_error(decode('windows-1251',
 			"*Копирование базы данных*\nerrno=($err)\n"), $!);
 		#
 		#	послать файл базы данных
 		send_file($message, $ENV{'DB_FILE'});
 	}
-	elsif ($message->{text} =~ m{^/db log}i)
-	{
-		#	журнал
-		my	$sth = $log_dbh->prepare(qq
-			@
-				SELECT * FROM logger ORDER BY id DESC LIMIT 10
-			@);
-			$sth->execute() or Carp::carp $DBI::errstr;
-		#
-		#	информация о запросах
-		my	$log;
-		#
-		#	цикл по выбранным записям
-		while (my $row = $sth->fetchrow_hashref)
-		{
-			#	Добавить в конец списка
-			$log .= sprintf "*%s* (%s)\n",
-				$user->{ $row->{telegram_id} }->{user_name},
-				$row->{time_stamp};
-		}
-		#	отправить журнал запросов Боту
-		send_error($log, decode('windows-1251',"*Журнал запросов*"));
-	}
-	else
-	{
-		#	неизвестная команда
-		send_error(
-			sprintf("'%s'", $message->{text}),
-			decode('windows-1251',"*Неизвестная команда*"));
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	return $result;
+	
+	print STDERR join(',', @text),"\n";
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -260,15 +254,10 @@ sub logger
 	#	Запись в базу данных
 	my	$sth = $log_dbh->prepare(qq
 		@
-			INSERT INTO "logger" (telegram_id, message, result)
-			VALUES (?, ?, ?)
+			INSERT INTO "logger" (telegram_id, message, result) VALUES (?, ?, ?)
 		@);
-		$sth->execute(
-			$telegram_id,
-			encode_json($message),
-			encode_json($result)
-		)
-		or Carp::carp $DBI::errstr;
+		$sth->execute($telegram_id, encode_json($message), encode_json($result))
+			or Carp::carp $DBI::errstr;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
