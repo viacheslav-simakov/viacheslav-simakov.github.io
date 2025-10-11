@@ -458,10 +458,10 @@ sub send_file
 		});
 		#	Вывод на экран
 		printf STDERR
-			"Send file '%s' (%s) into chat id='%s' successed\n",
+			"Send file '%s' (%s) to '%s' successed\n",
 			$result->{result}->{document}->{file_name},
 			sprintf('%.1f kB', $result->{result}->{document}->{file_size}/1024),
-			$message->{chat}->{id};
+			encode('windows-1251', $user->{ $message->{chat}->{id} }->{user_name});
 	};
 	#	Проверка ошибок
 	if ($@)
