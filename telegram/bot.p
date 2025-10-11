@@ -153,7 +153,7 @@ while (1) {
         else
 		{
 			#	неизвестный запрос
-			$result = unknow($message);
+			$result = send_default($message);
         }
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	запись в журнал
@@ -239,14 +239,18 @@ sub send_error
 =pod
 	Неизвестное сообщение
 	---
-	unknow($message)
+	send_default($message)
 
 		$message	- ссылка на сообщение (хэш)
 =cut
-sub unknow
+sub send_default
 {
 	#	сообщение (ссылка на хэш)
 	my	$message = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	пользователь
+	my	$user_name = $user->{$message->{chat}->{id}}->{user_name} || 'undef';
+	#
 	#	результат
 	my	$result;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -260,7 +264,7 @@ sub unknow
 			text		=> decode('windows-1251', sprintf(
 				"Привет _%s_!\nЯ бот *Электронный ассистент врача-ревматолога*.\n".
 				"Используйте /start для начала работы.",
-				encode('windows-1251', ($message->{from}->{first_name} || 'unknow')))
+				encode('windows-1251', $user_name))
 			),
 		});
 	};
@@ -294,6 +298,10 @@ sub send_keyboard
 {
 	#	сообщение (ссылка на хэш)
 	my	$message = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	пользователь
+	my	$user_name = $user->{$message->{chat}->{id}}->{user_name} || 'undef';
+	#
 	#	результат
 	my	$result;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -353,7 +361,8 @@ sub send_keyboard
 	}
 	else
 	{
-		printf STDERR "'reply mark' keyboard to Bot has been send\n";
+		printf STDERR "'reply mark' keyboard to '%s' has been send\n",
+			encode('windows-1251', $user_name);
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
@@ -425,6 +434,10 @@ sub send_file
     my	$message = shift @_;
 	#	имя PDF-файла
 	my	$file_name = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	пользователь
+	my	$user_name = $user->{$message->{chat}->{id}}->{user_name} || 'undef';
+	#
 	#	результат
 	my	$result;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -461,7 +474,7 @@ sub send_file
 			"Send file '%s' (%s) to '%s' successed\n",
 			$result->{result}->{document}->{file_name},
 			sprintf('%.1f kB', $result->{result}->{document}->{file_size}/1024),
-			encode('windows-1251', $user->{ $message->{chat}->{id} }->{user_name});
+			encode('windows-1251', $user_name);
 	};
 	#	Проверка ошибок
 	if ($@)
@@ -488,7 +501,7 @@ sub users_authorized
 	my	%user = ();
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	открыть базу данных
-	my	$dbh = DBI->connect("dbi:SQLite:dbname=db/bot.db","","")
+	my	$dbh = DBI->connect("dbi:SQLite:dbname=db/user.db","","")
 			or Carp::confess $DBI::errstr;
 	#
 	#	SQL-запрос
@@ -547,17 +560,17 @@ sub admin
 	#	Ответ Администратору
 	if ($text eq 'Получить журнал запросов')
 	{
+		#	пользователи
+		send_file($message, 'db/user.db');
+		#
 		#	файл журнала
 		send_file($message, 'db/log.db');
-		#
-		#	пользователи
-		send_file($message, 'db/bot.db');
 	}
 	elsif ($text eq 'Обновить базу данных')
 	{
 		#	копирование базы данных
 		my	$err = system('perl',
-			'pl/make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
+			'lib/make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
 		#
 		#	информация
 		send_error(decode('windows-1251',
