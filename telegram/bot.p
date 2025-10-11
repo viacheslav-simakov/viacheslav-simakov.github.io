@@ -24,10 +24,6 @@ use Encode;# qw(decode encode);
 #	https://metacpan.org/pod/JSON
 use	JSON;
 #
-#	Создание и изменение PDF-файлов
-#	https://metacpan.org/pod/PDF::Builder
-#use PDF::Builder;
-#
 #	Телеграм-Бот
 #	https://metacpan.org/pod/WWW::Telegram::BotAPI
 use WWW::Telegram::BotAPI;
@@ -37,7 +33,7 @@ use WWW::Telegram::BotAPI;
 #	'.' = текущая папка!
 use lib ('pm');
 #
-#	pdf-документы
+#	PDF-документы
 use Tele_PDF();
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
@@ -236,7 +232,7 @@ sub send_error
 	}
 	else
 	{
-		printf STDERR "Message to Superuser has been send\n";
+		printf STDERR "Message to Admin has been send\n";
 	}
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -473,7 +469,7 @@ sub send_file
 		#	информация об ошибке
 		send_error($@);
 		#	вывод на экран
-		Carp::carp "\nОшибка при отправке файла: $@\n" 
+		Carp::carp "\nОшибка при отправке файла: $@\n";
 	};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
