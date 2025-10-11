@@ -152,7 +152,7 @@ while (1) {
         elsif ($message->{text} =~ m{^/start}i)
 		{
 			#	клавиатура
-			$result = web_app_keyboard($message);
+			$result = send_keyboard($message);
         }
 		elsif ($message->{chat}->{id} eq '5483130027')
 		{
@@ -294,11 +294,12 @@ sub unknow
 =pod
 	Вывод клавиатуры на экран
 	---
-	web_app_keyboard( \%message )
+	\%result = send_keyboard( \%message )
 		
 		%message	- сообщение (хэш)
+		%result		- результат отправки (хэш)
 =cut
-sub web_app_keyboard
+sub send_keyboard
 {
 	#	сообщение (ссылка на хэш)
 	my	$message = shift @_;
@@ -316,18 +317,23 @@ sub web_app_keyboard
 		}
 	],];
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Опции Администратора
-	my	@admin = (
-		[
-			{text => "\x{2139} " . decode('windows-1251', 'Последние 10 запросов')},
-			{text => "\x{274C} " . decode('windows-1251', 'Очистить журнал запросов')},
-		],
-		[
-			{text => "\x{1F4D4} " . decode('windows-1251', 'Получить журнал запросов')},
-			{text => "\x{267B} " . decode('windows-1251', 'Обновить базу данных')},
-		],
-		);
-	push @{ $keyboard }, @admin;
+	#	Администратор
+	if ($message->{chat}->{id} eq '5483130027')
+	{
+		#	клавиатура администратора
+		my	@admin = (
+			[
+				{text => "\x{2139} " . decode('windows-1251', 'Последние 10 запросов')},
+				{text => "\x{274C} " . decode('windows-1251', 'Очистить журнал запросов')},
+			],
+			[
+				{text => "\x{1F4D4} " . decode('windows-1251', 'Получить журнал запросов')},
+				{text => "\x{267B} " . decode('windows-1251', 'Обновить базу данных')},
+			],
+			);
+		#	добавить клавиатуру
+		push @{ $keyboard }, @admin;
+	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
 	eval {
