@@ -308,7 +308,7 @@ sub web_app_keyboard
 	#	Клавиатура
 	my	$keyboard = [[
 		{
-			text	=> "\x{1F48A}" . decode('windows-1251',
+			text	=> "\x{1F48A} " . decode('windows-1251',
 						'Электронный ассистент врача-ревматолога'),
 			web_app	=> {
 				url	=> 'https://viacheslav-simakov.github.io/med/med.html'
@@ -319,18 +319,13 @@ sub web_app_keyboard
 	#	Опции Администратора
 	my	@admin = (
 		[
-		{
-			text	=> "\x{1F4D8} " . decode('windows-1251', 'Последние 10 записей в журнале'),
-		},{
-			text	=> "\x{274C} " . decode('windows-1251', 'Очистить журнал запросов'),
-		}
-		],[
-		{
-			text	=> decode('windows-1251', 'Получить журнал'),
-		},{
-			text	=> decode('windows-1251', 'Копировать базу данных'),
-		},
-		]
+			{text => "\x{2139} " . decode('windows-1251', 'Последние 10 запросов')},
+			{text => "\x{274C} " . decode('windows-1251', 'Очистить журнал запросов')},
+		],
+		[
+			{text => "\x{1F4D4} " . decode('windows-1251', 'Получить журнал запросов')},
+			{text => "\x{267B} " . decode('windows-1251', 'Обновить базу данных')},
+		],
 		);
 	push @{ $keyboard }, @admin;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
