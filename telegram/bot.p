@@ -109,11 +109,6 @@ while (1) {
 	{
 		#	Увеличиваем смещение
         $offset = $update->{update_id} + 1 if $update->{update_id} >= $offset;
-		#
-		#	Запрос обратного вызова
-		my	$callback_query = $update->{callback_query};
-		
-		print Dumper($callback_query);
         #
 		#	Сообщение
         my	$message = $update->{message} or next;
@@ -292,7 +287,7 @@ sub unknow
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Вывод клавиатуры на экран
+	Клавиатура Бота
 	---
 	\%result = send_keyboard( \%message )
 		
@@ -348,7 +343,7 @@ sub send_keyboard
 			{
 				keyboard => $keyboard,
 				resize_keyboard => \1,
-				one_time_keyboard => \1,
+				one_time_keyboard => \0,
 			},
 		});
 	};
@@ -547,8 +542,14 @@ sub admin
 	#	результат
 	my	$result = {-admin => $message->{text}};
 	#
+	#	кодирование текста сообщения
+	my	$text = encode('windows-1251', $message->{text});
+	#
+	#	удалить первые 2 символа
+		$text =~ s/^..//;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Ответ Администратору
-	if ($message->{text} =~ m{^/db send}i)
+	if ($text eq 'Получить журнал запросов')
 	{
 		#	файл журнала
 		send_file($message, 'log.db');
@@ -556,7 +557,7 @@ sub admin
 		#	пользователи
 		send_file($message, 'bot.db');
 	}
-	elsif ($message->{text} =~ m{^/db copy}i)
+	elsif ($text eq 'Обновить базу данных')
 	{
 		#	копирование базы данных
 		my	$err = system('perl',
@@ -564,12 +565,12 @@ sub admin
 		#
 		#	информация
 		send_error(decode('windows-1251',
-			"*Копирование базы данных*\nerrno=($err)\n"), $!);
+			"*Обновление базы данных*\nerrno=($err)\n"), $!);
 		#
 		#	послать файл базы данных
 		send_file($message, $ENV{'DB_FILE'});
 	}
-	elsif ($message->{text} =~ m{^/db log}i)
+	elsif ($text eq 'Последние 10 запросов')
 	{
 		#	Последние 10 записей в журнале запросов
 		my	$sth = $log_dbh->prepare(qq
@@ -593,7 +594,7 @@ sub admin
 		#	отправить журнал запросов Боту
 		send_error($log, decode('windows-1251',"_Журнал запросов_"));
 	}
-	elsif ($message->{text} =~ m{^/db clear}i)
+	elsif ($text eq 'Очистить журнал запросов')
 	{
 		#	очистить журнал запросов (кроме 10 последних записей)
 		$log_dbh->do(qq
@@ -609,15 +610,10 @@ sub admin
 	}
 	else
 	{
-#		#	неизвестная команда
-#		send_error(
-#			decode('windows-1251',
-#				"`/db copy ` - копирование базы данных\n".
-#				"`/db send ` - получить файл журнала\n".
-#				"`/db log  ` - последние 10 записей в журнале запросов\n\n".
-#				"`/db clear` - ")."\x{274C} ".
-#			decode('windows-1251', "очистить журнал запросов"),
-#			decode('windows-1251',"*Список команд*"));
+		#	неизвестная команда
+		send_error(
+			decode('windows-1251', "*Неизвестная команда*"),
+			$message->{text});
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	return $result;
