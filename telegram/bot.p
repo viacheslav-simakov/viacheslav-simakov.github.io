@@ -49,7 +49,7 @@ unless (-d $ENV{'HTML_FOLDER'})
 }
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #	открыть базу данных
-my	$log_dbh = DBI->connect("dbi:SQLite:dbname=log.db","","")
+my	$log_dbh = DBI->connect("dbi:SQLite:dbname=db/log.db","","")
 		or Carp::confess $DBI::errstr;
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
@@ -488,7 +488,7 @@ sub users_authorized
 	my	%user = ();
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	открыть базу данных
-	my	$dbh = DBI->connect("dbi:SQLite:dbname=bot.db","","")
+	my	$dbh = DBI->connect("dbi:SQLite:dbname=db/bot.db","","")
 			or Carp::confess $DBI::errstr;
 	#
 	#	SQL-запрос
@@ -548,10 +548,10 @@ sub admin
 	if ($text eq 'ѕолучить журнал запросов')
 	{
 		#	файл журнала
-		send_file($message, 'log.db');
+		send_file($message, 'db/log.db');
 		#
 		#	пользователи
-		send_file($message, 'bot.db');
+		send_file($message, 'db/bot.db');
 	}
 	elsif ($text eq 'ќбновить базу данных')
 	{
