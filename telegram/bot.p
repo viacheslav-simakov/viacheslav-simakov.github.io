@@ -68,7 +68,7 @@ my	$updates;
 my	$offset = 0;
 #
 #	Список авторизованных пользователей (ссылка на хэш)
-my	$user = users_authorized();
+my	$user = user_authorized();
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #	Главный цикл обработки событий бота
@@ -370,57 +370,6 @@ sub send_keyboard
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Обработка данных HTML-формы полученных из Web App
-	---
-	user_request( \%message )
-	
-		%message	- сообщение (хэш)
-
-=cut
-sub user_request
-{
-	#	сообщение (ссылка на хэш)
-    my	$message = shift @_;
-	#	результат
-	my	$result;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	имя PDF-файла
-	my	$pdf_file_name = sprintf '%s.pdf', $message->{chat}->{id};
-	#
-	#	Данные HTML-формы
-    my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
-	#
-	#	PDF-документ
-	my	$pdf = Tele_PDF->new(
-			$user->{$message->{chat}->{id}},
-			decode_json($web_app_data)
-		);
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Безопасная конструкция
-	eval
-	{
-		#	Создать PDF-файл
-		$pdf->save($pdf_file_name);
-	};
-	#	Проверка ошибок
-	if ($@)
-	{
-		#	послать информацию об ошибке
-		send_error($@);
-		#	вывод на экран
-		Carp::carp "Error file '$pdf_file_name' created: $@";
-	}
-	else
-	{
-		#	Отправить пользователю PDF-файл
-		$result = send_file($message, $pdf_file_name);
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	возвращаемое значение
-	return $result;
-}
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-=pod
 	Отправить файл
 	---
 	send_file(\%message, $file_name)
@@ -495,7 +444,7 @@ sub send_file
 	\%user = user_authorized()
 	
 =cut
-sub users_authorized
+sub user_authorized
 {
 	#	Список пользователей
 	my	%user = ();
@@ -531,6 +480,57 @@ sub users_authorized
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
 	return \%user;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Обработка данных HTML-формы полученных из Web App
+	---
+	user_request( \%message )
+	
+		%message	- сообщение (хэш)
+
+=cut
+sub user_request
+{
+	#	сообщение (ссылка на хэш)
+    my	$message = shift @_;
+	#	результат
+	my	$result;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	имя PDF-файла
+	my	$pdf_file_name = sprintf '%s.pdf', $message->{chat}->{id};
+	#
+	#	Данные HTML-формы
+    my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
+	#
+	#	PDF-документ
+	my	$pdf = Tele_PDF->new(
+			$user->{$message->{chat}->{id}},
+			decode_json($web_app_data)
+		);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Безопасная конструкция
+	eval
+	{
+		#	Создать PDF-файл
+		$pdf->save($pdf_file_name);
+	};
+	#	Проверка ошибок
+	if ($@)
+	{
+		#	послать информацию об ошибке
+		send_error($@);
+		#	вывод на экран
+		Carp::carp "Error file '$pdf_file_name' created: $@";
+	}
+	else
+	{
+		#	Отправить пользователю PDF-файл
+		$result = send_file($message, $pdf_file_name);
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	возвращаемое значение
+	return $result;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
