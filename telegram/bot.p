@@ -595,20 +595,37 @@ sub admin
 		#	Последние 10 записей в журнале запросов
 		my	$sth = $log_dbh->prepare(qq
 			@
-				SELECT * FROM logger ORDER BY id DESC LIMIT 10
+				SELECT * FROM
+				(
+					SELECT id, telegram_id, time(time_stamp) as time,
+						json_extract(message, '\$.text') as request,
+						json_extract(result, '\$.result.chat.username') as reply
+					FROM "logger"
+					WHERE request NOT NULL
+				UNION
+					SELECT id, telegram_id, time(time_stamp) as time,
+						json_extract(message, '\$.web_app_data.data') as request,
+						json_extract(result, '\$.result.document.file_name') as reply
+					FROM "logger"
+					WHERE request NOT NULL
+				)
+				ORDER BY id DESC LIMIT 10
 			@);
 			$sth->execute() or Carp::carp $DBI::errstr;
 		#
 		#	информация о запросах
-		my	$log = "\x{1F4CE}\n";
+		my	$log = "\x{1F4CE}\n\n";
 		#
 		#	цикл по выбранным записям
 		while (my $row = $sth->fetchrow_hashref)
 		{
+			#	декодировать
+			Tele_DB::decode_utf8($row);
+			#
 			#	Добавить в конец списка
-			$log .= sprintf "_%s_ (%s)\n",
+			$log .= sprintf "*%s* (%s)\n`%s` (%s)\n\n",
 				$user->{ $row->{telegram_id} }->{user_name},
-				$row->{time_stamp};
+				$row->{time}, $row->{request}, $row->{reply};
 		}
 		#
 		#	отправить журнал запросов Боту
@@ -643,3 +660,19 @@ sub admin
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 __DATA__
+
+SELECT * FROM
+(
+	SELECT id, telegram_id, time(time_stamp) as time,
+		json_extract(message, '$.text') as request,
+		json_extract(result, '$.result.chat.username') as reply
+	FROM "logger"
+	WHERE request NOT NULL
+UNION
+	SELECT id, telegram_id, time(time_stamp) as time,
+		json_extract(message, '$.web_app_data.data') as request,
+		json_extract(result, '$.result.document.file_name') as reply
+	FROM "logger"
+	WHERE request NOT NULL
+)
+ORDER BY id DESC LIMIT 10
