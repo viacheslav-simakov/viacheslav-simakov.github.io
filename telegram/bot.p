@@ -113,7 +113,8 @@ while (1) {
 		if (!exists $user->{ $message->{chat}->{id} })
 		{
 			#	информация об ошибке
-			send_error(sprintf 'Access denied for id=(%s)', $message->{chat}->{id} || 'unknow');
+			send_admin('*Access denied*',
+				sprintf('telegram id=(%s)', $message->{chat}->{id} || 'unknow'));
 			#
 			#	вывод на экран
 			Carp::carp "Access denied\n";
@@ -197,22 +198,24 @@ sub logger
 =pod
 	Сообщение об ошибке
 	---
-	send_error($error, $debug)
+	send_admin($caption, $msg_text)
 
-		$error	- сообщение об ошибке
-		$debug	- отладочная информация
+		$caption	- заголовок сообщения
+		$msg_text	- текст сообщения
 =cut
-sub send_error
+sub send_admin
 {
-	#	сообщение об ошибке
-	my	$error = shift @_;
-	#	отладочная информация
-	my	$debug = shift @_;
+	#	заголовок сообщения
+	my	$caption = decode('windows-1251', shift @_);
+	#	текст сообщения
+	my	$msg_text = shift @_ || 'undef';
+=pod
 	if (!defined $debug)
 	{
 		$debug = sprintf(
 			"*ERROR*\npackage = '%s', line = %d", (caller(1))[1,2])
 	}
+=cut
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
 	eval {
@@ -221,7 +224,7 @@ sub send_error
 		{
 			chat_id		=> '5483130027',# Симаков
 			parse_mode	=> 'Markdown',
-			text		=> sprintf("%s\n%s", $debug, $error),
+			text		=> sprintf("%s\n%s", $caption, $msg_text),
 		})
 	};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -274,7 +277,7 @@ sub send_default
 	if ($@)
 	{
 		#	информация об ошибке
-		send_error($@);
+		send_admin('Ошибка при отправке "default" сообщения', $@);
 		#	вывод на экран
 		Carp::carp "\nОшибка при отправке 'default' сообщения: $@\n";
 	}
@@ -324,7 +327,8 @@ sub send_keyboard
 		my	@admin = (
 			[
 				{text => "\x{2139} " . decode('windows-1251', 'Последние 10 запросов')},
-				{text => "\x{274C} " . decode('windows-1251', 'Очистить журнал запросов')},
+#				{text => "\x{274C} " . decode('windows-1251', 'Очистить журнал запросов')},
+				{text => "\x{2702} " . decode('windows-1251', 'Очистить журнал запросов')},
 			],
 			[
 				{text => "\x{1F4D4} " . decode('windows-1251', 'Получить журнал запросов')},
@@ -356,7 +360,7 @@ sub send_keyboard
 	if ($@)
 	{
 		#	информация об ошибке
-		send_error($@);
+		send_admin('Ошибка при отправке "клавиатуры"', $@);
 		#	вывод на экран
 		Carp::carp "\nОшибка при отправке 'клавиатуры' Бота: $@\n";
 	}
@@ -387,6 +391,9 @@ sub send_file
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	пользователь
 	my	$user_name = $user->{$message->{chat}->{id}}->{user_name} || 'undef';
+	#
+	#	экранирование символов '\'
+		$file_name =~ s/\\/\//g;
 	#
 	#	результат
 	my	$result;
@@ -430,7 +437,7 @@ sub send_file
 	if ($@)
 	{
 		#	информация об ошибке
-		send_error($@);
+		send_admin('Ошибка при отправке файла', $@);
 		#	вывод на экран
 		Carp::carp "\nОшибка при отправке файла: $@\n";
 	};
@@ -520,7 +527,7 @@ sub user_request
 	if ($@)
 	{
 		#	послать информацию об ошибке
-		send_error($@);
+		send_admin('*Ошибка* создания PDF-файла', $@);
 		#	вывод на экран
 		Carp::carp "Error file '$pdf_file_name' created: $@";
 	}
@@ -566,6 +573,9 @@ sub admin
 		#
 		#	файл журнала
 		send_file($message, 'db/log.db');
+		#
+		#	база данных
+		send_file($message, $ENV{'DB_FILE'});
 	}
 	elsif ($text eq 'Обновить базу данных')
 	{
@@ -574,8 +584,8 @@ sub admin
 			'lib/make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
 		#
 		#	информация
-		send_error(decode('windows-1251',
-			"*Обновление базы данных*\nerrno=($err)\n"), $!);
+		send_admin('*Обновление базы данных*', decode('windows-1251',
+			"код завершения: ($err)\nстатус: ($?)\nошибка: '$!'"));
 		#
 		#	послать файл базы данных
 		send_file($message, $ENV{'DB_FILE'});
@@ -602,7 +612,7 @@ sub admin
 		}
 		#
 		#	отправить журнал запросов Боту
-		send_error($log, decode('windows-1251',"_Журнал запросов_"));
+		send_admin('_Журнал запросов_', $log);
 	}
 	elsif ($text eq 'Очистить журнал запросов')
 	{
@@ -617,13 +627,16 @@ sub admin
 				)
 			@)
 			or Carp::carp $DBI::errstr;
+		#
+		#	сообщение
+		send_admin('*Журнал* запросов', ($DBI::errstr
+			? "DBI err='$DBI::errstr' " . "\x{1F6AB}"
+			: decode('windows-1251', "удалены все записи,\nкроме 10 последних ") . "\x{2705}"));
 	}
 	else
 	{
 		#	неизвестная команда
-		send_error(
-			decode('windows-1251', "*Неизвестная команда*"),
-			$message->{text});
+		send_admin('*Неизвестная команда*', $message->{text});
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	return $result;
