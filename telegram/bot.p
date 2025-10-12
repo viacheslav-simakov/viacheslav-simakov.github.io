@@ -232,7 +232,7 @@ sub send_admin
 	if ($@)
 	{
 		#	èíôîğìàöèè îá îøèáêå
-		Carp::carp "\nÎøèáêà ïğè îòïğàâêå 'error' ñîîáùåíèÿ: $@\n";
+		Carp::carp "\nÎøèáêà ïğè îòïğàâêå ñîîáùåíèÿ Àäìèíèñòğàòîğó: $@\n";
 	}
 	else
 	{
@@ -623,7 +623,7 @@ sub admin
 			Tele_DB::decode_utf8($row);
 			#
 			#	Äîáàâèòü â êîíåö ñïèñêà
-			$log .= sprintf "*%s* (%s)\n`%s` (%s)\n\n",
+			$log .= sprintf "*%s* (%s)\n`%s` (%s)\n",
 				$user->{ $row->{telegram_id} }->{user_name},
 				$row->{time}, $row->{request}, $row->{reply};
 		}
