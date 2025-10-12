@@ -190,25 +190,6 @@ sub _draw_arrow
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Метка времени: https://perldoc.perl.org/functions/localtime
-	---
-	$date_time = time_stamp();
-	
-
-sub time_stamp
-{
-	#	Местное время
-	my	($sec, $min, $hour, $mday, $mon, $year) = localtime;
-	#
-	#	Метка времени (DD-MM-YYYY hh:mm:ss)
-	#
-	return sprintf("%02d-%02d-%04d %02d:%02d:%02d",
-			$mday, $mon+1, $year+1900,
-			$hour, $min, $sec);
-}
-=cut
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-=pod
 	Функция для добавления колонтитулов
 	---
 	$obj->page_header_footer();
@@ -218,12 +199,9 @@ sub page_header_footer {
 	#	ссылка на объект
 	my	$self = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Метка времени (DD-MM-YYYY hh:mm:ss)
-	my	$time_stamp = time_stamp();
-	#
 	#	Пользователь
 	my	$user_info = sprintf 'Telegram id (%s)', $self->{-user}->{telegram_id};
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#
 	#	PDF-документ
 	my	$pdf = $self->{-pdf};
 	#
@@ -232,7 +210,7 @@ sub page_header_footer {
 	#
 	#	количество страниц
 	my	$total_pages = $pdf->page_count();
-	#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Создать SVG-объект
 	my	$svg = SVGPDF->new($pdf);
 	#
@@ -285,21 +263,6 @@ sub page_header_footer {
 			$text->font($self->{-font}, 10);
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	Верхний колонтитул (header)
-=pod
-		#
-		#	Дата + Время
-		my	$text_width = $text->text_width($time_stamp);
-		#
-		#	Вычисляем позицию (x,y) для выравнивания по правому краю
-			$x = $self->{-page_width} - $text_width - $margin->{-right};
-			$y = $self->{-page_height} - $margin->{-top} + 10;
-		#
-		#	позиция текста
-			$text->translate($x, $y);
-			$text->text($time_stamp);
-=cut			
-		#
-		#	Положение текста (верхний левый угол)
 		{
 			#	ширина
 			my	$width = ($self->{-page_width} - $margin->{-left} - $margin->{-right})*3/4;
@@ -317,7 +280,7 @@ sub page_header_footer {
 				$text->paragraph(decode_win(sprintf(
 					"Электронный ассистент врача-ревматолога\n".
 					"по выбору генно-инженерной и таргетной терапии\n%s",
-					$time_stamp)),
+					time_stamp)),
 					$width, $margin->{-top},
 					align => 'right');
 		}
@@ -553,14 +516,11 @@ sub make_request
 			font_size	=> 14);
 	#
 	#	Таблица
-		$self->add_table([
+		$self->add_table(
 			[
-				decode_win('Пользователь:'),
-				$self->{-user}->{user_name},
-			],[
-				decode_win('Организация:'),
-				$self->{-user}->{organization},
-			]],
+				[decode_win('Пользователь:'), $self->{-user}->{user_name}],
+				[decode_win('Организация:'), $self->{-user}->{organization}],
+			],
 			#	Заголовок таблицы
 			header_props =>
 			{

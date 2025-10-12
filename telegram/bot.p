@@ -471,16 +471,9 @@ sub user_authorized
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
-		#	декодирование
+		#	декодировать
 		decode_utf8($row);
-=pod
-		#	цикл по ключам хэша
-		foreach (keys %{ $row })
-		{
-			#	декодировать строку из "UTF-8"
-			$row->{$_} = decode_utf8($row->{$_});
-		}
-=cut
+		#
 		#	Добавить пользователя в хэш
 		$user{ $row->{telegram_id} } = $row;
 	}
@@ -626,6 +619,9 @@ sub admin
 		{
 			#	декодировать
 			decode_utf8($row);
+			#
+			#	экранировать символы 'Markdown'
+			$row->{reply} =~ s/[_\*\-\~]/ /g;
 			#
 			#	Добавить в конец списка
 			$log .= sprintf "*%s* (%s)\n`%s` (%s)\n",
