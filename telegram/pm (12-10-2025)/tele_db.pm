@@ -12,6 +12,12 @@ use warnings;
 #	Альтернатива 'warn' и 'die' для модулей
 #	https://perldoc.perl.org/Carp
 use Carp();
+#	JSON (JavaScript Object Notation) кодирование/декодирование
+#	https://metacpan.org/pod/JSON
+use	JSON;
+#	Декодирование символов
+#	https://perldoc.perl.org/Encode
+use Encode;
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
 #	SQLite:	https://www.techonthenet.com/sqlite/index.php
@@ -37,9 +43,6 @@ use Report();
 #	Обработка SQL-запросов к базе данных SQLite
 #
 package Tele_DB {
-#
-#	Утилиты для работы
-use Tele_Tools qw(decode_utf8 decode_win);
 #
 #	Данные модуля
 #
@@ -78,6 +81,66 @@ my	@row_title = map { decode_win($_) } (
 		'Клинические показания',
 		'С осторожностью',
 	);
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Удалить в строке ведущие и завершающие пробелы 
+	---
+	$trim_string = trim($string);
+	
+=cut
+sub trim
+{
+    my	$string = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Проверка строки
+	return '' if !defined($string);
+	#
+	#	Удалить ведущие пробелы
+    $string =~ s/^\s+//;
+	#
+	#	Удалить завершающие пробелы
+    $string =~ s/\s+$//;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	возвратить строку
+    return $string;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Декодировать значения хэш
+	---
+	$hash_ref = decode_utf8( \%hash );
+	
+		%hash	- хэш записи базы данных
+=cut
+sub _decode_utf8
+{
+    my	$hash_ref = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	цикл по ключам хэша
+	foreach (keys %{ $hash_ref })
+	{
+		#	декодировать строку из "UTF-8"
+		$hash_ref->{$_} = Encode::decode('UTF-8', trim($hash_ref->{$_}));
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ссылка на хэш
+	return $hash_ref;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Декодировать строку
+	---
+	$decode_string = decode_windows( $string );
+	
+		$string	- строка
+=cut
+sub _decode_win
+{
+    my	$string = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	декодированная строка
+	return Encode::decode('windows-1251', trim($string));
+}
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Конструктор
@@ -179,7 +242,7 @@ sub request {
 			decode_utf8($row);
 			#
 			#	Добавить в конец списка
-			push @data, [$row->{name}, $row->{info}];
+			push @data, [$row->{name}, trim($row->{info})];
 		}
 		#
 		#	добавить данные запроса
@@ -220,7 +283,7 @@ sub request {
 			decode_utf8($row);
 			#
 			#	Добавить в конец списка
-			push @data, [$row->{name}, $value{$row->{id}}, $row->{info}];
+			push @data, [$row->{name}, $value{$row->{id}}, trim($row->{info})];
 		}
 		#
 		#	добавить данные запроса

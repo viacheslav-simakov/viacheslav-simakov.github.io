@@ -29,9 +29,6 @@ fill="#8F1432"/>
 SVG
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 #
-#	Утилиты для работы
-use Tele_Tools qw(decode_win time_stamp);
-#
 #	База данных
 use Tele_DB();
 #
@@ -194,7 +191,7 @@ sub _draw_arrow
 	---
 	$date_time = time_stamp();
 	
-
+=cut
 sub time_stamp
 {
 	#	Местное время
@@ -206,7 +203,6 @@ sub time_stamp
 			$mday, $mon+1, $year+1900,
 			$hour, $min, $sec);
 }
-=cut
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Функция для добавления колонтитулов
@@ -314,7 +310,7 @@ sub page_header_footer {
 			#	Добавить параграф
 			#	https://metacpan.org/pod/PDF::API2::Content#paragraph
 			#
-				$text->paragraph(decode_win(sprintf(
+				$text->paragraph(Tele_DB::decode_win(sprintf(
 					"Электронный ассистент врача-ревматолога\n".
 					"по выбору генно-инженерной и таргетной терапии\n%s",
 					$time_stamp)),
@@ -327,7 +323,7 @@ sub page_header_footer {
 			$text->text($user_info);
 		#
 		#	номер страницы
-		my	$footer = decode_win("Страница $i из $total_pages");
+		my	$footer = Tele_DB::decode_win("Страница $i из $total_pages");
 		#
 		#	Вычисляем позицию 'x' для выравнивания по правому краю
 			$x = $self->{-page_width} - $text->text_width($footer) - $margin->{-right};
@@ -495,6 +491,7 @@ sub add_table
 	{
 		foreach my $j (0 .. $#{ $data->[$i] })
 		{
+#			$copy_data->[$i]->[$j] = Encode::decode('UTF-8', $data->[$i]->[$j] || '');
 			$copy_data->[$i]->[$j] = $data->[$i]->[$j] || '';
 		}
 	}
@@ -548,17 +545,16 @@ sub make_request
 	#
 	#	Заголовок
 		$self->add_text(
-			decode_win('Данные запроса'),
-			font		=> $self->{-font_bold},
-			font_size	=> 14);
+			Tele_DB::decode_win('Данные запроса'),
+			font => $self->{-font_bold}, font_size => 14);
 	#
 	#	Таблица
 		$self->add_table([
 			[
-				decode_win('Пользователь:'),
+				Tele_DB::decode_win('Пользователь:'),
 				$self->{-user}->{user_name},
 			],[
-				decode_win('Организация:'),
+				Tele_DB::decode_win('Организация:'),
 				$self->{-user}->{organization},
 			]],
 			#	Заголовок таблицы
@@ -626,7 +622,8 @@ sub make_report
 	{
 		#	вставить текст
 		$self->add_text(
-			decode_win('Для заданных условий поиска нет рекомендуемых препаратов'),
+			Tele_DB::decode_win(
+			'Для заданных условий поиска нет рекомендуемых препаратов'),
 			y			=> $self->{-current_y} - 24,
 			font		=> $self->{-font_bold},
 			font_size	=> 14,
@@ -637,13 +634,12 @@ sub make_report
 	}
 	#
 	#	Заголовок раздела
-		$self->add_text(
-			decode_win('Список препаратов рекомендуемых к применению'),
-			font		=> $self->{-font_bold},
-			font_size	=> 14);
+		$self->add_text(Tele_DB::decode_win(
+			'Список препаратов рекомендуемых к применению'),
+			font => $self->{-font_bold}, font_size => 14);
 	#
 	#	Заголовок таблицы 'Лабораторные исследования'
-	my	@probe_title = map { decode_win($_) }
+	my	@probe_title = map { Tele_DB::decode_win($_) }
 		('Показатель', 'от', 'факт', 'до', 'Рекомендации');
 	#
 	#	цикл по выбранным препаратам
