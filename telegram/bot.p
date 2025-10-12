@@ -18,7 +18,7 @@ use	Data::Dumper;
 #
 #	Декодирование символов
 #	https://perldoc.perl.org/Encode
-use Encode;# qw(decode encode);
+use Encode qw(encode);
 #
 #	JSON (JavaScript Object Notation) кодирование/декодирование
 #	https://metacpan.org/pod/JSON
@@ -32,6 +32,9 @@ use WWW::Telegram::BotAPI;
 #	папки библиотек (модулей)
 #	'.' = текущая папка!
 use lib ('pm');
+#
+#	Утилиты для работы
+use Tele_Tools qw(decode_utf8 decode_win);
 #
 #	PDF-документы
 use Tele_PDF();
@@ -157,8 +160,8 @@ while (1) {
 			$result = send_default($message);
         }
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		#	запись в журнал
-		logger($message, $result);
+		#	запись в журнале
+		logger($message, $result) if defined($result);
     }
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -206,7 +209,7 @@ sub logger
 sub send_admin
 {
 	#	заголовок сообщения
-	my	$caption = decode('windows-1251', shift @_);
+	my	$caption = decode_win(shift @_);
 	#	текст сообщения
 	my	$msg_text = shift @_ || 'undef';
 =pod
@@ -265,7 +268,7 @@ sub send_default
 		{
 			chat_id		=> $message->{chat}->{id},
 			parse_mode	=> 'Markdown',
-			text		=> decode('windows-1251', sprintf(
+			text		=> decode_win(sprintf(
 				"Привет _%s_!\nЯ бот *Электронный ассистент врача-ревматолога*.\n".
 				"Используйте /start для начала работы.",
 				encode('windows-1251', $user_name))
@@ -312,8 +315,7 @@ sub send_keyboard
 	#	Клавиатура
 	my	$keyboard = [[
 		{
-			text	=> "\x{1F48A} " . decode('windows-1251',
-						'Электронный ассистент врача-ревматолога'),
+			text	=> "\x{1F48A} " . decode_win('Электронный ассистент врача-ревматолога'),
 			web_app	=> {
 				url	=> 'https://viacheslav-simakov.github.io/med/med.html'
 			},
@@ -326,13 +328,12 @@ sub send_keyboard
 		#	клавиатура администратора
 		my	@admin = (
 			[
-				{text => "\x{2139} " . decode('windows-1251', 'Последние 10 запросов')},
-#				{text => "\x{274C} " . decode('windows-1251', 'Очистить журнал запросов')},
-				{text => "\x{2702} " . decode('windows-1251', 'Очистить журнал запросов')},
+				{text => "\x{2139} " . decode_win('Последние 10 запросов')},
+				{text => "\x{2702} " . decode_win('Очистить журнал запросов')},
 			],
 			[
-				{text => "\x{1F4D4} " . decode('windows-1251', 'Получить журнал запросов')},
-				{text => "\x{267B} " . decode('windows-1251', 'Обновить базу данных')},
+				{text => "\x{1F4D4} " . decode_win('Получить журнал запросов')},
+				{text => "\x{267B} " . decode_win('Обновить базу данных')},
 			],
 			);
 		#	добавить клавиатуру
@@ -346,8 +347,7 @@ sub send_keyboard
 		{
 			chat_id => $message->{chat}->{id},
 			parse_mode => 'Markdown',
-			text => decode('windows-1251',
-				"*Электронный ассистент врача-ревматолога*\n(СГМУ имени В.И. Разумовского)"),
+			text => decode_win("*Электронный ассистент врача-ревматолога*\n(СГМУ имени В.И. Разумовского)"),
 			reply_markup =>
 			{
 				keyboard => $keyboard,
@@ -418,7 +418,7 @@ sub send_file
 		$result = $api->api_request('sendDocument',
 		{
 			chat_id		=> $message->{chat}->{id},
-			caption		=> decode('windows-1251','СГМУ имени В.И. Разумовского'),
+			caption		=> decode_win('СГМУ имени В.И. Разумовского'),
 			document	=>
 			{
 				file		=> $file_name,
@@ -471,12 +471,16 @@ sub user_authorized
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
+		#	декодирование
+		decode_utf8($row);
+=pod
 		#	цикл по ключам хэша
 		foreach (keys %{ $row })
 		{
 			#	декодировать строку из "UTF-8"
-			$row->{$_} = decode('UTF-8', $row->{$_});
+			$row->{$_} = decode_utf8($row->{$_});
 		}
+=cut
 		#	Добавить пользователя в хэш
 		$user{ $row->{telegram_id} } = $row;
 	}
@@ -584,8 +588,9 @@ sub admin
 			'lib/make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
 		#
 		#	информация
-		send_admin('*Обновление базы данных*', decode('windows-1251',
-			"код завершения: ($err)\nстатус: ($?)\nошибка: '$!'"));
+		send_admin(
+			'*Обновление базы данных*',
+			decode_win("код завершения: ($err)\nстатус: ($?)\nошибка: '$!'"));
 		#
 		#	послать файл базы данных
 		send_file($message, $ENV{'DB_FILE'});
@@ -620,7 +625,7 @@ sub admin
 		while (my $row = $sth->fetchrow_hashref)
 		{
 			#	декодировать
-			Tele_DB::decode_utf8($row);
+			decode_utf8($row);
 			#
 			#	Добавить в конец списка
 			$log .= sprintf "*%s* (%s)\n`%s` (%s)\n",
@@ -630,6 +635,9 @@ sub admin
 		#
 		#	отправить журнал запросов Боту
 		send_admin('*Журнал запросов*', $log);
+		#
+		#	не записывать в журнал
+		$result = undef;
 	}
 	elsif ($text eq 'Очистить журнал запросов')
 	{
@@ -648,7 +656,7 @@ sub admin
 		#	сообщение
 		send_admin('*Журнал запросов* очищен', ($DBI::errstr
 			? "\x{1F6AB} DBI err='$DBI::errstr'"
-			: "\x{2705} " . decode('windows-1251', "удалены все записи, кроме 10 последних ")));
+			: "\x{2705} " . decode_win("удалены все записи, кроме 10 последних ")));
 	}
 	else
 	{

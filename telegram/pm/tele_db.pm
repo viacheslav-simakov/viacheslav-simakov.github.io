@@ -112,7 +112,7 @@ sub trim
 	
 		%hash	- хэш записи базы данных
 =cut
-sub decode_utf8
+sub _decode_utf8
 {
     my	$hash_ref = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -134,7 +134,7 @@ sub decode_utf8
 	
 		$string	- строка
 =cut
-sub decode_win
+sub _decode_win
 {
     my	$string = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
