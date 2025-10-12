@@ -14,7 +14,11 @@ package Tele_Tools {
 #
 #	Декодирование символов
 #	https://perldoc.perl.org/Encode
-use Encode ('decode');
+use Encode qw(decode);
+#
+#	JSON (JavaScript Object Notation) кодирование/декодирование
+#	https://metacpan.org/pod/JSON
+use	JSON qw(encode_json);
 #
 #	Реализует метод импорта по умолчанию для модулей
 #	https://perldoc.perl.org/Exporter
@@ -22,6 +26,44 @@ use Exporter 'import';
 #
 #	Список символов для экспорта
 our	@EXPORT_OK = qw(trim decode_utf8 decode_win time_stamp);
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#	Список пользователей
+my	$user;
+#
+#	База данных
+my	$dbh;
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Logger
+	---
+	logger($message, $result);
+	
+		%message	- сообщение (хэш)
+		%result		- результат обработки сообщения (хэш)
+=cut
+sub logger
+{
+	#	сообщение (ссылка на хэш)
+	my	$message = shift @_;
+	#	результат обработки сообщения
+	my	$result = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	telegram_id пользователя
+	my	$telegram_id = $message->{chat}->{id};
+	#
+	#	Запись в базу данных
+	my	$sth = $dbh->prepare(qq
+		@
+			INSERT INTO "logger" (telegram_id, message, result)
+			VALUES (?, ?, ?)
+		@);
+		$sth->execute(
+			$telegram_id,
+			encode_json($message),
+			encode_json($result)
+		)
+		or Carp::carp $DBI::errstr;
+}
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Удалить в строке ведущие и завершающие пробелы 
@@ -97,8 +139,7 @@ sub time_stamp
 	#	Метка времени (DD-MM-YYYY hh:mm:ss)
 	#
 	return sprintf("%02d-%02d-%04d %02d:%02d:%02d",
-			$mday, $mon+1, $year+1900,
-			$hour, $min, $sec);
+			$mday, $mon+1, $year+1900, $hour, $min, $sec);
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package

@@ -22,7 +22,7 @@ use Encode qw(encode);
 #
 #	JSON (JavaScript Object Notation) кодирование/декодирование
 #	https://metacpan.org/pod/JSON
-use	JSON;
+use	JSON qw(encode_json decode_json);
 #
 #	Телеграм-Бот
 #	https://metacpan.org/pod/WWW::Telegram::BotAPI
@@ -177,10 +177,9 @@ sub logger
 {
 	#	сообщение (ссылка на хэш)
 	my	$message = shift @_;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	результат обработки сообщения
 	my	$result = shift @_;
-	#
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	telegram_id пользователя
 	my	$telegram_id = $message->{chat}->{id};
 	#
@@ -212,13 +211,6 @@ sub send_admin
 	my	$caption = decode_win(shift @_);
 	#	текст сообщения
 	my	$msg_text = shift @_ || 'undef';
-=pod
-	if (!defined $debug)
-	{
-		$debug = sprintf(
-			"*ERROR*\npackage = '%s', line = %d", (caller(1))[1,2])
-	}
-=cut
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
 	eval {
@@ -279,10 +271,11 @@ sub send_default
 	#	Проверка ошибок
 	if ($@)
 	{
-		#	информация об ошибке
-		send_admin('Ошибка при отправке "default" сообщения', $@);
 		#	вывод на экран
 		Carp::carp "\nОшибка при отправке 'default' сообщения: $@\n";
+		#
+		#	информация об ошибке
+		send_admin('Ошибка при отправке "default" сообщения', $@);
 	}
 	else
 	{
@@ -332,7 +325,7 @@ sub send_keyboard
 				{text => "\x{2702} " . decode_win('Очистить журнал запросов')},
 			],
 			[
-				{text => "\x{1F4D4} " . decode_win('Получить журнал запросов')},
+				{text => "\x{1F4D4} " . decode_win('Запросить базы данных')},
 				{text => "\x{267B} " . decode_win('Обновить базу данных')},
 			],
 			);
@@ -471,11 +464,8 @@ sub user_authorized
 	#	цикл по выбранным записям
 	while (my $row = $sth->fetchrow_hashref)
 	{
-		#	декодировать
-		decode_utf8($row);
-		#
 		#	Добавить пользователя в хэш
-		$user{ $row->{telegram_id} } = $row;
+		$user{ $row->{telegram_id} } = decode_utf8($row);
 	}
 	#	Закрыть базу данных
 	$dbh->disconnect or Carp::carp $DBI::errstr;
@@ -563,7 +553,7 @@ sub admin
 		$text =~ s/^..//;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Ответ Администратору
-	if ($text eq 'Получить журнал запросов')
+	if ($text eq 'Запросить базы данных')
 	{
 		#	пользователи
 		send_file($message, 'db/user.db');
@@ -664,19 +654,3 @@ sub admin
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 __DATA__
-
-SELECT * FROM
-(
-	SELECT id, telegram_id, time(time_stamp) as time,
-		json_extract(message, '$.text') as request,
-		json_extract(result, '$.result.chat.username') as reply
-	FROM "logger"
-	WHERE request NOT NULL
-UNION
-	SELECT id, telegram_id, time(time_stamp) as time,
-		json_extract(message, '$.web_app_data.data') as request,
-		json_extract(result, '$.result.document.file_name') as reply
-	FROM "logger"
-	WHERE request NOT NULL
-)
-ORDER BY id DESC LIMIT 10
