@@ -600,19 +600,19 @@ sub admin
 			$sth->execute() or Carp::carp $DBI::errstr;
 		#
 		#	информация о запросах
-		my	$log;
+		my	$log = "\x{1F4CE}\n";
 		#
 		#	цикл по выбранным записям
 		while (my $row = $sth->fetchrow_hashref)
 		{
 			#	Добавить в конец списка
-			$log .= sprintf "*%s* (%s)\n",
+			$log .= sprintf "_%s_ (%s)\n",
 				$user->{ $row->{telegram_id} }->{user_name},
 				$row->{time_stamp};
 		}
 		#
 		#	отправить журнал запросов Боту
-		send_admin('_Журнал запросов_', $log);
+		send_admin('*Журнал запросов*', $log);
 	}
 	elsif ($text eq 'Очистить журнал запросов')
 	{
@@ -629,9 +629,9 @@ sub admin
 			or Carp::carp $DBI::errstr;
 		#
 		#	сообщение
-		send_admin('*Журнал* запросов', ($DBI::errstr
-			? "DBI err='$DBI::errstr' " . "\x{1F6AB}"
-			: decode('windows-1251', "удалены все записи,\nкроме 10 последних ") . "\x{2705}"));
+		send_admin('*Журнал запросов* очищен', ($DBI::errstr
+			? "\x{1F6AB} DBI err='$DBI::errstr'"
+			: "\x{2705} " . decode('windows-1251', "удалены все записи, кроме 10 последних ")));
 	}
 	else
 	{
