@@ -11,7 +11,7 @@ rem **************************************************************************
 REM текущая папка
 SET ROOT_FOLDER=%CD%\..
 REM папка с файлами баз данных
-SET DB_FILE=C:\Apache24\sql\med.db
+SET DB_FOLDER=C:\Apache24\sql
 REM папка с HTML-файлом
 SET HTML_FOLDER=%CD%\..\med
 REM запуск Telegram Bot

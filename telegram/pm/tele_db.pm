@@ -16,13 +16,15 @@ use Carp();
 #	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
 #	SQLite:	https://www.techonthenet.com/sqlite/index.php
 use DBI;
+=pod
 #
 #	Файл базы данных
 my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
 	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db' unless (-f $db_file);
 #
 #	файл база данных не найден
-	Carp::confess "Cannot find file database" unless (-f $db_file);
+	Carp::confess "файл базы данных '$db_file' не найден\n" unless (-f $db_file);
+=cut
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
 #	папки библиотек (модулей)
@@ -89,7 +91,14 @@ my	@row_title = map { decode_win($_) } (
 sub new {
 	#	название класса
 	my	$class = shift @_;
+	#	файл базы данных
+	my	$db_file = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Проверка файла
+	unless (-f $db_file)
+	{
+		Carp::confess "Файл базы данных '$db_file' не найден\n\n";
+	}
 	#	открыть базу данных
 	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
 			or Carp::confess $DBI::errstr;

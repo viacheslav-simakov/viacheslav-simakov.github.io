@@ -42,9 +42,9 @@ use Tele_PDF();
 #
 #	проверка доступности файлов и папок
 #
-unless (-e $ENV{'DB_FILE'})
+unless (-e $ENV{'DB_FOLDER'})
 {
-	Carp::confess "Файл '$ENV{'DB_FILE'}' базы данных не существует\n";
+	Carp::confess "Файл '$ENV{'DB_FOLDER'}' базы данных не существует\n";
 }
 unless (-d $ENV{'HTML_FOLDER'})
 {
@@ -501,7 +501,8 @@ sub user_request
 	#	PDF-документ
 	my	$pdf = Tele_PDF->new(
 			$user->{$message->{chat}->{id}},
-			decode_json($web_app_data)
+			decode_json($web_app_data),
+			'db/med.db'
 		);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
@@ -561,22 +562,24 @@ sub admin
 		#	файл журнала
 		send_file($message, 'db/log.db');
 		#
-		#	база данных
-		send_file($message, $ENV{'DB_FILE'});
+		#	базы данных
+		send_file($message, 'db/med.db');
+		send_file($message, 'db/med-extra.db');
 	}
 	elsif ($text eq 'Обновить базу данных')
 	{
 		#	копирование базы данных
 		my	$err = system('perl',
-			'lib/make_html.pl', $ENV{'DB_FILE'}, $ENV{'HTML_FOLDER'});
+			'lib/make_html.pl', $ENV{'DB_FOLDER'}, $ENV{'HTML_FOLDER'});
 		#
 		#	информация
 		send_admin(
 			'*Обновление базы данных*',
 			decode_win("код завершения: ($err)\nстатус: ($?)\nошибка: '$!'"));
 		#
-		#	послать файл базы данных
-		send_file($message, $ENV{'DB_FILE'});
+		#	послать файлы базы данных
+		send_file($message, 'db/med.db');
+		send_file($message, 'db/med-extra.db');
 	}
 	elsif ($text eq 'Последние 10 запросов')
 	{

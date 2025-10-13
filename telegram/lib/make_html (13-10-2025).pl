@@ -7,10 +7,6 @@ use strict;
 #	https://perldoc.perl.org/warnings
 use warnings;
 #
-#	Путь к текущему рабочему каталогу
-#	https://perldoc.perl.org/Cwd
-use Cwd();
-#
 #	Декодирование символов
 #	https://perldoc.perl.org/Encode
 use Encode;
@@ -36,72 +32,63 @@ use DBI;
 #
 #	Папка для сохранения HTML-файла
 #my	$html_folder = 'C:\Git-Hub\viacheslav-simakov.github.io\med';
-#my	$html_folder = $ARGV[1];
+my	$html_folder = $ARGV[1];
 #
 #	Копирование файла базы данных
 #my	$db_file = db_copy('C:\Apache24\sql\med.db', $html_folder);
-#my	$db_file = db_copy($ARGV[0], $html_folder);
-my	$db_file = db_copy($ARGV[0], sprintf('%s/db', Cwd::getcwd));
+my	$db_file = db_copy($ARGV[0], $html_folder);
 #
 #	Запросы к базе данных
 my	$subs = db_select($db_file);
 #
 #	Создать HTML-файл
 #	make_pattern('med.txt', $hash, $html_folder);
-#	make_pattern(undef, $subs, $html_folder);
-	make_pattern(undef, $subs, $ARGV[1]);
+	make_pattern(undef, $subs, $html_folder);
 #exit;
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Копировать файл базы данных
 	---
-	$db_file = db_copy($db_folder, $tg_folder)
+	$db_copy = db_copy($db_folder, $target_folder)
 	
-		$db_folder	- папка базы данных
-		$tg_folder	- папка для копирования
-		$db_file	- файл копии базы данных
+		$db_folder		- папка базы данных
+		$target_folder	- папка для копирования
+		$db_copy		- файл копии базы данных
 =cut
 sub db_copy
 {
 	#	имя файла, папка для копирования
-	my	($db_folder, $tg_folder) = @_;
+	my	($db_file, $target_folder) = @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Преобразование слэшей
-		$db_folder =~ s/\\/\//g;
-		$tg_folder =~ s/\\/\//g;
-	#
-	#	Проверка папок
-	foreach ($db_folder, $tg_folder)
+		$db_file =~ s/\\/\//g;
+		$target_folder =~ s/\\/\//g;
+	
+	#	Проверки файла базы данных
+    unless (-e $db_file)
 	{
-		Carp::carp "Папка '$_' не существует\n" unless (-d $_);
-	}
-	#
-	#	Список файлов базы данных
-	foreach ('med.db', 'med-extra.db')
+        Carp::carp "Исходный файл '$db_file' не существует\n";
+    }
+    unless (-f $db_file)
 	{
-		#	Полный путь файлов
-		my	$db_file = sprintf '%s/%s', $db_folder, $_;
-		my	$tg_file = sprintf '%s/%s', $tg_folder, $_;
-		#
-		#	Проверка существования файла
-		if (-e $db_file) 
-		{
-			#	Копирование файлов
-			File::Copy::copy($db_file, $tg_file)
-				or Carp::carp "Copy failed: $!";
-			#
-			#	вывод на экран
-			print STDERR "Скопирован файл базы данных '$db_file'\n";
-		}
-		else
-		{
-			#	предупреждение
-			Carp::carp "Файл '$db_file' не существует\n";
-		}
+        Carp::carp "Исходный путь '$db_file' не является файлом\n";
+    }
+	unless (-d $target_folder)
+	{
+        Carp::carp "Папка для копирования '$target_folder' не существует\n";
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	копия файла базы данных 
-	return sprintf('%s/med.db', $tg_folder);
+	#	путь файла
+	my	@path = split(/\//, $db_file);
+	#	путь копии файла базы данных
+	my	$db_copy = sprintf '%s/%s' , $target_folder, $path[$#path];
+	#
+	#	копирование файла
+	File::Copy::copy($db_file, $db_copy) or Carp::carp "Copy failed: $!";
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	файл базы данных
+	print STDERR "Скопирован файл базы данных '$db_copy'\n";
+	return $db_copy;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -151,7 +138,7 @@ sub db_select
 	while (my $row = $sth->fetchrow_hashref)
 	{
 	#	информация
-	$row->{info} ||= '-';
+	$row->{info} ||= 'нет информации';
 	#	строка таблицы
 	$data .= sprintf qq
 @
@@ -197,7 +184,7 @@ sub db_select
 	while (my $row = $sth->fetchrow_hashref)
 	{
 	#	информация
-	$row->{info} ||= '-';
+	$row->{info} ||= 'нет информации';
 	#	строка таблицы
 	$data .= sprintf qq
 @
@@ -243,7 +230,7 @@ sub db_select
 	while (my $row = $sth->fetchrow_hashref)
 	{
 	#	информация
-	$row->{info} ||= '-';
+	$row->{info} ||= 'нет информации';
 	#	строка таблицы
 	$data .= sprintf qq
 @
@@ -289,7 +276,7 @@ sub db_select
 	while (my $row = $sth->fetchrow_hashref)
 	{
 	#	информация
-	$row->{info} ||= '-';
+	$row->{info} ||= 'нет информации';
 	#	строка таблицы
 	$data .= sprintf qq
 @
@@ -335,7 +322,7 @@ sub db_select
 	while (my $row = $sth->fetchrow_hashref)
 	{
 	#	информация
-	$row->{info} ||= '-';
+	$row->{info} ||= 'нет информации';
 	#	строка таблицы
 	$data .= sprintf qq
 @
@@ -381,7 +368,7 @@ sub db_select
 	while (my $row = $sth->fetchrow_hashref)
 	{
 	#	информация
-	$row->{info} ||= '-';
+	$row->{info} ||= 'нет информации';
 	#	строка таблицы
 	$data .= sprintf qq
 @
