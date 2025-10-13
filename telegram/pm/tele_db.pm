@@ -12,24 +12,15 @@ use warnings;
 #	Альтернатива 'warn' и 'die' для модулей
 #	https://perldoc.perl.org/Carp
 use Carp();
-#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
 #	SQLite:	https://www.techonthenet.com/sqlite/index.php
 use DBI;
-
-#
-#	Файл базы данных
-my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
-	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db' unless (-f $db_file);
-	$db_file = 'D:\GIT-HUB\viacheslav-simakov.github.io\telegram\db\med.db' unless (-f $db_file);
-#
-#	файл база данных не найден
-	Carp::confess "файл базы данных '$db_file' не найден\n" unless (-f $db_file);
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
 #	папки библиотек (модулей)
 #	'.' = текущая папка!
-use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
+#use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
+use lib ('C:\Apache24\web\cgi-bin\pm');
 #
 #	Формирование ОТЧЕТОВ из базы данных
 #
@@ -84,21 +75,24 @@ my	@row_title = map { decode_win($_) } (
 =pod
 	Конструктор
 	---
-	$obj = Tele_DB->new( $query );
+	$obj = Tele_DB->new($query, $db_file);
 
-		%query	- данные запроса
+		%query		- данные запроса
+		$db_file	- путь файла базы данных
 =cut
 sub new {
 	#	название класса
 	my	$class = shift @_;
+	#	запрос пользователя
+	my	$query = shift @_;
+	#	файл базы данных
+	my	$db_file = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-=pod
 	#	Проверка файла
 	unless (-f $db_file)
 	{
-		Carp::confess "Файл базы данных '$db_file' не найден\n\n";
+		Carp::confess "Файл базы данных '$db_file' не найден\n";
 	}
-=cut
 	#	открыть базу данных
 	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
 			or Carp::confess $DBI::errstr;
@@ -109,8 +103,8 @@ sub new {
 	#	ссылка на объект
 	my	$self =
 		{
-			-dbh	=> $dbh,		# указатель базы данных
-			-query	=> shift @_,	# запрос (ссылка на хэш)
+			-dbh	=> $dbh,	# указатель базы данных
+			-query	=> $query,	# запрос (ссылка на хэш)
 		};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	привести ссылку к типу "class"

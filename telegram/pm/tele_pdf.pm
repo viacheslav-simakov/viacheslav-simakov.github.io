@@ -51,10 +51,11 @@ use SVGPDF;
 =pod
 	 онструктор
 	---
-	$obj = Tele_PDF->new(\%user, \%web_app_data);
+	$obj = Tele_PDF->new(\%user, \%web_app_data, $db_file);
 
 		%user			- данные пользовател€
 		%web_app_data	- данные HTML-формы
+		$db_file		- путь файла базы данных
 =cut
 sub new {
 	#	название класса
@@ -62,7 +63,7 @@ sub new {
 	#	данные пользовател€
 	my	$user = shift @_;
 	#	база данных
-	my	$db = Tele_DB->new( shift @_ );
+	my	$db = Tele_DB->new(shift @_, shift @_);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	—оздаем PDF
 	my	$pdf = PDF::API2->new();
