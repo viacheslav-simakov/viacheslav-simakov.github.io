@@ -111,23 +111,9 @@ sub decode_utf8
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Декодировать строку
-	---
-	$decode_string = decode_windows($string);
-	
-		$string	- строка
-=cut
-sub decode_win2
-{
-    my	$string = shift @_;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	декодированная строка
-	return Encode::decode('windows-1251', trim($string));
-}
-=pod
 	Декодировать 'windows-1251'
 	---
-	$decode_data = decode_windows($data);
+	$decode_data = decode_win($data);
 	
 		$data	- данные для декодирования
 =cut
@@ -150,8 +136,10 @@ sub decode_win
 			map { Encode::decode('windows-1251', trim($_)) } @{ $data }
 		];
 	}
-#	print STDERR $data, "ref=", ref($data),"\n\n";
-#	exit;
+	else
+	{
+		Carp::carp "Неверный параметр функции decode_win('$data')";
+	}
 	#	декодированная строка
 #	return Encode::decode('windows-1251', trim($string));
 }
