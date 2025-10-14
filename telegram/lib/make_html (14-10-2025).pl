@@ -55,6 +55,25 @@ my	$subs = db_select($db_file);
 #exit;
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
+	Переводы строк в HTML
+	---
+	Utils::break_line($string);
+	
+		$string	- строка (SCALAR)
+
+=cut
+sub break_line
+{
+	#	передаваемая строка
+	my	$s = shift @_;
+	#	перевод строк в HTML
+		$s =~ s/(\n)+/<br>/g;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	текст с переводом строк
+	return $s;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
 	Копировать файл базы данных
 	---
 	$db_file = db_copy($db_folder, $tg_folder)
@@ -173,7 +192,7 @@ sub db_select
 		<label for="preparation-label-%1\$d" class="item-label"></label>
 	</div>
 </div>
-@, $row->{id}, $row->{num}, $row->{name}, break_line($row->{info});
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
 	}
 	#	Хэш для замены
 	$hash->{'--preparation--'} = $data;
@@ -219,7 +238,7 @@ sub db_select
 		<label for="rheumatology-label-%1\$d" class="item-label"></label>
 	</div>
 </div>
-@, $row->{id}, $row->{num}, $row->{name}, break_line($row->{info});
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
 	}
 	#	Хэш для замены
 	$hash->{'--rheumatology--'} = $data;
@@ -265,7 +284,7 @@ sub db_select
 		<label for="comorbidity-label-%1\$d" class="item-label"></label>
 	</div>
 </div>
-@, $row->{id}, $row->{num}, $row->{name}, break_line($row->{info});
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
 	}
 	#	Хэш для замены
 	$hash->{'--comorbidity--'} = $data;
@@ -311,7 +330,7 @@ sub db_select
 		<label for="status-label-%1\$d" class="item-label"></label>
 	</div>
 </div>
-@, $row->{id}, $row->{num}, $row->{name}, break_line($row->{info});
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
 	}
 	#	Хэш для замены
 	$hash->{'--status--'} = $data;
@@ -357,7 +376,7 @@ sub db_select
 		<label for="manual-label-%1\$d" class="item-label"></label>
 	</div>
 </div>
-@, $row->{id}, $row->{num}, $row->{name}, break_line($row->{info});
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
 	}
 	#	Хэш для замены
 	$hash->{'--probe-manual--'} = $data;
@@ -402,7 +421,7 @@ sub db_select
 			step="0.1" min="0" max="100"/>
 	</div>
 </div>
-@, $row->{id}, $row->{num}, $row->{name}, break_line($row->{info});
+@, $row->{id}, $row->{num}, $row->{name}, Utils::break_line($row->{info});
 	}
 	#	Хэш для замены
 	$hash->{'--probe--'} = $data;
@@ -458,7 +477,7 @@ sub make_pattern
 	}
 	#
 	#	Модификация шаблона
-	replace(\$content, $subs);
+	Utils::subs(\$content, $subs);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Путь HTML-файла
 		$html_file = sprintf '%s/%s.html', $output_folder, $html_file;
@@ -475,60 +494,6 @@ sub make_pattern
 	#
 	#	Вывод на экран
 	print STDERR "Создан HTML-файл '$html_file'\n";
-}
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-=pod
-	Переводы строк в HTML
-	---
-	break_line($string);
-	
-		$string	- строка (SCALAR)
-
-=cut
-sub break_line
-{
-	#	передаваемая строка
-	my	$s = shift @_;
-	#	перевод строк в HTML
-		$s =~ s/(\n)+/<br>/g;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	текст с переводом строк
-	return $s;
-}
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-=pod
-	Замена заполнителей строк
-	---
-	replace($ref_content, \%param1, \%param2, ...);
-	
-		$ref_content	- ссылка (ref SCALAR) на текстовое содержимое
-		%param			- хэш замены ключей на их значения
-=cut
-sub replace
-{
-	#	текстовое содержимое
-	my	$ref_content = shift @_;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	foreach my $ref_hash ( @_ )
-	{
-		#	хэш замены ключей на их значения
-		my	%param = %{ $ref_hash };
-		#
-		#	ЗАМЕНА ЗНАЧЕНИЙ КЛЮЧЕЙ ХЭША
-		#
-		foreach ( keys %param ) {
-			#	ключ
-			my	$key = sprintf '##%s##', uc($_);
-			#	значение хэша
-			my	$value = $param{$_};
-			#	замена
-			#	https://stackoverflow.com/questions/2922618/how-do-i-escape-special-characters-for-a-substitution-in-a-perl-one-liner
-			#
-			#	МОДИФИКАТОРЫ: https://perldoc.perl.org/perlre#Modifiers
-			#
-			${ $ref_content } =~ s/\Q$key\E/$value/g;
-		}
-	}
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 __DATA__

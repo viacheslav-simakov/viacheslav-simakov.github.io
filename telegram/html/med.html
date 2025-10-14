@@ -1,0 +1,2265 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Электронный ассистент</title>
+<!--meta http-equiv="content-type" content="text/html; charset=utf-8"/-->
+<!--
+	Файл стилей
+	https://developer.mozilla.org/en-US/docs/Web/CSS
+-->
+<link href="med.css" rel="stylesheet" type="text/css"/>
+<!--
+	Google font's
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+<!--
+	Telegram "mini App"
+	https://core.telegram.org/bots/webapps#initializing-mini-apps
+-->
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+
+<style>
+/*	Скрыть вкладки, радиокнопки */
+div.tab-content, input[type=radio]
+{
+	display:	none;
+}
+/*	Показать содержимое вкладок */
+#radio-rheumatology:checked ~	#req-form #rheumatology,
+#radio-preparation:checked ~	#req-form #preparation,
+#radio-comorbidity:checked ~ 	#req-form #comorbidity,
+#radio-status:checked ~ 		#req-form #status,
+#radio-deviation:checked ~ 		#req-form #deviation,
+#radio-probe:checked ~ 			#req-form #probe
+{
+	display:	block;
+}
+/*	Подсветка выбора пользователя */
+#radio-rheumatology:checked ~	#userDialog #label-rheumatology,
+#radio-preparation:checked ~	#userDialog #label-preparation,
+#radio-comorbidity:checked ~ 	#userDialog #label-comorbidity,
+#radio-status:checked ~ 		#userDialog #label-status,
+#radio-deviation:checked ~ 		#userDialog #label-deviation,
+#radio-probe:checked ~ 			#userDialog #label-probe
+{
+	color:				var(--tg-theme-button-text-color, yellow);
+	background-color:	var(--tg-theme-button-color, green);
+}
+</style>
+</head>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	ОСНОВНОЕ СОДЕРЖАНИЕ
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<body>
+<!--
+	Радиокнопки меню
+-->
+	<input type="radio" id="radio-rheumatology"	name="tab-group" checked>
+	<input type="radio" id="radio-preparation"	name="tab-group">
+	<input type="radio" id="radio-comorbidity"	name="tab-group">
+	<input type="radio" id="radio-status"		name="tab-group">
+	<input type="radio" id="radio-deviation"	name="tab-group">
+	<input type="radio" id="radio-probe"		name="tab-group">
+	<input type="radio" id="radio-prescription"	name="tab-group">
+<!--
+	Меню
+-->
+<div id="showMenu" class="header-fixed">
+	<div class="title-icon">rheumatology</div>
+	<div class="title-text">Основное заболевание</div>
+</div>
+<!--
+	Диалоговое окно
+-->
+<dialog id="userDialog">
+	<!-- :: ВЫБОР ОПЦИЙ :: -------------------------------------------------------->
+	<div class="menu">
+		<!-- Заболевания -->
+		<label id="label-rheumatology" for="radio-rheumatology">
+			<span>rheumatology</span><div>Основное заболевание</div></label>
+
+		<!-- Сопутствующие заболевания -->
+		<label id="label-comorbidity" for="radio-comorbidity">
+			<span>person_cancel</span><div>Сопутствующие заболевания</div></label>
+	
+		<!-- Сопутствующие состояния -->
+		<label id="label-status" for="radio-status">
+			<span>person_alert</span><div>Сопутствующие состояния</div></label>
+
+		<!-- Сопутствующие отклонения -->
+		<label id="label-deviation" for="radio-deviation">
+			<span>instant_mix</span><div>Лабораторные показатели</div></label>
+		
+		<!-- Лабораторные показатели -->
+		<label id="label-probe" for="radio-probe">
+			<span>biotech</span><div>Лабораторные исследования</div></label>
+
+		<!-- Препараты -->
+		<label id="label-preparation" for="radio-preparation">
+			<span>pill</span><div>Препараты</div></label>
+	</div>
+</dialog>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Основное заболевание
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<form id="req-form">
+<div id="rheumatology" class="tab-content">
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#5" class="item-checkbox"
+		id="rheumatology-label-5"/>
+	<div class="item-order">
+		1
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Аксиальный спондилоартрит тяжелый</summary>
+			<p>без Rg-подтвержденного анкилозирующего спондилита, но при наличии объективных признаков воспаления по данным МРТ и/или повышенному СРБ, при отсутствии ответа или непереносимости НПВП</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-5" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#2" class="item-checkbox"
+		id="rheumatology-label-2"/>
+	<div class="item-order">
+		2
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Анкилозирующий спондилит</summary>
+			<p> </p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-2" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#3" class="item-checkbox"
+		id="rheumatology-label-3"/>
+	<div class="item-order">
+		3
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Болезнь Бехчета, интестинальная форма</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-3" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#12" class="item-checkbox"
+		id="rheumatology-label-12"/>
+	<div class="item-order">
+		4
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Болезнь Стилла</summary>
+			<p>Активная фаза</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-12" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#8" class="item-checkbox"
+		id="rheumatology-label-8"/>
+	<div class="item-order">
+		5
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Гигантоклеточный артериит</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-8" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#9" class="item-checkbox"
+		id="rheumatology-label-9"/>
+	<div class="item-order">
+		6
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Гранулематоз с полиангиитом</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-9" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#10" class="item-checkbox"
+		id="rheumatology-label-10"/>
+	<div class="item-order">
+		7
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Микроскопический полиангиит</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-10" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#13" class="item-checkbox"
+		id="rheumatology-label-13"/>
+	<div class="item-order">
+		8
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Острый подагрический артрит</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-13" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#11" class="item-checkbox"
+		id="rheumatology-label-11"/>
+	<div class="item-order">
+		9
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Периодическая болезнь</summary>
+			<p>Аутовоспалительные синдромы периодической лихорадки:<br>• криопирин-ассоциированный периодический синдром (CAPS) у взрослых и детей в возрасте 2 лет и старше, включая:<br>- семейный холодовой аутовоспалительный синдром (FCAS)/семейная холодовая крапивница (FCU);<br>- синдром Макла-Уэльса (MWS);<br>- младенческое мультисистемное воспалительное заболевание (NOMID)/хронический младенческий неврологический кожно-артикулярный синдром (CINCA);<br>• периодический синдром, ассоциированный с рецепторами к фактору некроза опухоли (TRAPS);<br>• гипер-IgD-синдром/синдром дефицита мевалонат-киназы (HIDS/MKD);<br>• семейная средиземноморская лихорадка (FMF) </p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-11" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#6" class="item-checkbox"
+		id="rheumatology-label-6"/>
+	<div class="item-order">
+		10
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Псориатический артрит</summary>
+			<p> </p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-6" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#1" class="item-checkbox"
+		id="rheumatology-label-1"/>
+	<div class="item-order">
+		11
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Ревматоидный артрит</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-1" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#4" class="item-checkbox"
+		id="rheumatology-label-4"/>
+	<div class="item-order">
+		12
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Системная красная волчанка</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-4" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="rheumatology#14" class="item-checkbox"
+		id="rheumatology-label-14"/>
+	<div class="item-order">
+		13
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Эозинофильный гранулематоз с полиангиитом</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="rheumatology-label-14" class="item-label"></label>
+	</div>
+</div>
+
+</div>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Сопутствующие заболевания
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="comorbidity" class="tab-content">
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#9" class="item-checkbox"
+		id="comorbidity-label-9"/>
+	<div class="item-order">
+		1
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Активная инфекция</summary>
+			<p> состояние</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-9" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#41" class="item-checkbox"
+		id="comorbidity-label-41"/>
+	<div class="item-order">
+		2
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Алкогольный гепатит</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-41" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#1" class="item-checkbox"
+		id="comorbidity-label-1"/>
+	<div class="item-order">
+		3
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Вирусный гепатит В</summary>
+			<p>дополнительная информация</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-1" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#39" class="item-checkbox"
+		id="comorbidity-label-39"/>
+	<div class="item-order">
+		4
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Вирусный гепатит С</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-39" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#42" class="item-checkbox"
+		id="comorbidity-label-42"/>
+	<div class="item-order">
+		5
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>ВИЧ</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-42" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#30" class="item-checkbox"
+		id="comorbidity-label-30"/>
+	<div class="item-order">
+		6
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Волчаночное поражение ЦНС тяжелое, активное</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-30" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#37" class="item-checkbox"
+		id="comorbidity-label-37"/>
+	<div class="item-order">
+		7
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Волчаночный нефрит тяжелый активный</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-37" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#38" class="item-checkbox"
+		id="comorbidity-label-38"/>
+	<div class="item-order">
+		8
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Воспалительные заболевания кишечника</summary>
+			<p>Болезнь Крона, язвенный колит</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-38" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#36" class="item-checkbox"
+		id="comorbidity-label-36"/>
+	<div class="item-order">
+		9
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Гранулематоз с полиангиитом</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-36" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#35" class="item-checkbox"
+		id="comorbidity-label-35"/>
+	<div class="item-order">
+		10
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Заболевание сердца (тяжелое, неконтролируемое)</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-35" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#40" class="item-checkbox"
+		id="comorbidity-label-40"/>
+	<div class="item-order">
+		11
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Злокачественное новообразование в анамнезе с длительностью ремиссии менее 5 лет</summary>
+			<p>за исключением излеченных базальноклеточной карциномы и рака шейки матки in<br>situ - для сенипрутуга</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-40" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#22" class="item-checkbox"
+		id="comorbidity-label-22"/>
+	<div class="item-order">
+		12
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Иммунодефицит первичный или вторичный (выраженный)</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-22" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#29" class="item-checkbox"
+		id="comorbidity-label-29"/>
+	<div class="item-order">
+		13
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Онкологическое заболевание в активной форме</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-29" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#20" class="item-checkbox"
+		id="comorbidity-label-20"/>
+	<div class="item-order">
+		14
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Перфорация ЖКТ</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-20" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#4" class="item-checkbox"
+		id="comorbidity-label-4"/>
+	<div class="item-order">
+		15
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Печеночная недостаточность тяжелой степени (класс С по классификации Чайлд-Пью)</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-4" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#5" class="item-checkbox"
+		id="comorbidity-label-5"/>
+	<div class="item-order">
+		16
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Почечная недостаточность тяжелой и терминальной степени тяжести (СКФ <30 мл/мин)</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-5" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#2" class="item-checkbox"
+		id="comorbidity-label-2"/>
+	<div class="item-order">
+		17
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Сепсис, обусловленный патогенами, отличными от COVID-19</summary>
+			<p>для этанерцепта в т. ч. и риск возникновения сепсиса</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-2" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#23" class="item-checkbox"
+		id="comorbidity-label-23"/>
+	<div class="item-order">
+		18
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Сердечная недостаточность тяжелая</summary>
+			<p>(III/IV класс по NYHA)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-23" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#43" class="item-checkbox"
+		id="comorbidity-label-43"/>
+	<div class="item-order">
+		19
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Сифилис</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-43" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#3" class="item-checkbox"
+		id="comorbidity-label-3"/>
+	<div class="item-order">
+		20
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>туберкулез</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-3" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="comorbidity#27" class="item-checkbox"
+		id="comorbidity-label-27"/>
+	<div class="item-order">
+		21
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Хроническая инфекция</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="comorbidity-label-27" class="item-label"></label>
+	</div>
+</div>
+
+</div>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Сопутствующие состояния
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="status" class="tab-content">
+
+<div class="flex-box">
+	<input type="checkbox" name="status#45" class="item-checkbox"
+		id="status-label-45"/>
+	<div class="item-order">
+		1
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Активное лечение злокачественногоновообразования в настоящий момент</summary>
+			<p>или лимфопролиферативного заболевания</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-45" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#6" class="item-checkbox"
+		id="status-label-6"/>
+	<div class="item-order">
+		2
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Беременность, грудное вскармливание</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-6" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#34" class="item-checkbox"
+		id="status-label-34"/>
+	<div class="item-order">
+		3
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Вакцинация живой вакциной одновременно или менее, чем за 30 дней до введения препарата</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-34" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#42" class="item-checkbox"
+		id="status-label-42"/>
+	<div class="item-order">
+		4
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Вакцинация инактивированной вакциной в период применения препарата</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-42" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#7" class="item-checkbox"
+		id="status-label-7"/>
+	<div class="item-order">
+		5
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Возраст до 18 лет</summary>
+			<p>++/--</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-7" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#22" class="item-checkbox"
+		id="status-label-22"/>
+	<div class="item-order">
+		6
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Гиперчувствительность к белкам мыши</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-22" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#35" class="item-checkbox"
+		id="status-label-35"/>
+	<div class="item-order">
+		7
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Гиперчувствительность к любому компоненту препарата в анамнезе</summary>
+			<p>запрещено</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-35" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#37" class="item-checkbox"
+		id="status-label-37"/>
+	<div class="item-order">
+		8
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Гиперчувствительность к производным белка E. coli</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-37" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#47" class="item-checkbox"
+		id="status-label-47"/>
+	<div class="item-order">
+		9
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Жизнеугрожающие инфузионные реакции при применении моноклональных антител в анамнезе</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-47" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#39" class="item-checkbox"
+		id="status-label-39"/>
+	<div class="item-order">
+		10
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>наследственная непереносимость галактозы или дефицит лактазы</summary>
+			<p>или синдром глюкозо-галактозной мальабсорбции</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-39" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#16" class="item-checkbox"
+		id="status-label-16"/>
+	<div class="item-order">
+		11
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Наследственная непереносимость фруктозы</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-16" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#46" class="item-checkbox"
+		id="status-label-46"/>
+	<div class="item-order">
+		12
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Неинвазивная/инвазивная ИВЛ или ЭКМО в настоящий момент</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-46" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#38" class="item-checkbox"
+		id="status-label-38"/>
+	<div class="item-order">
+		13
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Совместное приеменение с азатиоприном, препаратами золота и анакинрой</summary>
+			<p>для оренсии</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-38" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#41" class="item-checkbox"
+		id="status-label-41"/>
+	<div class="item-order">
+		14
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Совместное применение с абатацептом</summary>
+			<p>для инфликсимаба</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-41" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#40" class="item-checkbox"
+		id="status-label-40"/>
+	<div class="item-order">
+		15
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Совместное применение с анакинрой</summary>
+			<p>для инфликсимаба</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-40" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#43" class="item-checkbox"
+		id="status-label-43"/>
+	<div class="item-order">
+		16
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Совместный прием с азатиоприном, циклоспорином или такролимусом</summary>
+			<p>для Тофары</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-43" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#36" class="item-checkbox"
+		id="status-label-36"/>
+	<div class="item-order">
+		17
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Совместный прием с иФНО альфа или другими ГИБП</summary>
+			<p>дополнительно для упадацитиниба: "...и совместно с другими ингибиторами JAK"</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-36" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#44" class="item-checkbox"
+		id="status-label-44"/>
+	<div class="item-order">
+		18
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Совместный прием с мощными индукторами цитохрома P450 (CYP3А4)</summary>
+			<p>(например, рифампицин)  - для тофацитиниба<br>или у пациентов, которые прекратили прием мощного индуктора изофермента CYP3A4 менее чем за 28 дней или 5 периодов полувыведения до приема первой дозы тофацитиниба.</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-44" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="status#8" class="item-checkbox"
+		id="status-label-8"/>
+	<div class="item-order">
+		19
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Состояние в течение 1 месяца после лечения иФНО-альфа</summary>
+			<p>или комбинация этих препартов</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="status-label-8" class="item-label"></label>
+	</div>
+</div>
+
+</div>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Лабораторные показатели (выбор из списка)
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="deviation" class="tab-content">
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#1" class="item-checkbox"
+		id="manual-label-1"/>
+	<div class="item-order">
+		1
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>АЛТ > 100</summary>
+			<p>это первый пример</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-1" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#9" class="item-checkbox"
+		id="manual-label-9"/>
+	<div class="item-order">
+		2
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>АЛТ > 120 Ед/л</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-9" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#4" class="item-checkbox"
+		id="manual-label-4"/>
+	<div class="item-order">
+		3
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>АЛТ > 200 Ед/л</summary>
+			<p> </p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-4" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#8" class="item-checkbox"
+		id="manual-label-8"/>
+	<div class="item-order">
+		4
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>АСТ > 120 Ед/л</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-8" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#3" class="item-checkbox"
+		id="manual-label-3"/>
+	<div class="item-order">
+		5
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>АСТ > 200 Ед/л</summary>
+			<p> </p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-3" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#15" class="item-checkbox"
+		id="manual-label-15"/>
+	<div class="item-order">
+		6
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Гемоглобин < 80 г/л</summary>
+			<p>для всего, кроме Тофары</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-15" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#17" class="item-checkbox"
+		id="manual-label-17"/>
+	<div class="item-order">
+		7
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Гемолглобин <90 мг/л </summary>
+			<p>только для Тофары</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-17" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#16" class="item-checkbox"
+		id="manual-label-16"/>
+	<div class="item-order">
+		8
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Клиренс креатинина <40 мл/мин</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-16" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#14" class="item-checkbox"
+		id="manual-label-14"/>
+	<div class="item-order">
+		9
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Лимфоциты (АЧЛ) <0,5 * 10^9/л</summary>
+			<p>абсолютное число</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-14" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#10" class="item-checkbox"
+		id="manual-label-10"/>
+	<div class="item-order">
+		10
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Нейтрофилы (АЧН) < 1 * 10^9/л</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-10" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#13" class="item-checkbox"
+		id="manual-label-13"/>
+	<div class="item-order">
+		11
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Нейтрофилы (АЧН) < 1,5 * 10^9/л - для Анакинры</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-13" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#11" class="item-checkbox"
+		id="manual-label-11"/>
+	<div class="item-order">
+		12
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Нейтрофилы (АЧН) < 2 * 10^9/л</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-11" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#6" class="item-checkbox"
+		id="manual-label-6"/>
+	<div class="item-order">
+		13
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Число тромбоцитов < 100 * 10^9/л</summary>
+			<p> </p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-6" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="manual#12" class="item-checkbox"
+		id="manual-label-12"/>
+	<div class="item-order">
+		14
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Число тромбоцитов < 150 * 10^9/л</summary>
+			<p>-</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="manual-label-12" class="item-label"></label>
+	</div>
+</div>
+
+</div>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Лабораторные исследования
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="probe" class="tab-content">
+
+<div class="flex-box">
+	<div class="item-order">
+		1
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Ig A</summary>
+			<p>мг/дл</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#41"
+			step="0.1" min="0" max="100"/>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div class="item-order">
+		2
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Ig G</summary>
+			<p>мг/дл</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#40"
+			step="0.1" min="0" max="100"/>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div class="item-order">
+		3
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>АЛТ</summary>
+			<p>Аланинаминотрансфераза</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#1"
+			step="0.1" min="0" max="100"/>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div class="item-order">
+		4
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>АСТ</summary>
+			<p>Aспартатаминотрансфераза</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#6"
+			step="0.1" min="0" max="100"/>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div class="item-order">
+		5
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>АЧН</summary>
+			<p>нейтрофилы (10<sup>9</sup> клеток/л)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#4"
+			step="0.1" min="0" max="100"/>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div class="item-order">
+		6
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Гемоглобин (Hb)</summary>
+			<p>г/л</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#2"
+			step="0.1" min="0" max="100"/>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div class="item-order">
+		7
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Клиренс креатинина - для кинерета, тофары, яквинуса</summary>
+			<p>мл/мин</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#42"
+			step="0.1" min="0" max="100"/>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div class="item-order">
+		8
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Лимфоциты (АЧЛ)</summary>
+			<p>10<sup>9</sup> клеток/л</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#7"
+			step="0.1" min="0" max="100"/>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div class="item-order">
+		9
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Нейтрофилы (АЧН)</summary>
+			<p>тыс/мкл</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#39"
+			step="0.1" min="0" max="100"/>
+	</div>
+</div>
+
+<div class="flex-box">
+	<div class="item-order">
+		10
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Тромбоциты</summary>
+			<p>тыс/мкл</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<input type="number" class="probe-number" name="probe#5"
+			step="0.1" min="0" max="100"/>
+	</div>
+</div>
+
+</div>
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	Препараты
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+<div id="preparation" class="tab-content">
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#10" class="item-checkbox"
+		id="preparation-label-10"/>
+	<div class="item-order">
+		1
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Актемра</summary>
+			<p>Ингибитор ИЛ 6 (Тоцилизумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-10" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#75" class="item-checkbox"
+		id="preparation-label-75"/>
+	<div class="item-order">
+		2
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Артлегиа</summary>
+			<p>Ингибитор ИЛ 6 (Олокизумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-75" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#76" class="item-checkbox"
+		id="preparation-label-76"/>
+	<div class="item-order">
+		3
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Ацеллбия</summary>
+			<p>ингибитор CD20-лимфоцитов (Ритуксимаб) </p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-76" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#77" class="item-checkbox"
+		id="preparation-label-77"/>
+	<div class="item-order">
+		4
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Бенлиста</summary>
+			<p>Ингибитор фактора активации В-лимфоцитов (Белимумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-77" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#78" class="item-checkbox"
+		id="preparation-label-78"/>
+	<div class="item-order">
+		5
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Далибра</summary>
+			<p>Блокатор ФНО альфа (Адалимумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-78" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#79" class="item-checkbox"
+		id="preparation-label-79"/>
+	<div class="item-order">
+		6
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Иларис</summary>
+			<p>Блокатор ИЛ 1 (Канакинумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-79" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#5" class="item-checkbox"
+		id="preparation-label-5"/>
+	<div class="item-order">
+		7
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Илсира</summary>
+			<p>Ингибитор ИЛ 6 (Левилимаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-5" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#11" class="item-checkbox"
+		id="preparation-label-11"/>
+	<div class="item-order">
+		8
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Кевзара</summary>
+			<p>Ингибитор ИЛ 6 (Сарилумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-11" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#82" class="item-checkbox"
+		id="preparation-label-82"/>
+	<div class="item-order">
+		9
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Кинерет</summary>
+			<p>Блокатор ИЛ 1 (Анакинра)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-82" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#83" class="item-checkbox"
+		id="preparation-label-83"/>
+	<div class="item-order">
+		10
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Козэнтикс</summary>
+			<p>Блокатор ИЛ 17 (Секукинумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-83" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#84" class="item-checkbox"
+		id="preparation-label-84"/>
+	<div class="item-order">
+		11
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Мабтера</summary>
+			<p>ингибитор CD20-лимфоцитов (Ритуксимаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-84" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#85" class="item-checkbox"
+		id="preparation-label-85"/>
+	<div class="item-order">
+		12
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Нукала</summary>
+			<p>блокатор ИЛ 5 (меполизумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-85" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#9" class="item-checkbox"
+		id="preparation-label-9"/>
+	<div class="item-order">
+		13
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Олумиант</summary>
+			<p>ингибитор JAK- киназ (Барицитиниб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-9" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#86" class="item-checkbox"
+		id="preparation-label-86"/>
+	<div class="item-order">
+		14
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Оренсия</summary>
+			<p>блокатор ко-стимуляции T-лимфоцитов (Абатацепт)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-86" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#87" class="item-checkbox"
+		id="preparation-label-87"/>
+	<div class="item-order">
+		15
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Отесла</summary>
+			<p>ингибитор ФДЭ 4 (Апремиласт)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-87" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#88" class="item-checkbox"
+		id="preparation-label-88"/>
+	<div class="item-order">
+		16
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Ранвэк</summary>
+			<p>ингибитор JAK-киназ (Упадацитиниб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-88" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#89" class="item-checkbox"
+		id="preparation-label-89"/>
+	<div class="item-order">
+		17
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Реддитукс</summary>
+			<p>ингибитор CD20-лимфоцитов (Ритуксимаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-89" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#81" class="item-checkbox"
+		id="preparation-label-81"/>
+	<div class="item-order">
+		18
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Ремикейд</summary>
+			<p>Блокатор ФНО альфа (Инфликсимаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-81" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#90" class="item-checkbox"
+		id="preparation-label-90"/>
+	<div class="item-order">
+		19
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Ривия</summary>
+			<p>Блокатор ФНО альфа (Этанерцепт)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-90" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#92" class="item-checkbox"
+		id="preparation-label-92"/>
+	<div class="item-order">
+		20
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Сафнело</summary>
+			<p>ингибитор интерферона I типа (Анифролумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-92" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#93" class="item-checkbox"
+		id="preparation-label-93"/>
+	<div class="item-order">
+		21
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Симзия</summary>
+			<p>Блокатор ФНО альфа (Цертолизумаба пэгол)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-93" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#94" class="item-checkbox"
+		id="preparation-label-94"/>
+	<div class="item-order">
+		22
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Симпони</summary>
+			<p>Блокатор ФНО альфа (Голимумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-94" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#95" class="item-checkbox"
+		id="preparation-label-95"/>
+	<div class="item-order">
+		23
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Скайризи</summary>
+			<p>Ингибитор ИЛ 23 (Рисанкизумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-95" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#96" class="item-checkbox"
+		id="preparation-label-96"/>
+	<div class="item-order">
+		24
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Стелара</summary>
+			<p>Ингибитор ИЛ 12 и 23 (Устекинумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-96" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#97" class="item-checkbox"
+		id="preparation-label-97"/>
+	<div class="item-order">
+		25
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Талс</summary>
+			<p>Блокатор ИЛ 17 (Иксекизумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-97" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#98" class="item-checkbox"
+		id="preparation-label-98"/>
+	<div class="item-order">
+		26
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Тофара</summary>
+			<p>Ингибитор JAK-киназ (Тофацитиниб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-98" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#99" class="item-checkbox"
+		id="preparation-label-99"/>
+	<div class="item-order">
+		27
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Тремфея</summary>
+			<p>Блокатор ИЛ 17 (Гуселькумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-99" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#100" class="item-checkbox"
+		id="preparation-label-100"/>
+	<div class="item-order">
+		28
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Трибувиа</summary>
+			<p>Блокатор Т-лимфоцитов (Сенипрутуг)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-100" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#101" class="item-checkbox"
+		id="preparation-label-101"/>
+	<div class="item-order">
+		29
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Хумира</summary>
+			<p>Блокатор ФНО альфа (Адалимумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-101" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#102" class="item-checkbox"
+		id="preparation-label-102"/>
+	<div class="item-order">
+		30
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Эксэмптия</summary>
+			<p>Блокатор ФНО альфа (Адалимумаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-102" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#103" class="item-checkbox"
+		id="preparation-label-103"/>
+	<div class="item-order">
+		31
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Энбрел</summary>
+			<p>Блокатор ФНО-альфа (Этанерцепт)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-103" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#104" class="item-checkbox"
+		id="preparation-label-104"/>
+	<div class="item-order">
+		32
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Эрелзи</summary>
+			<p>Блокатор ФНО-альфа (Этанерцепт)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-104" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#105" class="item-checkbox"
+		id="preparation-label-105"/>
+	<div class="item-order">
+		33
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Эфлейра</summary>
+			<p>Блокатор ИЛ 17 (Нетакимаб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-105" class="item-label"></label>
+	</div>
+</div>
+
+<div class="flex-box">
+	<input type="checkbox" name="preparation#106" class="item-checkbox"
+		id="preparation-label-106"/>
+	<div class="item-order">
+		34
+	</div>
+	<div class="item-content">
+		<details>
+			<summary>Яквинус</summary>
+			<p>Ингибитор JAK-киназ (Тофацитиниб)</p>
+		</details>
+	</div>
+	<div class="item-input">
+		<label for="preparation-label-106" class="item-label"></label>
+	</div>
+</div>
+
+</div>
+</form>
+<!--##########################################################################
+
+	Telegram Web API
+	https://core.telegram.org/bots/webapps#events-available-for-mini-apps
+
+###########################################################################-->
+<script>
+	//	Web-API
+	let tg = window.Telegram.WebApp;
+	//	Инициализируем WebApp
+		tg.ready();
+	//	во весь экран
+		tg.expand();
+	//	Получаем информацию о пользователе
+	const user = tg.initDataUnsafe.user;
+	//	Наименования секций (разделов) HTML-страницы
+	const section = ["rheumatology","preparation","comorbidity","status","manual"];
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
+	//	Главная кнопка
+	//
+	tg.MainButton.setText("Рекомендации").show();
+	//	Add an event listener for when the SettingButton is clicked
+	tg.onEvent('mainButtonClicked', () => {
+		//
+		//	Данные для отправки в Telegram Bot
+		let dataToSend = {};
+		//
+		//	Цикл по названию секций, содержащих флажки (checkbox)
+		for (let i = 0; i < section.length; i++) {
+			//
+			//	Селекторы: https://learn.javascript.ru/css-selectors
+			//
+			let elem = document.querySelectorAll("input[name^='" + section[i] + "#']");
+			//
+			//	Массив ID значений флажков (checkbox)
+			let id = [];
+			//
+			//	цикл по всем элементам списка
+			for (let j = 0; j < elem.length; j++) {
+				//
+				//	Пропустить оставшуюся часть тела цикла
+				if (elem[j].checked === false) continue;
+				//
+				//	Добавить в массив
+				id.push(elem[j].name.split("#")[1]);
+			}
+			//	Список ID флажков
+			dataToSend[section[i]] = id;
+		}
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//	Коллекция полей ввода (input)
+		//	Селекторы: https://learn.javascript.ru/css-selectors
+		let elem = document.querySelectorAll("input[name^='probe#']");
+		//
+		//	Массив объектов (полей ввода)
+		let probe = [];
+		//
+		//	цикл по всем элементам списка
+		for (let j = 0; j < elem.length; j++) {
+			//
+			//	Пропустить оставшуюся часть тела цикла
+			if (elem[j].value == "") continue;
+			//
+			//	Добавить в массив
+			probe.push(
+			{
+				id:		elem[j].name.split("#")[1],
+				val:	elem[j].value
+			});
+		}
+		//	Список объектов
+		dataToSend["probe"] = probe;
+		//
+		//	Преобразуем массив объектов в строку JSON
+		const jsonString = JSON.stringify(dataToSend);
+		
+//		alert("Main button clicked!\nКоличество символов: " + jsonString.length);
+		//
+		// Send the data to the bot
+		tg.sendData(jsonString);
+		//
+		// You can also send data back to the bot here
+		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
+	});
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
+	//	Вторичная кнопка
+	//	https://www.google.com/search?q=telegram+WebApp+secondaryButton+example+js+code&oq=telegram+WebApp+secondaryButton+example+js+code
+	//	tg.SecondaryButton.setText("Назад").show();
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
+	//	Кнопка "Установки"
+	tg.SettingsButton.show();
+	//	Add an event listener for when the SettingButton is clicked
+	tg.onEvent('settingsButtonClicked', () => {
+		alert('Setting button clicked!');
+		// You can also send data back to the bot here
+		// tg.sendData(JSON.stringify({ action: 'secondary_button_pressed' }));
+	});	
+</script>
+<!--##########################################################################
+
+	Хранилище устройства (DeviceStorage)
+	https://core.telegram.org/bots/webapps#devicestorage
+
+###########################################################################-->
+<script>
+	//	Локальное хранилище данных
+	let ds = tg.DeviceStorage;
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//	Цикл по названию секций, содержащих checkbox
+	for (let i = 0; i < section.length; i++) {
+		//
+		//	Коллекция флажков в секции:	https://learn.javascript.ru/css-selectors
+		let elem = document.querySelectorAll("input[name^='" + section[i] + "#']");
+		//
+		//	Цикл по всем флажкам (checkbox) из секции
+		for (let j = 0; j < elem.length; j++) {
+			//
+			//	Восстановить значение флажка
+			ds.getItem(JSON.stringify(elem[j].name), (error, result) => {
+				//
+				//	Нет информации в хранилище?
+				if (result !== null) {
+					//
+					//	Присвоить значение флажку
+					elem[j].checked = JSON.parse(result);
+				}
+				else {
+					elem[j].checked = false;
+				}
+			});
+			//
+			//	Обработчик событий для каждого флажка
+			elem[j].addEventListener('click', function(event) {
+				//
+				//	Записать в хранилище устройства
+				ds.setItem(
+					JSON.stringify(elem[j].name),
+					JSON.stringify(elem[j].checked));
+			});
+		}
+	};
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//	Коллекция строк полей ввода (input)
+	//	https://learn.javascript.ru/css-selectors
+	let probe = document.querySelectorAll("input[name^='probe#']");
+	//
+	//	Цикл по всем полям ввода
+	for (let j = 0; j < probe.length; j++) {
+		//
+		//	Восстановить значение поля ввода
+		ds.getItem(JSON.stringify(probe[j].name), (error, result) => {
+			//
+			//	нет записи в хранилище?
+			if (result !== null) {
+				//
+				//	Присвоить значение
+				probe[j].value = JSON.parse(result);
+			}
+			else {
+				probe[j].value = "";
+			}
+		});
+		//
+		//	Обработчик событий для каждого поля ввода
+		probe[j].addEventListener('change', function(event) {
+			//
+			//	Записать в хранилище устройства
+			ds.setItem(
+				JSON.stringify(probe[j].name),
+				JSON.stringify(probe[j].value));
+		});
+	};
+</script>
+<!--##########################################################################
+
+	Окно диалога (меню выбора вкладки)
+	https://developer.mozilla.org/ru/docs/Web/HTML/Reference/Elements/dialog
+
+###########################################################################-->
+<script>
+	const showMenu = document.getElementById("showMenu");
+	const userDialog = document.getElementById("userDialog");
+	const itemMenu = userDialog.querySelectorAll("label");
+	//
+	// "Show the dialog" button opens the <dialog> modally
+	showMenu.addEventListener("click", () => {
+		//
+		//	Показать окно
+		userDialog.showModal();
+		//
+		//	Скрыть Главную кнопку
+		tg.MainButton.hide();
+	});
+	//
+	//	цикл по всем пунктам меню
+	for (let i = 0; i < itemMenu.length; i++) {
+		//
+		// Добавляем прослушиватель для закрытия при клике
+		itemMenu[i].addEventListener("click", () => {
+			//
+			//	Закрываем диалог
+			userDialog.close();
+			//
+			//	Изменить значок
+			showMenu.querySelector(".title-icon").textContent =
+				itemMenu[i].querySelector("span").textContent;
+			//
+			//	Изменить название
+			showMenu.querySelector(".title-text").textContent =
+				itemMenu[i].querySelector("div").textContent;
+			//
+			//	Показать Главную кнопку
+			tg.MainButton.show();
+		});
+	}
+	// Добавляем прослушиватель для закрытия при клике вне диалога
+	document.addEventListener('click', function(event) {
+//		alert("Ok");
+		console.log(userDialog.open);
+		// Проверяем, кликнули ли по самому диалогу или его содержимому
+		if (!userDialog.contains(event.target) && userDialog.open) {
+//			userDialog.close(); // Закрываем диалог
+		}
+	});
+</script>
+</body>
+</html>

@@ -14,6 +14,8 @@ REM папка с файлами баз данных
 SET DB_FOLDER=C:\Apache24\sql
 REM папка с HTML-файлом
 SET HTML_FOLDER=%CD%\..\med
+REM HTML-файл
+SET HTTP_URL=https://viacheslav-simakov.github.io/telegram/html/med.html
 REM запуск Telegram Bot
 perl "bot.p"
 rem **************************************************************************
