@@ -22,35 +22,18 @@ use Carp();
 #	Копирование файлов или файловых дескрипторов
 #	https://metacpan.org/pod/File::Copy
 use File::Copy();
-=pod
 #
-#	папки библиотек (модулей)
-#	'.' = текущая папка!
-use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
-#
-#	Утилиты
-use Utils();
-=cut
-#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
 #	SQLite:	https://www.techonthenet.com/sqlite/index.php
 use DBI;
-#
-#	Папка для сохранения HTML-файла
-#my	$html_folder = 'C:\Git-Hub\viacheslav-simakov.github.io\med';
-#my	$html_folder = $ARGV[1];
-#
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #	Копирование файла базы данных
-#my	$db_file = db_copy('C:\Apache24\sql\med.db', $html_folder);
-#my	$db_file = db_copy($ARGV[0], $html_folder);
 my	$db_file = db_copy($ARGV[0], sprintf('%s/db', Cwd::getcwd));
 #
 #	Запросы к базе данных
 my	$subs = db_select($db_file);
 #
 #	Создать HTML-файл
-#	make_pattern('med.txt', $hash, $html_folder);
-#	make_pattern(undef, $subs, $html_folder);
 	make_pattern(undef, $subs, $ARGV[1]);
 #exit;
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
