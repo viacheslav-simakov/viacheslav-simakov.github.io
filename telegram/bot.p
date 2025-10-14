@@ -42,14 +42,16 @@ use Tele_PDF();
 #
 #	проверка доступности файлов и папок
 #
-unless (-e $ENV{'DB_FOLDER'})
+unless (-d $ENV{'DB_FOLDER'})
 {
-	Carp::confess "Файл '$ENV{'DB_FOLDER'}' базы данных не существует\n";
+	Carp::confess "Папка '$ENV{'DB_FOLDER'}' базы данных не существует\n";
 }
+=pod
 unless (-d $ENV{'HTML_FOLDER'})
 {
-	Carp::confess "Папка '$ENV{'HTML_FOLDER'}' для копирования не существует\n";
+	Carp::confess "Папка '$ENV{'HTML_FOLDER'}' с HTML-файлами не существует\n";
 }
+=cut
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #	открыть базу данных
 my	$log_dbh = DBI->connect("dbi:SQLite:dbname=db/log.db","","")
@@ -571,7 +573,7 @@ sub admin
 	{
 		#	копирование базы данных
 		my	$err = system('perl',
-			'lib/make_html.pl', $ENV{'DB_FOLDER'}, $ENV{'HTML_FOLDER'});
+			'lib/make_html.pl', $ENV{'DB_FOLDER'}, 'html');
 		#
 		#	информация
 		send_admin(

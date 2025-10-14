@@ -9,11 +9,9 @@ rem	ѕј–јћ≈“–џ ќ –”∆≈Ќ»я
 rem
 rem **************************************************************************
 REM текуща€ папка
-SET ROOT_FOLDER=%CD%\..
+rem SET ROOT_FOLDER=%CD%\..
 REM папка с файлами баз данных
 SET DB_FOLDER=C:\Apache24\sql
-REM папка с HTML-файлом
-SET HTML_FOLDER=%CD%\..\med
 REM HTML-файл
 SET HTTP_URL=https://viacheslav-simakov.github.io/telegram/html/med.html
 REM запуск Telegram Bot
