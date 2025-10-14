@@ -46,12 +46,6 @@ unless (-d $ENV{'DB_FOLDER'})
 {
 	Carp::confess "Папка '$ENV{'DB_FOLDER'}' базы данных не существует\n";
 }
-=pod
-unless (-d $ENV{'HTML_FOLDER'})
-{
-	Carp::confess "Папка '$ENV{'HTML_FOLDER'}' с HTML-файлами не существует\n";
-}
-=cut
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #	открыть базу данных
 my	$log_dbh = DBI->connect("dbi:SQLite:dbname=db/log.db","","")
@@ -559,15 +553,11 @@ sub admin
 	#	Ответ Администратору
 	if ($text eq 'Запросить базы данных')
 	{
-		#	пользователи
-		send_file($message, 'db/user.db');
-		#
-		#	файл журнала
-		send_file($message, 'db/log.db');
-		#
-		#	базы данных
+		#	переслать файлы баз данных
 		send_file($message, 'db/med.db');
 		send_file($message, 'db/med-extra.db');
+		send_file($message, 'db/user.db');
+		send_file($message, 'db/log.db');
 	}
 	elsif ($text eq 'Обновить базу данных')
 	{
@@ -575,12 +565,12 @@ sub admin
 		my	$err = system('perl',
 			'lib/make_html.pl', $ENV{'DB_FOLDER'}, 'html');
 		#
-		#	информация
+		#	информационное сообщение
 		send_admin(
 			'*Обновление базы данных*',
 			decode_win("код завершения: ($err)\nстатус: ($?)\nошибка: '$!'"));
 		#
-		#	послать файлы базы данных
+		#	переслать файлы базы данных
 		send_file($message, 'db/med.db');
 		send_file($message, 'db/med-extra.db');
 	}
