@@ -310,8 +310,7 @@ sub send_keyboard
 		{
 			text	=> "\x{1F48A} " . decode_win('Ёлектронный ассистент врача-ревматолога'),
 			web_app	=> {
-#				url	=> 'https://viacheslav-simakov.github.io/med/med.html'
-				url	=> $ENV{'HTTP_URL'}
+				url	=> 'https://viacheslav-simakov.github.io/med/med.html'
 			},
 		}
 	],];
