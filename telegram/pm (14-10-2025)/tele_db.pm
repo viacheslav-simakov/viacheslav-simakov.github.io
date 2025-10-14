@@ -60,6 +60,16 @@ my	%FORM_number =
 (
 	probe			=> 'Лабораторные исследования',
 );
+=pod
+#
+#	Заголовки строк
+my	@row_title = map { decode_win($_) } (
+		'Препарат',
+		'Информация',
+		'Клинические показания',
+		'С осторожностью',
+	);
+=cut
 #
 #	Заголовки строк
 my	@row_title = @{ decode_win([
@@ -167,6 +177,12 @@ sub request {
 			ORDER BY "name_lc"
 		@);
 		$sth->execute;
+=pod
+		#
+		#	Заголовок данных
+		my	@data = ([map { decode_win($_) }
+			($FORM_checkbox{$name}, 'Информация')]);
+=cut
 		#
 		#	Заголовок данных
 		my	@data =
@@ -210,6 +226,12 @@ sub request {
 			ORDER BY "name_lc"
 		@);
 		$sth->execute;
+=pod
+		#
+		#	Заголовок данных
+		my	@data = ([map {	decode_win($_) }
+			($FORM_number{$name}, 'Результат', 'Информация')]);
+=cut
 		#
 		#	Заголовок данных
 		my	@data =

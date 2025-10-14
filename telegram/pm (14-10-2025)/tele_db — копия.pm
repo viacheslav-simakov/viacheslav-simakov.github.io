@@ -1,3 +1,8 @@
+=pod
+
+	Работа с базой данных 'med' SQLite
+
+=cut
 #	Ограничение небезопасных конструкций
 #	https://perldoc.perl.org/strict
 use strict;
@@ -7,33 +12,45 @@ use warnings;
 #	Альтернатива 'warn' и 'die' для модулей
 #	https://perldoc.perl.org/Carp
 use Carp();
+#	JSON (JavaScript Object Notation) кодирование/декодирование
+#	https://metacpan.org/pod/JSON
+use	JSON;
+#	Декодирование символов
+#	https://perldoc.perl.org/Encode
+#use Encode;
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-=pod
-
-	Работа с базой данных 'med.db' SQLite
-
-=cut
-package Tele_DB {
-#
 #	БАЗА ДАННЫХ: https://metacpan.org/pod/DBI
 #	SQLite:	https://www.techonthenet.com/sqlite/index.php
 use DBI;
 #
+#	Файл базы данных
+my	$db_file = 'C:\Git-Hub\viacheslav-simakov.github.io\med\med.db';
+	$db_file = 'D:\Git-Hub\viacheslav-simakov.github.io\med\med.db' unless (-f $db_file);
+#
+#	файл база данных не найден
+	Carp::confess "Cannot find file database" unless (-f $db_file);
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
 #	папки библиотек (модулей)
 #	'.' = текущая папка!
-#use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
-use lib ('C:\Apache24\web\cgi-bin\pm');
+use lib ('C:\Apache24\web\cgi-bin\pm', 'D:\GIT-HUB\apache\web\cgi-bin\pm');
 #
 #	Формирование ОТЧЕТОВ из базы данных
 #
 use Report();
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#
+#	Обработка SQL-запросов к базе данных SQLite
+#
+package Tele_DB {
 #
 #	Утилиты для работы
 use Tele_Tools qw(decode_utf8 decode_win);
-#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#use Tele_Tools qw(decode_win);
 #
-#	ДАННЫЕ МОДУЛЯ
+#	Данные модуля
 #
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #	псевдонимы таблиц базы данных
 my	%TABLE =
 (
@@ -62,46 +79,99 @@ my	%FORM_number =
 );
 #
 #	Заголовки строк
-my	@row_title = @{ decode_win([
+my	@row_title = map { decode_win($_) } (
 		'Препарат',
 		'Информация',
 		'Клинические показания',
-		'С осторожностью',])
-	};
+		'С осторожностью',
+	);
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Удалить в строке ведущие и завершающие пробелы 
+	---
+	$trim_string = trim($string);
+	
+
+sub trim
+{
+    my	$string = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Проверка строки
+	return '' if !defined($string);
+	#
+	#	Удалить ведущие пробелы
+    $string =~ s/^\s+//;
+	#
+	#	Удалить завершающие пробелы
+    $string =~ s/\s+$//;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	возвратить строку
+    return $string;
+}
+=cut
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Декодировать значения хэш
+	---
+	$hash_ref = decode_utf8( \%hash );
+	
+		%hash	- хэш записи базы данных
+
+sub decode_utf8
+{
+    my	$hash_ref = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	цикл по ключам хэша
+	foreach (keys %{ $hash_ref })
+	{
+		#	декодировать строку из "UTF-8"
+		$hash_ref->{$_} = Encode::decode('UTF-8', trim($hash_ref->{$_}));
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ссылка на хэш
+	return $hash_ref;
+}
+=cut
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Декодировать строку
+	---
+	$decode_string = decode_windows( $string );
+	
+		$string	- строка
+
+sub decode_win
+{
+    my	$string = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	декодированная строка
+	return Encode::decode('windows-1251', trim($string));
+}
+=cut
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
 	Конструктор
 	---
-	$obj = Tele_DB->new($query, $db_file);
+	$obj = Tele_DB->new( $query );
 
-		%query		- данные запроса
-		$db_file	- путь файла базы данных
+		%query	- данные запроса
 =cut
 sub new {
 	#	название класса
 	my	$class = shift @_;
-	#	запрос пользователя
-	my	$query = shift @_;
-	#	файл базы данных
-	my	$db_file = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Проверка файла
-	unless (-f $db_file)
-	{
-		Carp::confess "Файл базы данных '$db_file' не найден\n";
-	}
 	#	открыть базу данных
 	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
 			or Carp::confess $DBI::errstr;
 	#
 	#	вывод на экран
-	printf STDERR "Connect to database '%s'\n", $dbh->sqlite_db_filename;
+	printf STDERR "Connect to database '$db_file'\n";
 	#
 	#	ссылка на объект
 	my	$self =
 		{
-			-dbh	=> $dbh,	# указатель базы данных
-			-query	=> $query,	# запрос (ссылка на хэш)
+			-dbh	=> $dbh,		# указатель базы данных
+			-query	=> shift @_,	# запрос (ссылка на хэш)
 		};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	привести ссылку к типу "class"
@@ -169,10 +239,8 @@ sub request {
 		$sth->execute;
 		#
 		#	Заголовок данных
-		my	@data =
-			(
-				decode_win([$FORM_checkbox{$name}, 'Информация'])
-			);
+		my	@data = ([map { decode_win($_) }
+			($FORM_checkbox{$name}, 'Информация')]);
 		#
 		#	цикл по выбранным записям
 		while (my $row = $sth->fetchrow_hashref)
@@ -181,6 +249,7 @@ sub request {
 			decode_utf8($row);
 			#
 			#	Добавить в конец списка
+#			push @data, [$row->{name}, trim($row->{info})];
 			push @data, [$row->{name}, $row->{info}];
 		}
 		#
@@ -212,10 +281,8 @@ sub request {
 		$sth->execute;
 		#
 		#	Заголовок данных
-		my	@data =
-			(
-				decode_win([$FORM_number{$name}, 'Результат', 'Информация'])
-			);
+		my	@data = ([map {	decode_win($_) }
+			($FORM_number{$name}, 'Результат', 'Информация')]);
 		#
 		#	цикл по выбранным записям
 		while (my $row = $sth->fetchrow_hashref)
@@ -224,6 +291,7 @@ sub request {
 			decode_utf8($row);
 			#
 			#	Добавить в конец списка
+#			push @data, [$row->{name}, $value{$row->{id}}, trim($row->{info})];
 			push @data, [$row->{name}, $value{$row->{id}}, $row->{info}];
 		}
 		#
