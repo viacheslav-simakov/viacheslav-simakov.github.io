@@ -25,7 +25,7 @@ use	JSON qw(encode_json);
 use Exporter 'import';
 #
 #	Список символов для экспорта
-our	@EXPORT_OK = qw(trim decode_utf8 decode_win time_stamp break_line);
+our	@EXPORT_OK = qw(trim decode_utf8 decode_win time_stamp);
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #	Список пользователей
 my	$user;
@@ -159,24 +159,6 @@ sub time_stamp
 	#
 	return sprintf("%02d-%02d-%04d %02d:%02d:%02d",
 			$mday, $mon+1, $year+1900, $hour, $min, $sec);
-}
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-=pod
-	Переводы строк в HTML
-	---
-	break_line($string);
-	
-		$string	- строка (SCALAR)
-
-=cut
-sub break_line {
-	#	передаваемая строка
-	my	$s = shift @_;
-	#	перевод строк в HTML
-		$s =~ s/(\n)+/<br>/g;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	текст с переводом строк
-	return $s;
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package

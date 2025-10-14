@@ -601,8 +601,7 @@ sub admin
 			$sth->execute() or Carp::carp $DBI::errstr;
 		#
 		#	информация о запросах
-#		my	$log = "\x{1F4CE}\n\n";
-		my	$log;
+		my	$log = "\x{1F4CE}\n\n";
 		#
 		#	цикл по выбранным записям
 		while (my $row = $sth->fetchrow_hashref)
@@ -614,13 +613,13 @@ sub admin
 			$row->{reply} =~ s/[_\*\-\~]/ /g;
 			#
 			#	Добавить в конец списка
-			$log .= sprintf "*%s* (%s)\n`%s`\n\x{26A1} %s\n",
+			$log .= sprintf "*%s* (%s)\n`%s` (%s)\n",
 				$user->{ $row->{telegram_id} }->{user_name},
 				$row->{time}, $row->{request}, $row->{reply};
 		}
 		#
 		#	отправить журнал запросов Боту
-		send_admin('_Журнал запросов_', $log);
+		send_admin('*Журнал запросов*', $log);
 		#
 		#	не записывать в журнал
 		$result = undef;

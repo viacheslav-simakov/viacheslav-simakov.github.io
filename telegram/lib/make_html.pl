@@ -41,10 +41,10 @@ my	$subs = db_select($db_file);
 	Копировать файл базы данных
 	---
 	$db_file = db_copy($db_folder, $tg_folder)
-	
+
+		$db_file	- файл копии базы данных	
 		$db_folder	- папка базы данных
 		$tg_folder	- папка для копирования
-		$db_file	- файл копии базы данных
 =cut
 sub db_copy
 {
