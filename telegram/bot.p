@@ -34,10 +34,11 @@ use WWW::Telegram::BotAPI;
 use lib ('pm');
 #
 #	Утилиты для работы
-use Tele_Tools qw(decode_utf8 decode_win);
+use Med::Tools qw(decode_utf8 decode_win time_stamp);
 #
 #	PDF-документы
-use Tele_PDF();
+#use Tele_PDF();
+use Med::PDF();
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #	проверка доступности файлов и папок
@@ -72,8 +73,9 @@ my	$user = user_authorized();
 #
 #	Главный цикл обработки событий бота
 #
-printf STDERR "Telegram Bot \@tele_rheumatology_bot is started at %s\n",
-	Tele_PDF::time_stamp();
+printf STDERR "Telegram Bot \@tele_rheumatology_bot is started at %s\n", time_stamp();
+#	Tele_PDF::time_stamp();
+	
 while (1) {
 	#	задержка 1 секунда
 #	sleep(1);
@@ -121,7 +123,7 @@ while (1) {
 			next;
 		}
 		#	Вывод на экран
-		printf STDERR "\nUpdate at %s (%s)\n", Tele_PDF::time_stamp(),
+		printf STDERR "\nUpdate at %s (%s)\n", time_stamp(),
 			encode('windows-1251', $user->{$message->{chat}->{id}}->{user_name});
 		#
 		#	Результат обработки сообщения
@@ -247,12 +249,12 @@ sub send_default
 	my	$user_name = $user->{$message->{chat}->{id}}->{user_name} || 'undef';
 	#
 	#	результат
-	my	$result;
+	my	$status;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
 	eval {
 		#	Послать сообщение боту (вывод клавиатуры)
-		$result = $api->api_request('sendMessage',
+		$status = $api->api_request('sendMessage',
 		{
 			chat_id		=> $message->{chat}->{id},
 			parse_mode	=> 'Markdown',
@@ -279,7 +281,7 @@ sub send_default
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
-	return $result;
+	return $status;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -370,32 +372,32 @@ sub send_keyboard
 	send_file(\%message, $file_name)
 	
 		%message	- сообщение (хэш)
-		$file_name	- имя файла (в текущей папке)
+		$file		- имя файла (в текущей папке)
 =cut
 sub send_file
 {
 	#	сообщение (ссылка на хэш)
     my	$message = shift @_;
 	#	имя PDF-файла
-	my	$file_name = shift @_;
+	my	$file = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	пользователь
 	my	$user_name = $user->{$message->{chat}->{id}}->{user_name} || 'undef';
 	#
 	#	экранирование символов '\'
-		$file_name =~ s/\\/\//g;
+		$file =~ s/\\/\//g;
 	#
 	#	результат
 	my	$result;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Проверка существование файла
-	unless (-e $file_name)
+	unless (-e $file)
 	{
 		#	предупреждение!
 		Carp::carp sprintf
 			"package '%s', filename '%s', subroutine '%s':\n".
 			"file '%s' is not exist!\n",
-			(caller(0))[0,1,3], $file_name;
+			(caller(0))[0,1,3], $file;
 		#
 		#	возврат из функции
 		return undef;
@@ -404,6 +406,9 @@ sub send_file
 	#	Безопасная конструкция
 	eval
 	{
+		#	название файла
+		my	$filename = decode_win(sprintf('Рекомендации (%s).pdf', time_stamp()));
+			$filename =~ s/\:/\-/g;
 		#	Отправляем PDF файл
 		$result = $api->api_request('sendDocument',
 		{
@@ -411,15 +416,15 @@ sub send_file
 			caption		=> decode_win('СГМУ имени В.И. Разумовского'),
 			document	=>
 			{
-				file		=> $file_name,
-#				filename	=> decode('windows-1251', 'Рекомендации.pdf'),
-				filename	=> $file_name,
+				file		=> $file,
+				filename	=> $filename,
+#				filename	=> $file_name,
 			},
 		});
 		#	Вывод на экран
 		printf STDERR
 			"Send file '%s' (%s) to '%s' successed\n",
-			$result->{result}->{document}->{file_name},
+			encode('windows-1251', $result->{result}->{document}->{file_name}),
 			sprintf('%.1f kB', $result->{result}->{document}->{file_size}/1024),
 			encode('windows-1251', $user_name);
 	};
@@ -518,7 +523,7 @@ sub user_request
     my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
 	#
 	#	PDF-документ
-	my	$pdf = Tele_PDF->new
+	my	$pdf = Med::PDF->new
 		(
 			$user->{$message->{chat}->{id}},
 			decode_json($web_app_data),

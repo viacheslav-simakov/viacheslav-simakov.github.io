@@ -29,7 +29,8 @@ use lib ('C:\Apache24\web\cgi-bin\pm');
 use Report();
 #
 #	”тилиты дл€ работы
-use Tele_Tools qw(decode_utf8 decode_win);
+#use Tele_Tools qw(decode_utf8 decode_win);
+use Med::Tools qw(decode_utf8 decode_win);
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
 #	ƒјЌЌџ≈ ћќƒ”Ћя

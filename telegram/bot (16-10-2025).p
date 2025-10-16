@@ -34,10 +34,11 @@ use WWW::Telegram::BotAPI;
 use lib ('pm');
 #
 #	Утилиты для работы
-use Tele_Tools qw(decode_utf8 decode_win);
+use Med::Tools qw(decode_utf8 decode_win time_stamp);
 #
 #	PDF-документы
-use Tele_PDF();
+#use Tele_PDF();
+use Med::PDF();
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #	проверка доступности файлов и папок
@@ -72,8 +73,9 @@ my	$user = user_authorized();
 #
 #	Главный цикл обработки событий бота
 #
-printf STDERR "Telegram Bot \@tele_rheumatology_bot is started at %s\n",
-	Tele_PDF::time_stamp();
+printf STDERR "Telegram Bot \@tele_rheumatology_bot is started at %s\n", time_stamp();
+#	Tele_PDF::time_stamp();
+	
 while (1) {
 	#	задержка 1 секунда
 #	sleep(1);
@@ -121,7 +123,7 @@ while (1) {
 			next;
 		}
 		#	Вывод на экран
-		printf STDERR "\nUpdate at %s (%s)\n", Tele_PDF::time_stamp(),
+		printf STDERR "\nUpdate at %s (%s)\n", time_stamp(),
 			encode('windows-1251', $user->{$message->{chat}->{id}}->{user_name});
 		#
 		#	Результат обработки сообщения
@@ -247,12 +249,12 @@ sub send_default
 	my	$user_name = $user->{$message->{chat}->{id}}->{user_name} || 'undef';
 	#
 	#	результат
-	my	$result;
+	my	$status;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
 	eval {
 		#	Послать сообщение боту (вывод клавиатуры)
-		$result = $api->api_request('sendMessage',
+		$status = $api->api_request('sendMessage',
 		{
 			chat_id		=> $message->{chat}->{id},
 			parse_mode	=> 'Markdown',
@@ -279,7 +281,7 @@ sub send_default
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
-	return $result;
+	return $status;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -370,7 +372,7 @@ sub send_keyboard
 	send_file(\%message, $file_name)
 	
 		%message	- сообщение (хэш)
-		$file_name	- имя файла (в текущей папке)
+		$file		- имя файла (в текущей папке)
 =cut
 sub send_file
 {
@@ -412,8 +414,8 @@ sub send_file
 			document	=>
 			{
 				file		=> $file_name,
-#				filename	=> decode('windows-1251', 'Рекомендации.pdf'),
-				filename	=> $file_name,
+				filename	=> decode_win('Рекомендации.pdf'),
+#				filename	=> $file_name,
 			},
 		});
 		#	Вывод на экран
@@ -487,7 +489,29 @@ sub user_request
 	#	сообщение (ссылка на хэш)
     my	$message = shift @_;
 	#	результат
-	my	$result;
+	my	($result, $msg_id);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Безопасная конструкция
+	eval
+	{
+		#	отправка сообщения Пользователю
+		$result = $api->api_request('sendMessage',
+		{
+			chat_id	=> $message->{chat}->{id},
+			text	=> decode_win('Ваш запрос выполняется ') . "\x{23F3}",
+		});
+		#
+		#	id сообщения
+		$msg_id = $result->{result}->{message_id};
+	};
+	#	Проверка ошибок
+	if ($@)
+	{
+		#	послать информацию об ошибке
+		send_admin('*Ошибка* при отправке сообщения Пользователю', $@);
+		#	вывод на экран
+		Carp::carp "Error send to User: $@";
+	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	имя PDF-файла
 	my	$pdf_file_name = sprintf '%s.pdf', $message->{chat}->{id};
@@ -496,7 +520,8 @@ sub user_request
     my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
 	#
 	#	PDF-документ
-	my	$pdf = Tele_PDF->new(
+	my	$pdf = Med::PDF->new
+		(
 			$user->{$message->{chat}->{id}},
 			decode_json($web_app_data),
 			'db/med.db'
@@ -521,6 +546,14 @@ sub user_request
 		#	Отправить пользователю PDF-файл
 		$result = send_file($message, $pdf_file_name);
 	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Изменить текст сообщения
+	$api->api_request('editMessageText',
+	{
+        chat_id		=> $message->{chat}->{id},
+        message_id	=> $msg_id,
+        text		=> decode_win('Файл с результатами запроса загружен'),
+    });
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
 	return $result;
@@ -601,7 +634,8 @@ sub admin
 			$sth->execute() or Carp::carp $DBI::errstr;
 		#
 		#	информация о запросах
-		my	$log = "\x{1F4CE}\n\n";
+#		my	$log = "\x{1F4CE}\n\n";
+		my	$log;
 		#
 		#	цикл по выбранным записям
 		while (my $row = $sth->fetchrow_hashref)
@@ -613,13 +647,13 @@ sub admin
 			$row->{reply} =~ s/[_\*\-\~]/ /g;
 			#
 			#	Добавить в конец списка
-			$log .= sprintf "*%s* (%s)\n`%s` (%s)\n",
+			$log .= sprintf "*%s* (%s)\n`%s`\n\x{26A1} %s\n",
 				$user->{ $row->{telegram_id} }->{user_name},
 				$row->{time}, $row->{request}, $row->{reply};
 		}
 		#
 		#	отправить журнал запросов Боту
-		send_admin('*Журнал запросов*', $log);
+		send_admin('_Журнал запросов_', $log);
 		#
 		#	не записывать в журнал
 		$result = undef;
