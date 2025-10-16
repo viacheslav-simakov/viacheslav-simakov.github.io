@@ -487,17 +487,20 @@ sub user_request
 	#	сообщение (ссылка на хэш)
     my	$message = shift @_;
 	#	результат
-	my	$result;
+	my	($result, $msg_id);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
 	eval
 	{
 		#	отправка сообщения Пользователю
-		$api->api_request('sendMessage',
+		$result = $api->api_request('sendMessage',
 		{
 			chat_id	=> $message->{chat}->{id},
 			text	=> decode_win('Ваш запрос выполняется ') . "\x{23F3}",
 		});
+		#
+		#	id сообщения
+		$msg_id = $result->{result}->{message_id};
 	};
 	#	Проверка ошибок
 	if ($@)
@@ -515,7 +518,8 @@ sub user_request
     my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
 	#
 	#	PDF-документ
-	my	$pdf = Tele_PDF->new(
+	my	$pdf = Tele_PDF->new
+		(
 			$user->{$message->{chat}->{id}},
 			decode_json($web_app_data),
 			'db/med.db'
@@ -540,6 +544,14 @@ sub user_request
 		#	Отправить пользователю PDF-файл
 		$result = send_file($message, $pdf_file_name);
 	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Изменить текст сообщения
+	$api->api_request('editMessageText',
+	{
+        chat_id		=> $message->{chat}->{id},
+        message_id	=> $msg_id,
+        text		=> decode_win('Файл с результатами запроса загружен'),
+    });
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
 	return $result;
