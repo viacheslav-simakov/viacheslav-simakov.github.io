@@ -21,10 +21,11 @@ use Med::Tools qw(decode_utf8 decode_win);
 =pod
 	Конструктор
 	---
-	$obj = Med::Admin->new($api, $telegram_id);
+	$obj = Med::Admin->new($api, $telegram_id, $dbh);
 
 		$api			- объект API Телеграм Бота
 		$telegram_id	- ID Telegram
+		$dbh			- указатель базы данных
 =cut
 sub new {
 	#	название класса
@@ -33,12 +34,15 @@ sub new {
 	my	$api = shift @_;
 	#	ID Telegram
 	my	$telegram_id = shift @_;
+	#	указатель базы данных
+	my	$dbh = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на объект
 	my	$self =
 		{
-			-bot	=> $api,			# API Телеграм Бота
-			-id		=> $telegram_id,	# указатель базы данных
+			-bot			=> $api,			# API Телеграм Бота
+			-telegram_id	=> $telegram_id,	# telegram ID пользователя
+			-dbh			=> $dbh,			# указатель базы данных
 		};
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	привести ссылку к типу "class"
@@ -67,7 +71,7 @@ sub send_msg
 		#	Послать сообщение admin
 		$self->{-bot}->api_request('sendMessage',
 		{
-			chat_id		=> $self->{id},
+			chat_id		=> $self->{-telegram_id},
 			parse_mode	=> 'Markdown',
 			text		=> sprintf("%s\n%s", $caption, $msg_text),
 		})
@@ -105,10 +109,7 @@ sub send_file
 	unless (-e $file_name)
 	{
 		#	предупреждение!
-		Carp::carp sprintf
-			"package '%s', filename '%s', subroutine '%s':\n".
-			"file '%s' is not exist!\n",
-			(caller(0))[0,1,3], $file_name;
+		Carp::carp "Файл '$file_name' не существует\n";
 		#
 		#	возврат из функции
 		return undef;
@@ -120,7 +121,7 @@ sub send_file
 		#	Отправляем PDF файл
 		$self->{-bot}->api_request('sendDocument',
 		{
-			chat_id		=> $self->{id},
+			chat_id		=> $self->{-telegram_id},
 			document	=>
 			{
 				file		=> $file_name,
@@ -162,7 +163,96 @@ sub send_database
 	return $self;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
+=pod
+	Последние 10 записей в журнале запросов
+	---
+	$obj->last_log()
+	
+=cut
+sub last_log
+{
+	#	ссылка на объект
+	my	$self = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	указатель таблицы
+	my	$sth = $self->{-dbh}->prepare(qq
+		@
+		SELECT * FROM (
+			SELECT * FROM
+			(
+				SELECT id, telegram_id, time(time_stamp) as time,
+					json_extract(message, '\$.text') as request,
+					json_extract(result, '\$.result.chat.username') as reply
+				FROM "logger"
+				WHERE request NOT NULL
+			UNION
+				SELECT id, telegram_id, time(time_stamp) as time,
+					json_extract(message, '\$.web_app_data.data') as request,
+					json_extract(result, '\$.result.document.file_name') as reply
+				FROM "logger"
+				WHERE request NOT NULL
+			)
+			ORDER BY id DESC LIMIT 10
+		)
+		ORDER BY id ASC
+		@);
+		$sth->execute() or Carp::carp $DBI::errstr;
+	#
+	#	информация о запросах
+	my	$log;
+	#
+	#	цикл по выбранным записям
+	while (my $row = $sth->fetchrow_hashref)
+	{
+		#	декодировать
+		decode_utf8($row);
+		#
+		#	экранировать символы 'Markdown'
+		$row->{reply} =~ s/[_\*\~]/ /g;
+		#
+		#	Добавить в конец списка
+		$log .= sprintf "*%s* (%s)\n`%s`\n\x{26A1} %s\n",
+			$user->{ $row->{telegram_id} }->{user_name},
+			$row->{time}, $row->{request}, $row->{reply};
+	}
+	#
+	#	отправить журнал запросов Боту
+	$self->send_msg('_Журнал запросов_', $log);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	возвращаемое значение
+	return $self;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Очистить журнал запросов (кроме 10 последних записей)
+	---
+	$obj->truncate_log()
+=cut
+sub truncate_log
+{
+	#	ссылка на объект
+	my	$self = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Очистить журнал
+	$self->{-dbh}->do(qq
+		@
+			DELETE FROM logger
+			WHERE rowid NOT IN (
+				SELECT rowid FROM logger
+				ORDER BY rowid DESC 
+				LIMIT 10
+			)
+		@)
+		or Carp::carp $DBI::errstr;
+	#
+	#	Сообщение
+	$self->send_msg('*Журнал запросов* очищен', ($DBI::errstr
+		? "\x{1F6AB} DBI err='$DBI::errstr'"
+		: "\x{2705} " . decode_win("удалены все записи, кроме 10 последних ")));
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	возвращаемое значение
+	return $self;
+}
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package
 return 1;

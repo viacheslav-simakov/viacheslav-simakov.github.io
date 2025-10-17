@@ -649,7 +649,7 @@ sub admin
 			decode_utf8($row);
 			#
 			#	экранировать символы 'Markdown'
-			$row->{reply} =~ s/[_\*\~]/ /g;
+			$row->{reply} =~ s/[_\*\-\~]/ /g;
 			#
 			#	Добавить в конец списка
 			$log .= sprintf "*%s* (%s)\n`%s`\n\x{26A1} %s\n",
