@@ -119,7 +119,7 @@ while (1) {
 		if (!exists $user->{ $message->{chat}->{id} })
 		{
 			#	информация об ошибке
-			$admin->send_msg('*Access denied*',
+			send_admin('*Access denied*',
 				sprintf('telegram id=(%s)', $message->{chat}->{id} || 'unknow'));
 			#
 			#	вывод на экран
@@ -155,8 +155,7 @@ while (1) {
 		elsif ($message->{chat}->{id} eq $admin->{-telegram_id})
 		{
 			#	Администратор
-#			$result = admin($message);
-			$admin->run($message);
+			$result = admin($message);
 		}
         else
 		{
@@ -200,6 +199,44 @@ sub logger
 			encode_json($result)
 		)
 		or Carp::carp $DBI::errstr;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Сообщение об ошибке
+	---
+	send_admin($caption, $msg_text)
+
+		$caption	- заголовок сообщения
+		$msg_text	- текст сообщения
+=cut
+sub send_admin
+{
+	#	заголовок сообщения
+	my	$caption = decode_win(shift @_);
+	#	текст сообщения
+	my	$msg_text = shift @_ || 'undef';
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Безопасная конструкция
+	eval {
+		#	Послать сообщение admin
+		$api->api_request('sendMessage',
+		{
+			chat_id		=> '5483130027',# Симаков
+			parse_mode	=> 'Markdown',
+			text		=> sprintf("%s\n%s", $caption, $msg_text),
+		})
+	};
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Проверка ошибок
+	if ($@)
+	{
+		#	информации об ошибке
+		Carp::carp "\nОшибка при отправке сообщения Администратору: $@\n";
+	}
+	else
+	{
+		printf STDERR "Message to Admin has been send\n";
+	}
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -312,7 +349,7 @@ sub send_keyboard
 	if ($@)
 	{
 		#	информация об ошибке
-		$admin->send_msg('Ошибка при отправке "клавиатуры"', $@);
+		send_admin('Ошибка при отправке "клавиатуры"', $@);
 		#	вывод на экран
 		Carp::carp "\nОшибка при отправке 'клавиатуры' Бота: $@\n";
 	}
@@ -393,7 +430,7 @@ sub send_file
 	if ($@)
 	{
 		#	информация об ошибке
-		$admin->send_msg('Ошибка при отправке файла', $@);
+		send_admin('Ошибка при отправке файла', $@);
 		#	вывод на экран
 		Carp::carp "\nОшибка при отправке файла: $@\n";
 	};
@@ -478,7 +515,7 @@ sub user_request
 	if ($@)
 	{
 		#	послать информацию об ошибке
-		$admin->send_msg('*Ошибка* при отправке сообщения Пользователю', $@);
+		send_admin('*Ошибка* при отправке сообщения Пользователю', $@);
 		#	вывод на экран
 		Carp::carp "Error send to User: $@";
 	}
@@ -526,6 +563,134 @@ sub user_request
     });
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
+	return $result;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Администрирование
+	---
+	admin($message)
+	
+		$message	- ссылка на сообщение (хэш)
+=cut
+sub admin
+{
+	#	сообщение (ссылка на хэш)
+	my	$message = shift @_;
+	#	проверка прав администратора
+	return undef if
+		($message->{chat}->{id} ne '5483130027') || !defined($message->{text});
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	результат
+	my	$result = {-admin => $message->{text}};
+	#
+	#	кодирование текста сообщения
+	my	$text = encode('windows-1251', $message->{text});
+	#
+	#	удалить первые 2 символа (ВАЖНО)
+		$text =~ s/^..//;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Ответ Администратору
+	if ($text eq 'Запросить базы данных')
+	{
+		#	переслать файлы баз данных
+		send_file($message, 'db/med.db');
+		send_file($message, 'db/med-extra.db');
+		send_file($message, 'db/user.db');
+		send_file($message, 'db/log.db');
+	}
+	elsif ($text eq 'Обновить базу данных')
+	{
+		#	копирование базы данных
+		my	$err = system('perl',
+			'lib/make_html.pl', $ENV{'DB_FOLDER'}, 'html');
+		#
+		#	информационное сообщение
+		send_admin(
+			'*Обновление базы данных*',
+			decode_win("код завершения: ($err)\nстатус: ($?)\nошибка: '$!'"));
+		#
+		#	переслать файлы базы данных
+		send_file($message, 'db/med.db');
+		send_file($message, 'db/med-extra.db');
+	}
+	elsif ($text eq 'Последние 10 запросов')
+	{
+		#	Последние 10 записей в журнале запросов
+		$admin->last_log();
+=pod
+		#	Последние 10 записей в журнале запросов
+		my	$sth = $log_dbh->prepare(qq
+			@
+			SELECT * FROM (
+				SELECT * FROM
+				(
+					SELECT id, telegram_id, user_name, time(time_stamp) as time,
+						json_extract(message, '\$.text') as action
+					FROM "logger"
+					WHERE action NOT NULL
+				UNION
+					SELECT id, telegram_id, user_name, time(time_stamp) as time,
+						json_extract(result, '\$.result.document.file_name') as action
+					FROM "logger"
+					WHERE action NOT NULL
+				)
+				ORDER BY id DESC LIMIT 10
+			)
+			ORDER BY id ASC
+			@);
+			$sth->execute() or Carp::carp $DBI::errstr;
+		#
+		#	информация о запросах
+#		my	$log = "\x{1F4CE}\n\n";
+		my	$log;
+		#
+		#	цикл по выбранным записям
+		while (my $row = $sth->fetchrow_hashref)
+		{
+			#	декодировать
+			decode_utf8($row);
+			#
+			#	экранировать символы 'Markdown'
+			$row->{action} =~ s/[_\*\~]/ /g;
+			#
+			#	Добавить в конец списка
+			$log .= sprintf "\x{26A1} *%s* (%s)\n`%s`\n\n",
+				$row->{user_name} || 'undef', $row->{time}, $row->{action};
+		}
+		#
+		#	отправить журнал запросов Боту
+		send_admin('_Журнал запросов_', $log);
+=cut
+		#
+		#	не записывать в журнал
+		$result = undef;
+	}
+	elsif ($text eq 'Очистить журнал запросов')
+	{
+		#	очистить журнал запросов (кроме 10 последних записей)
+		$log_dbh->do(qq
+			@
+				DELETE FROM logger
+				WHERE rowid NOT IN (
+					SELECT rowid FROM logger
+					ORDER BY rowid DESC 
+					LIMIT 10
+				)
+			@)
+			or Carp::carp $DBI::errstr;
+		#
+		#	сообщение
+		send_admin('*Журнал запросов* очищен', ($DBI::errstr
+			? "\x{1F6AB} DBI err='$DBI::errstr'"
+			: "\x{2705} " . decode_win("удалены все записи, кроме 10 последних ")));
+	}
+	else
+	{
+		#	неизвестная команда
+		$admin->send_msg('*Неизвестная команда*', $message->{text});
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	return $result;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

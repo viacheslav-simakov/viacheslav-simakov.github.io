@@ -15,6 +15,10 @@ use Carp();
 =cut
 package Med::Admin {
 #
+#	Декодирование символов
+#	https://perldoc.perl.org/Encode
+use Encode qw(encode);
+#
 #	Утилиты для работы
 use Med::Tools qw(decode_utf8 decode_win);
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -47,6 +51,44 @@ sub new {
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	привести ссылку к типу "class"
 	return bless $self, $class;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Клавиатура администратора
+	---
+	$obj->keyboard($telegram_id)
+	
+		$telegram_id	- telegram ID пользователя
+
+=cut
+sub keyboard
+{
+	#	ссылка на объект
+	my	$self = shift @_;
+	#	telegram_id
+	my	$telegram_id = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	клавиатура
+	my	@keyboard;
+	#
+	#	Проверка пользователя
+	if ($telegram_id eq $self->{-telegram_id})
+	{
+		#	список кнопок
+		@keyboard = (
+		[
+			{text => "\x{2139} " . decode_win('Последние 10 запросов')},
+			{text => "\x{2702} " . decode_win('Очистить журнал запросов')},
+		],
+		[
+			{text => "\x{1F4D4} " . decode_win('Запросить базы данных')},
+			{text => "\x{267B} " . decode_win('Обновить базу данных')},
+		],
+		)
+	}
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	ссылка на список
+	return \@keyboard;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -143,12 +185,11 @@ sub send_file
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Переслать файлы баз данных
+	Отправить все файлы базы данных
 	---
-	$obj->send_database()
-	
+	download_db
 =cut
-sub send_database
+sub download_db
 {
 	#	ссылка на объект
 	my	$self = shift @_;
@@ -158,7 +199,7 @@ sub send_database
 	$self->send_file('db/med-extra.db');
 	$self->send_file('db/user.db');
 	$self->send_file('db/log.db');
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
 	return $self;
 }
@@ -180,17 +221,15 @@ sub last_log
 		SELECT * FROM (
 			SELECT * FROM
 			(
-				SELECT id, telegram_id, time(time_stamp) as time,
-					json_extract(message, '\$.text') as request,
-					json_extract(result, '\$.result.chat.username') as reply
+				SELECT id, telegram_id, user_name, time(time_stamp) as time,
+					json_extract(message, '\$.text') as action
 				FROM "logger"
-				WHERE request NOT NULL
+				WHERE action NOT NULL
 			UNION
-				SELECT id, telegram_id, time(time_stamp) as time,
-					json_extract(message, '\$.web_app_data.data') as request,
-					json_extract(result, '\$.result.document.file_name') as reply
+				SELECT id, telegram_id, user_name, time(time_stamp) as time,
+					json_extract(result, '\$.result.document.file_name') as action
 				FROM "logger"
-				WHERE request NOT NULL
+				WHERE action NOT NULL
 			)
 			ORDER BY id DESC LIMIT 10
 		)
@@ -208,15 +247,14 @@ sub last_log
 		decode_utf8($row);
 		#
 		#	экранировать символы 'Markdown'
-		$row->{reply} =~ s/[_\*\~]/ /g;
+		$row->{action} =~ s/[_\*\~]/ /g;
 		#
 		#	Добавить в конец списка
-		$log .= sprintf "*%s* (%s)\n`%s`\n\x{26A1} %s\n",
-			$user->{ $row->{telegram_id} }->{user_name},
-			$row->{time}, $row->{request}, $row->{reply};
+		$log .= sprintf "\x{26A1} *%s* (%s)\n`%s`\n\n",
+			$row->{user_name} || 'undef', $row->{time}, $row->{action};
 	}
 	#
-	#	отправить журнал запросов Боту
+	#	отправить журнал запросов
 	$self->send_msg('_Журнал запросов_', $log);
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
@@ -252,6 +290,70 @@ sub truncate_log
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
 	return $self;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Обработка запросов
+	---
+	$obj->run($message);
+	
+		$message	- ссылка на сообщение (хэш)
+
+=cut
+sub run
+{
+	#	ссылка на объект
+	my	$self = shift @_;
+	#	сообщение (ссылка на хэш)
+	my	$message = shift @_;
+	#	проверка прав администратора
+	return undef if
+	(
+		$message->{chat}->{id} ne $self->{-telegram_id}) ||
+		!defined($message->{text}
+	);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	кодирование текста сообщения
+	my	$text = encode('windows-1251', $message->{text});
+	#
+	#	удалить первые 2 символа (ВАЖНО)
+		$text =~ s/^..//;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Ответ Администратору
+	if ($text eq 'Запросить базы данных')
+	{
+		#	переслать файлы баз данных
+		$self->download_db();
+	}
+	elsif ($text eq 'Обновить базу данных')
+	{
+		#	копирование базы данных
+		my	$err = system('perl',
+			'lib/make_html.pl', $ENV{'DB_FOLDER'}, 'html');
+		#
+		#	информационное сообщение
+		$self->send_msg(
+			'*Обновление базы данных*',
+			decode_win("код завершения: ($err)\nстатус: ($?)\nошибка: '$!'"));
+		#
+		#	переслать файлы базы данных
+		$self->download_db();
+	}
+	elsif ($text eq 'Последние 10 запросов')
+	{
+		#	Последние 10 записей в журнале запросов
+		$self->last_log();
+	}
+	elsif ($text eq 'Очистить журнал запросов')
+	{
+		#	очистить журнал запросов (кроме 10 последних записей)
+		$self->truncate_log();
+	}
+	else
+	{
+		#	неизвестная команда
+		$self->send_msg('*Неизвестная команда*', $message->{text});
+	}
 }
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 } ### end of package
