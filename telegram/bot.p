@@ -34,10 +34,13 @@ use WWW::Telegram::BotAPI;
 use lib ('pm');
 #
 #	Утилиты для работы
-use Tele_Tools qw(decode_utf8 decode_win);
+use Med::Tools qw(decode_utf8 decode_win time_stamp);
 #
 #	PDF-документы
-use Tele_PDF();
+use Med::PDF();
+#
+#	Администратор
+use Med::Admin();
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #	проверка доступности файлов и папок
@@ -46,10 +49,6 @@ unless (-d $ENV{'DB_FOLDER'})
 {
 	Carp::confess "Папка '$ENV{'DB_FOLDER'}' базы данных не существует\n";
 }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#	открыть базу данных
-my	$log_dbh = DBI->connect("dbi:SQLite:dbname=db/log.db","","")
-		or Carp::confess $DBI::errstr;
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #
 #	Бот @tele_rheumatology_bot
@@ -68,12 +67,20 @@ my	$offset = 0;
 #
 #	Список авторизованных пользователей (ссылка на хэш)
 my	$user = user_authorized();
+#
+#	Журнал
+my	$log_dbh = DBI->connect("dbi:SQLite:dbname=db/log.db","","")
+		or Carp::confess $DBI::errstr;
+#
+#	Администратор
+my	$admin = Med::Admin->new($api, '5483130027', $log_dbh);
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #	Главный цикл обработки событий бота
 #
-printf STDERR "Telegram Bot \@tele_rheumatology_bot is started at %s\n",
-	Tele_PDF::time_stamp();
+printf STDERR "Telegram Bot \@tele_rheumatology_bot is started at %s\n", time_stamp();
+#	Tele_PDF::time_stamp();
+	
 while (1) {
 	#	задержка 1 секунда
 #	sleep(1);
@@ -112,7 +119,7 @@ while (1) {
 		if (!exists $user->{ $message->{chat}->{id} })
 		{
 			#	информация об ошибке
-			send_admin('*Access denied*',
+			$admin->send_msg('*Access denied*',
 				sprintf('telegram id=(%s)', $message->{chat}->{id} || 'unknow'));
 			#
 			#	вывод на экран
@@ -121,11 +128,11 @@ while (1) {
 			next;
 		}
 		#	Вывод на экран
-		printf STDERR "\nUpdate at %s (%s)\n", Tele_PDF::time_stamp(),
+		printf STDERR "\nUpdate at %s (%s)\n", time_stamp(),
 			encode('windows-1251', $user->{$message->{chat}->{id}}->{user_name});
 		#
 		#	Результат обработки сообщения
-		my	$result = {};
+		my	$result = undef;
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#
         #	Обработка команд
@@ -145,10 +152,11 @@ while (1) {
 			#	клавиатура
 			$result = send_keyboard($message);
         }
-		elsif ($message->{chat}->{id} eq '5483130027')
+		elsif ($message->{chat}->{id} eq $admin->{-telegram_id})
 		{
 			#	Администратор
-			$result = admin($message);
+#			$result = admin($message);
+			$admin->run($message);
 		}
         else
 		{
@@ -182,53 +190,16 @@ sub logger
 	#	Запись в базу данных
 	my	$sth = $log_dbh->prepare(qq
 		@
-			INSERT INTO "logger" (telegram_id, message, result)
-			VALUES (?, ?, ?)
+			INSERT INTO "logger" (telegram_id, user_name, message, result)
+			VALUES (?, ?, ?, ?)
 		@);
 		$sth->execute(
 			$telegram_id,
+			$user->{$telegram_id}->{user_name},
 			encode_json($message),
 			encode_json($result)
 		)
 		or Carp::carp $DBI::errstr;
-}
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-=pod
-	Сообщение об ошибке
-	---
-	send_admin($caption, $msg_text)
-
-		$caption	- заголовок сообщения
-		$msg_text	- текст сообщения
-=cut
-sub send_admin
-{
-	#	заголовок сообщения
-	my	$caption = decode_win(shift @_);
-	#	текст сообщения
-	my	$msg_text = shift @_ || 'undef';
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Безопасная конструкция
-	eval {
-		#	Послать сообщение admin
-		$api->api_request('sendMessage',
-		{
-			chat_id		=> '5483130027',# Симаков
-			parse_mode	=> 'Markdown',
-			text		=> sprintf("%s\n%s", $caption, $msg_text),
-		})
-	};
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Проверка ошибок
-	if ($@)
-	{
-		#	информации об ошибке
-		Carp::carp "\nОшибка при отправке сообщения Администратору: $@\n";
-	}
-	else
-	{
-		printf STDERR "Message to Admin has been send\n";
-	}
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -243,18 +214,21 @@ sub send_default
 	#	сообщение (ссылка на хэш)
 	my	$message = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	пользователь
-	my	$user_name = $user->{$message->{chat}->{id}}->{user_name} || 'undef';
+	#	Telegram ID
+	my	$telegram_id = $message->{chat}->{id};
 	#
-	#	результат
-	my	$result;
+	#	Пользователь
+	my	$user_name = $user->{$telegram_id}->{user_name} || 'undef';
+	#
+	#	Статус отправленного сообщения
+	my	$status;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
 	eval {
 		#	Послать сообщение боту (вывод клавиатуры)
-		$result = $api->api_request('sendMessage',
+		$status = $api->api_request('sendMessage',
 		{
-			chat_id		=> $message->{chat}->{id},
+			chat_id		=> $telegram_id,
 			parse_mode	=> 'Markdown',
 			text		=> decode_win(sprintf(
 				"Привет _%s_!\nЯ бот *Электронный ассистент врача-ревматолога*.\n".
@@ -271,7 +245,7 @@ sub send_default
 		Carp::carp "\nОшибка при отправке 'default' сообщения: $@\n";
 		#
 		#	информация об ошибке
-		send_admin('Ошибка при отправке "default" сообщения', $@);
+		$admin->send_msg('Ошибка при отправке "default" сообщения', $@);
 	}
 	else
 	{
@@ -279,7 +253,7 @@ sub send_default
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
-	return $result;
+	return $status;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
@@ -295,8 +269,11 @@ sub send_keyboard
 	#	сообщение (ссылка на хэш)
 	my	$message = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	пользователь
-	my	$user_name = $user->{$message->{chat}->{id}}->{user_name} || 'undef';
+	#	Telegram ID
+	my	$telegram_id = $message->{chat}->{id};
+	#
+	#	Пользователь
+	my	$user_name = $user->{$telegram_id}->{user_name} || 'undef';
 	#
 	#	результат
 	my	$result;
@@ -311,31 +288,16 @@ sub send_keyboard
 			},
 		}
 	],];
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Администратор
-	if ($message->{chat}->{id} eq '5483130027')
-	{
-		#	клавиатура администратора
-		my	@admin = (
-			[
-				{text => "\x{2139} " . decode_win('Последние 10 запросов')},
-				{text => "\x{2702} " . decode_win('Очистить журнал запросов')},
-			],
-			[
-				{text => "\x{1F4D4} " . decode_win('Запросить базы данных')},
-				{text => "\x{267B} " . decode_win('Обновить базу данных')},
-			],
-			);
-		#	добавить клавиатуру
-		push @{ $keyboard }, @admin;
-	}
+	#
+	#	добавить клавиатуру Администратора
+	push @{ $keyboard }, @{ $admin->keyboard($telegram_id) };
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Безопасная конструкция
 	eval {
 		#	Послать сообщение боту (вывод клавиатуры)
 		$result = $api->api_request('sendMessage',
 		{
-			chat_id => $message->{chat}->{id},
+			chat_id => $telegram_id,
 			parse_mode => 'Markdown',
 			text => decode_win("*Электронный ассистент врача-ревматолога*\n(СГМУ имени В.И. Разумовского)"),
 			reply_markup =>
@@ -350,7 +312,7 @@ sub send_keyboard
 	if ($@)
 	{
 		#	информация об ошибке
-		send_admin('Ошибка при отправке "клавиатуры"', $@);
+		$admin->send_msg('Ошибка при отправке "клавиатуры"', $@);
 		#	вывод на экран
 		Carp::carp "\nОшибка при отправке 'клавиатуры' Бота: $@\n";
 	}
@@ -370,32 +332,32 @@ sub send_keyboard
 	send_file(\%message, $file_name)
 	
 		%message	- сообщение (хэш)
-		$file_name	- имя файла (в текущей папке)
+		$file		- имя файла (в текущей папке)
 =cut
 sub send_file
 {
 	#	сообщение (ссылка на хэш)
     my	$message = shift @_;
 	#	имя PDF-файла
-	my	$file_name = shift @_;
+	my	$file = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	пользователь
 	my	$user_name = $user->{$message->{chat}->{id}}->{user_name} || 'undef';
 	#
 	#	экранирование символов '\'
-		$file_name =~ s/\\/\//g;
+		$file =~ s/\\/\//g;
 	#
 	#	результат
 	my	$result;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Проверка существование файла
-	unless (-e $file_name)
+	unless (-e $file)
 	{
 		#	предупреждение!
 		Carp::carp sprintf
 			"package '%s', filename '%s', subroutine '%s':\n".
 			"file '%s' is not exist!\n",
-			(caller(0))[0,1,3], $file_name;
+			(caller(0))[0,1,3], $file;
 		#
 		#	возврат из функции
 		return undef;
@@ -404,22 +366,26 @@ sub send_file
 	#	Безопасная конструкция
 	eval
 	{
+		#	название файла
+		my	$filename = decode_win( sprintf('Рекомендации (%s).pdf', 
+				(split '\s', time_stamp())[0]) );
+		#
 		#	Отправляем PDF файл
 		$result = $api->api_request('sendDocument',
 		{
 			chat_id		=> $message->{chat}->{id},
-			caption		=> decode_win('СГМУ имени В.И. Разумовского'),
+#			caption		=> decode_win('Рекомендации по применению препаратов'),
 			document	=>
 			{
-				file		=> $file_name,
-#				filename	=> decode('windows-1251', 'Рекомендации.pdf'),
-				filename	=> $file_name,
+				file		=> $file,
+				filename	=> $filename,
+#				filename	=> $file,
 			},
 		});
 		#	Вывод на экран
 		printf STDERR
 			"Send file '%s' (%s) to '%s' successed\n",
-			$result->{result}->{document}->{file_name},
+			encode('windows-1251', $result->{result}->{document}->{file_name}),
 			sprintf('%.1f kB', $result->{result}->{document}->{file_size}/1024),
 			encode('windows-1251', $user_name);
 	};
@@ -427,7 +393,7 @@ sub send_file
 	if ($@)
 	{
 		#	информация об ошибке
-		send_admin('Ошибка при отправке файла', $@);
+		$admin->send_msg('Ошибка при отправке файла', $@);
 		#	вывод на экран
 		Carp::carp "\nОшибка при отправке файла: $@\n";
 	};
@@ -487,7 +453,35 @@ sub user_request
 	#	сообщение (ссылка на хэш)
     my	$message = shift @_;
 	#	результат
-	my	$result;
+	my	($result, $msg_id);
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Безопасная конструкция
+	eval
+	{
+		#	отправка сообщения Пользователю
+		$api->api_request('sendChatAction',
+		{
+			chat_id	=> $message->{chat}->{id},
+			action	=> 'upload_document',
+		});
+		#	отправка сообщения Пользователю
+		$result = $api->api_request('sendMessage',
+		{
+			chat_id	=> $message->{chat}->{id},
+			text	=> "\x{23F3} " . decode_win('Ваш запрос выполняется ...'),
+		});
+		#
+		#	id сообщения
+		$msg_id = $result->{result}->{message_id};
+	};
+	#	Проверка ошибок
+	if ($@)
+	{
+		#	послать информацию об ошибке
+		$admin->send_msg('*Ошибка* при отправке сообщения Пользователю', $@);
+		#	вывод на экран
+		Carp::carp "Error send to User: $@";
+	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	имя PDF-файла
 	my	$pdf_file_name = sprintf '%s.pdf', $message->{chat}->{id};
@@ -496,7 +490,8 @@ sub user_request
     my	$web_app_data = encode('UTF-8', $message->{web_app_data}->{data});
 	#
 	#	PDF-документ
-	my	$pdf = Tele_PDF->new(
+	my	$pdf = Med::PDF->new
+		(
 			$user->{$message->{chat}->{id}},
 			decode_json($web_app_data),
 			'db/med.db'
@@ -512,7 +507,7 @@ sub user_request
 	if ($@)
 	{
 		#	послать информацию об ошибке
-		send_admin('*Ошибка* создания PDF-файла', $@);
+		$admin->send_msg('*Ошибка* создания PDF-файла', $@);
 		#	вывод на экран
 		Carp::carp "Error file '$pdf_file_name' created: $@";
 	}
@@ -522,134 +517,15 @@ sub user_request
 		$result = send_file($message, $pdf_file_name);
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Изменить текст сообщения
+	$api->api_request('editMessageText',
+	{
+        chat_id		=> $message->{chat}->{id},
+        message_id	=> $msg_id,
+        text		=> "\x{2935} " . decode_win('Файл с результатами запроса загружен'),
+    });
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
-	return $result;
-}
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-=pod
-	Администрирование
-	---
-	admin($message)
-	
-		$message	- ссылка на сообщение (хэш)
-=cut
-sub admin
-{
-	#	сообщение (ссылка на хэш)
-	my	$message = shift @_;
-	#	проверка прав администратора
-	return undef if
-		($message->{chat}->{id} ne '5483130027') || !defined($message->{text});
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	результат
-	my	$result = {-admin => $message->{text}};
-	#
-	#	кодирование текста сообщения
-	my	$text = encode('windows-1251', $message->{text});
-	#
-	#	удалить первые 2 символа (ВАЖНО)
-		$text =~ s/^..//;
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	#	Ответ Администратору
-	if ($text eq 'Запросить базы данных')
-	{
-		#	переслать файлы баз данных
-		send_file($message, 'db/med.db');
-		send_file($message, 'db/med-extra.db');
-		send_file($message, 'db/user.db');
-		send_file($message, 'db/log.db');
-	}
-	elsif ($text eq 'Обновить базу данных')
-	{
-		#	копирование базы данных
-		my	$err = system('perl',
-			'lib/make_html.pl', $ENV{'DB_FOLDER'}, 'html');
-		#
-		#	информационное сообщение
-		send_admin(
-			'*Обновление базы данных*',
-			decode_win("код завершения: ($err)\nстатус: ($?)\nошибка: '$!'"));
-		#
-		#	переслать файлы базы данных
-		send_file($message, 'db/med.db');
-		send_file($message, 'db/med-extra.db');
-	}
-	elsif ($text eq 'Последние 10 запросов')
-	{
-		#	Последние 10 записей в журнале запросов
-		my	$sth = $log_dbh->prepare(qq
-			@
-			SELECT * FROM (
-				SELECT * FROM
-				(
-					SELECT id, telegram_id, time(time_stamp) as time,
-						json_extract(message, '\$.text') as request,
-						json_extract(result, '\$.result.chat.username') as reply
-					FROM "logger"
-					WHERE request NOT NULL
-				UNION
-					SELECT id, telegram_id, time(time_stamp) as time,
-						json_extract(message, '\$.web_app_data.data') as request,
-						json_extract(result, '\$.result.document.file_name') as reply
-					FROM "logger"
-					WHERE request NOT NULL
-				)
-				ORDER BY id DESC LIMIT 10
-			)
-			ORDER BY id ASC
-			@);
-			$sth->execute() or Carp::carp $DBI::errstr;
-		#
-		#	информация о запросах
-#		my	$log = "\x{1F4CE}\n\n";
-		my	$log;
-		#
-		#	цикл по выбранным записям
-		while (my $row = $sth->fetchrow_hashref)
-		{
-			#	декодировать
-			decode_utf8($row);
-			#
-			#	экранировать символы 'Markdown'
-			$row->{reply} =~ s/[_\*\-\~]/ /g;
-			#
-			#	Добавить в конец списка
-			$log .= sprintf "*%s* (%s)\n`%s`\n\x{26A1} %s\n",
-				$user->{ $row->{telegram_id} }->{user_name},
-				$row->{time}, $row->{request}, $row->{reply};
-		}
-		#
-		#	отправить журнал запросов Боту
-		send_admin('_Журнал запросов_', $log);
-		#
-		#	не записывать в журнал
-		$result = undef;
-	}
-	elsif ($text eq 'Очистить журнал запросов')
-	{
-		#	очистить журнал запросов (кроме 10 последних записей)
-		$log_dbh->do(qq
-			@
-				DELETE FROM logger
-				WHERE rowid NOT IN (
-					SELECT rowid FROM logger
-					ORDER BY rowid DESC 
-					LIMIT 10
-				)
-			@)
-			or Carp::carp $DBI::errstr;
-		#
-		#	сообщение
-		send_admin('*Журнал запросов* очищен', ($DBI::errstr
-			? "\x{1F6AB} DBI err='$DBI::errstr'"
-			: "\x{2705} " . decode_win("удалены все записи, кроме 10 последних ")));
-	}
-	else
-	{
-		#	неизвестная команда
-		send_admin('*Неизвестная команда*', $message->{text});
-	}
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	return $result;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
