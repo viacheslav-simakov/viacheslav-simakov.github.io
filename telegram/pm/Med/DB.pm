@@ -96,7 +96,7 @@ sub new {
 			or Carp::confess $DBI::errstr;
 	#
 	#	вывод на экран
-	printf STDERR "Connect to database '%s'\n", $dbh->sqlite_db_filename;
+	printf STDOUT "Connect to database '%s'\n", $dbh->sqlite_db_filename;
 	#
 	#	ссылка на объект
 	my	$self =
@@ -125,7 +125,7 @@ sub DESTROY
 	$self->{-dbh}->disconnect or Carp::carp $DBI::errstr;
 	#
 	#	вывод на экран
-	printf STDERR "Disconnect from database '%s'\n", $db_filename;
+	printf STDOUT "Disconnect from database '%s'\n", $db_filename;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod

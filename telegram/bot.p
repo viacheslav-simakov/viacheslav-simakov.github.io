@@ -78,7 +78,7 @@ my	$admin = Med::Admin->new($api, '5483130027', $log_dbh);
 #
 #	Главный цикл обработки событий бота
 #
-printf STDERR "Telegram Bot \@tele_rheumatology_bot is started at %s\n", time_stamp();
+printf STDOUT "Telegram Bot \@tele_rheumatology_bot is started at %s\n", time_stamp();
 #	Tele_PDF::time_stamp();
 	
 while (1) {
@@ -128,7 +128,7 @@ while (1) {
 			next;
 		}
 		#	Вывод на экран
-		printf STDERR "\nUpdate at %s (%s)\n", time_stamp(),
+		printf STDOUT "\nUpdate at %s (%s)\n", time_stamp(),
 			encode('windows-1251', $user->{$message->{chat}->{id}}->{user_name});
 		#
 		#	Результат обработки сообщения
@@ -249,7 +249,7 @@ sub send_default
 	}
 	else
 	{
-		printf STDERR "Unknown message! 'Default' response to Bot has been send\n";
+		printf STDOUT "Unknown message! 'Default' response to Bot has been send\n";
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
@@ -318,7 +318,7 @@ sub send_keyboard
 	}
 	else
 	{
-		printf STDERR "'reply mark' keyboard to '%s' has been send\n",
+		printf STDOUT "'reply mark' keyboard to '%s' has been send\n",
 			encode('windows-1251', $user_name);
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -383,7 +383,7 @@ sub send_file
 			},
 		});
 		#	Вывод на экран
-		printf STDERR
+		printf STDOUT
 			"Send file '%s' (%s) to '%s' successed\n",
 			encode('windows-1251', $result->{result}->{document}->{file_name}),
 			sprintf('%.1f kB', $result->{result}->{document}->{file_size}/1024),
@@ -434,7 +434,7 @@ sub user_authorized
 	$dbh->disconnect or Carp::carp $DBI::errstr;
 	#
 	#	Вывод на экран
-	print STDERR "Loading authorized users from 'bot.db' is completed\n";
+	print STDOUT "Loading authorized users from 'bot.db' is completed\n";
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на хэш
 	return \%user;

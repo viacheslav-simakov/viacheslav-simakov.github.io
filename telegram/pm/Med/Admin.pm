@@ -127,7 +127,7 @@ sub send_msg
 	}
 	else
 	{
-		printf STDERR "Message to Admin has been send\n";
+		printf STDOUT "Message to Admin has been send\n";
 	}
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -174,11 +174,13 @@ sub send_file
 	#	Проверка ошибок
 	if ($@)
 	{
-		#	информация об ошибке
-		send_admin('Ошибка при отправке файла', $@);
-		#	вывод на экран
+		#	предупреждение
 		Carp::carp "\nОшибка при отправке файла: $@\n";
-	};
+	}
+	else
+	{
+		printf STDOUT "File '$file_name' has to be send\n";
+	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	возвращаемое значение
 	return $self;

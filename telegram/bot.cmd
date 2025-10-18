@@ -15,6 +15,6 @@ SET DB_FOLDER=C:\Apache24\sql
 REM HTML-файл
 SET HTTP_URL=https://viacheslav-simakov.github.io/telegram/html/med.html
 REM запуск Telegram Bot
-perl "bot.p"
+perl "bot.p" 2> bot.log
 rem **************************************************************************
 PAUSE

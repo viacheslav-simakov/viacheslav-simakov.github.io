@@ -701,7 +701,7 @@ sub save
 		$self->{-pdf}->saveas($pdf_file_name);
 	#
 	#	вывод на экран
-	print STDERR "Create file '$pdf_file_name'\n";
+	print STDOUT "Create file '$pdf_file_name'\n";
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	ссылка на объект
 	return $self;
