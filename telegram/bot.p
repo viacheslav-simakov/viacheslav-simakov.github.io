@@ -98,8 +98,8 @@ while (1) {
 	if ($@)
 	{
 		#	информации об ошибке
-		Carp::carp sprintf("\n%s Ошибка при получении обновлений: $@\n",
-			Tele_PDF::time_stamp());
+		Carp::carp sprintf(
+			"\n%s Ошибка при получении обновлений: $@\n", time_stamp());
 		#	следующее обновление
 		next;
 	}
@@ -131,6 +131,9 @@ while (1) {
 		printf STDOUT "\nUpdate at %s (%s)\n", time_stamp(),
 			encode('windows-1251', $user->{$message->{chat}->{id}}->{user_name});
 		#
+		#	Запись в Журнал
+		log_message($message);
+		#
 		#	Результат обработки сообщения
 		my	$result = undef;
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,8 +158,9 @@ while (1) {
 		elsif ($message->{chat}->{id} eq $admin->{-telegram_id})
 		{
 			#	Администратор
-#			$result = admin($message);
-			$admin->run($message);
+			$result = $admin->run($message);
+			
+			print STDOUT Dumper($result);
 		}
         else
 		{
@@ -165,24 +169,21 @@ while (1) {
         }
 		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		#	запись в журнале
-		logger($message, $result) if defined($result);
+		log_update($result) if defined($result);
     }
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
-	Вывод на экран
+	Входящее сообщение Пользователя
 	---
-	logger(\%message, \%result)
+	log_message(\%message)
 		
 		%message	- сообщение (хэш)
-		%result		- результат обработки сообщения (хэш)
 =cut
-sub logger
+sub log_message
 {
 	#	сообщение (ссылка на хэш)
 	my	$message = shift @_;
-	#	результат обработки сообщения
-	my	$result = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	telegram_id пользователя
 	my	$telegram_id = $message->{chat}->{id};
@@ -190,16 +191,36 @@ sub logger
 	#	Запись в базу данных
 	my	$sth = $log_dbh->prepare(qq
 		@
-			INSERT INTO "logger" (telegram_id, user_name, message, result)
-			VALUES (?, ?, ?, ?)
+			INSERT INTO "logger" (telegram_id, user_name, message)
+			VALUES (?, ?, ?)
 		@);
 		$sth->execute(
 			$telegram_id,
 			$user->{$telegram_id}->{user_name},
-			encode_json($message),
-			encode_json($result)
+			encode_json($message)
 		)
 		or Carp::carp $DBI::errstr;
+}
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=pod
+	Ответ Пользователю
+	---
+	log_replay(\%result)
+		
+		%result		- результат обработки сообщения (хэш)
+=cut
+sub log_update
+{
+	#	Результат обработки сообщения
+	my	$result = shift @_;
+	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	#	Изменение записи
+	my	$sth = $log_dbh->prepare(qq
+		@
+			UPDATE "logger" SET result = ?
+			WHERE id = (SELECT MAX(id) FROM "logger")
+		@);
+		$sth->execute(encode_json($result)) or Carp::carp $DBI::errstr;
 }
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =pod
