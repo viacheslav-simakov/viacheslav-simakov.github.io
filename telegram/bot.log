@@ -1,0 +1,8 @@
+
+19-10-2025 19:55:27 Ошибка при получении обновлений: ERROR: Inactivity timeout at C:/Strawberry/perl/site/lib/WWW/Telegram/BotAPI.pm line 224.
+	WWW::Telegram::BotAPI::api_request(undef, undef, HASH(0x6625f48)) called at C:/Strawberry/perl/site/lib/WWW/Telegram/BotAPI.pm line 92
+	WWW::Telegram::BotAPI::AUTOLOAD(WWW::Telegram::BotAPI=HASH(0x4f87df0), HASH(0x6625f48)) called at bot.p line 90
+	eval {...} called at bot.p line 88
+
+ at bot.p line 101.
+Terminating on signal SIGHUP(1)

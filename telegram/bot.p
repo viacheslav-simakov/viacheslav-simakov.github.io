@@ -159,8 +159,7 @@ while (1) {
 		{
 			#	Администратор
 			$result = $admin->run($message);
-			
-			print STDOUT Dumper($result);
+#			print STDOUT Dumper($result);
 		}
         else
 		{
