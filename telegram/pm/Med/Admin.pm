@@ -236,12 +236,12 @@ sub last_log
 		SELECT * FROM (
 			SELECT * FROM
 			(
-				SELECT id, telegram_id, user_name, time(time_stamp) as time,
+				SELECT id, telegram_id, user_name, time_stamp,
 					json_extract(message, '\$.text') as action
 				FROM "logger"
 				WHERE action NOT NULL
 			UNION
-				SELECT id, telegram_id, user_name, time(time_stamp) as time,
+				SELECT id, telegram_id, user_name, time_stamp,
 					json_extract(result, '\$.result.document.file_name') as action
 				FROM "logger"
 				WHERE action NOT NULL
@@ -266,7 +266,7 @@ sub last_log
 		#
 		#	Добавить в конец списка
 		$log .= sprintf "\x{26A1} *%s* (%s)\n`%s`\n\n",
-			$row->{user_name} || 'undef', $row->{time}, $row->{action};
+			$row->{user_name} || 'undef', $row->{time_stamp}, $row->{action};
 	}
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	отправить журнал запросов
