@@ -284,16 +284,16 @@ sub truncate_log
 	my	$self = shift @_;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Очистить журнал
-	$self->{-dbh}->do(qq
+	my	$sth = $self->{-dbh}->prepare(qq
 		@
 			DELETE FROM logger
-			WHERE rowid NOT IN (
-				SELECT rowid FROM logger
-				ORDER BY rowid DESC 
-				LIMIT 10
+			WHERE id NOT IN (
+				SELECT id FROM logger
+				WHERE (telegram_id != ?)
+				ORDER BY id DESC LIMIT 10
 			)
-		@)
-		or Carp::carp $DBI::errstr;
+		@);
+		$sth->execute($self->{-telegram_id}) or Carp::carp $DBI::errstr;
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	#	Сообщение
 	return $self->send_msg('*Журнал запросов* очищен', ($DBI::errstr
