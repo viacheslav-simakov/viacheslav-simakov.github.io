@@ -286,9 +286,9 @@ sub truncate_log
 	#	Очистить журнал
 	my	$sth = $self->{-dbh}->prepare(qq
 		@
-			DELETE FROM "logger"
+			DELETE FROM logger
 			WHERE id NOT IN (
-				SELECT id FROM "logger"
+				SELECT id FROM logger
 				WHERE (telegram_id != ?)
 				ORDER BY id DESC LIMIT 10
 			)
@@ -344,12 +344,12 @@ sub run
 			'lib/make_html.pl', $ENV{'DB_FOLDER'}, 'html');
 		#
 		#	информационное сообщение
-		$res->{-html_update} = $self->send_msg(
+		$self->send_msg(
 			'*Обновление базы данных*',
 			decode_win("код завершения: ($err)\nстатус: ($?)\nошибка: '$!'"));
 		#
 		#	переслать файлы базы данных
-		%{ $res } = (%{ $res }, %{ $self->download_db() });
+		$self->download_db();
 	}
 	elsif ($text eq 'Последние 10 запросов')
 	{
