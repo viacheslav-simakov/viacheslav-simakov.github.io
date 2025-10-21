@@ -95,6 +95,11 @@ sub new {
 	my	$dbh = DBI->connect("dbi:SQLite:dbname=$db_file","","")
 			or Carp::confess $DBI::errstr;
 	#
+	#	отключить автоматическое обновление
+	#	https://metacpan.org/pod/DBI#AutoCommit
+	#
+		$dbh->{AutoCommit} = 0;
+	#
 	#	вывод на экран
 	printf STDOUT "Connect to database '%s'\n", $dbh->sqlite_db_filename;
 	#
