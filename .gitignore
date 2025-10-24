@@ -1,3 +1,4 @@
 *.bak
 telegram/**/*.pdf
 telegram/**/*.txt
+telegram/**/*.log
