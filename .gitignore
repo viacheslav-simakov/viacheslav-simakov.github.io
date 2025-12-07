@@ -3,4 +3,5 @@ telegram/**/*.pdf
 telegram/**/*.txt
 telegram/**/*.log
 telegram/bot.log
+telegram/*.log
 
